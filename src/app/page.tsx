@@ -535,8 +535,8 @@ export default function Home() {
             {/* LEFT SIDEBAR CATEGORIES WITH HIGHLIGHTED ICONS */}
             <aside className="lg:col-span-3 flex flex-col gap-3 sticky top-20 bg-[#090717]/95 border border-purple-500/30 rounded-3xl p-4 sm:p-5 shadow-[0_0_30px_rgba(168,85,247,0.15)]">
               <div className="flex items-center justify-between px-2 pb-3 border-b border-slate-800/80">
-                <span className="text-xs font-black uppercase tracking-wider text-purple-300 flex items-center gap-2">
-                  <span>📁</span> Categories
+                <span className="text-xs font-black uppercase tracking-wider text-purple-300">
+                  Categories
                 </span>
                 <span className="text-[10px] font-mono font-bold bg-purple-950/80 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30">
                   {totalSitesCount} Portals
@@ -546,13 +546,13 @@ export default function Home() {
               {/* Category Buttons List */}
               <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 scrollbar-none">
                 {[
-                  { name: "All", icon: "⚡", label: "All Categories" },
-                  { name: "Movies", icon: "🍿", label: "Movies & Cinema" },
-                  { name: "Anime", icon: "🍥", label: "Anime & Manga" },
-                  { name: "Sports", icon: "⚽", label: "Live Sports" },
-                  { name: "Series", icon: "📺", label: "Series & Shows" },
-                  { name: "AI & Tools", icon: "🤖", label: "AI & Web Tools" },
-                  { name: "Live Streams", icon: "👾", label: "Live Streams 24/7" },
+                  { name: "All", label: "All Categories" },
+                  { name: "Movies", label: "Movies & Cinema" },
+                  { name: "Anime", label: "Anime & Manga" },
+                  { name: "Sports", label: "Live Sports" },
+                  { name: "Series", label: "Series & Shows" },
+                  { name: "AI & Tools", label: "AI & Web Tools" },
+                  { name: "Live Streams", label: "Live Streams 24/7" },
                 ].map((cat) => {
                   const isSelected = selectedCategory === cat.name;
                   const catCount =
@@ -564,7 +564,7 @@ export default function Home() {
                     <button
                       key={cat.name}
                       onClick={() => setSelectedCategory(cat.name)}
-                      className={`group relative flex items-center justify-between gap-3 px-3.5 py-3 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap lg:whitespace-normal ${
+                      className={`group relative flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap lg:whitespace-normal ${
                         isSelected
                           ? "bg-gradient-to-r from-purple-900/90 via-indigo-900/80 to-purple-950/90 border border-purple-500/60 shadow-[0_0_22px_rgba(168,85,247,0.4)] scale-[1.02]"
                           : "bg-[#0c091f]/80 hover:bg-[#130f30] border border-slate-800/80 hover:border-purple-500/40 text-slate-400 hover:text-white hover:scale-[1.01]"
@@ -575,26 +575,13 @@ export default function Home() {
                         <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-7 bg-purple-400 rounded-r-full shadow-[0_0_10px_#a855f7]" />
                       )}
 
-                      {/* Highlighted Icon & Category Label */}
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-lg sm:text-xl transition-all shrink-0 ${isSelected
-                              ? "bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)] scale-110"
-                              : "bg-[#140e33] border border-purple-500/20 text-purple-400 group-hover:scale-105 group-hover:border-purple-500/40"
-                            }`}
-                        >
-                          {cat.icon}
-                        </div>
-
-                        <div className="flex flex-col text-left">
-                          <span
-                            className={`text-xs sm:text-sm font-extrabold tracking-wide ${isSelected ? "text-white" : "text-slate-300 group-hover:text-white"
-                              }`}
-                          >
-                            {cat.label}
-                          </span>
-                        </div>
-                      </div>
+                      {/* Category Label */}
+                      <span
+                        className={`text-xs sm:text-sm font-extrabold tracking-wide ${isSelected ? "text-white" : "text-slate-300 group-hover:text-white"
+                          }`}
+                      >
+                        {cat.label}
+                      </span>
 
                       {/* Right Count Badge */}
                       <span
@@ -618,9 +605,6 @@ export default function Home() {
                 className="group relative flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#5865F2]/25 via-[#404EED]/20 to-purple-900/30 border border-[#5865F2]/40 hover:border-[#5865F2] hover:shadow-[0_0_25px_rgba(88,101,242,0.4)] transition-all cursor-pointer overflow-hidden mt-3"
               >
                 <div className="flex items-center gap-3 relative z-10">
-                  <div className="w-10 h-10 rounded-xl bg-[#5865F2] flex items-center justify-center text-xl text-white shadow-[0_0_15px_rgba(88,101,242,0.6)] group-hover:scale-110 transition-transform shrink-0">
-                    💬
-                  </div>
                   <div className="flex flex-col">
                     <span className="text-xs font-black text-white group-hover:text-purple-200 flex items-center gap-1.5">
                       <span>JOIN DISCORD</span>
@@ -661,7 +645,6 @@ export default function Home() {
               {/* Cards Grid - Compact Rhombus-Shaped Clickable Cards */}
               {filteredSites.length === 0 ? (
                 <div className="p-10 rounded-3xl bg-[#090717]/80 border border-purple-500/20 text-center flex flex-col items-center justify-center gap-3">
-                  <span className="text-3xl">🔍</span>
                   <h3 className="text-base font-bold text-white">No portals found</h3>
                   <p className="text-xs text-slate-400 max-w-sm">
                     No sites match your search query or category filter.
@@ -691,28 +674,25 @@ export default function Home() {
 
                       {/* Deskewed Inner Content for Perfect Text Legibility */}
                       <div className="skew-x-3 flex flex-col gap-2.5">
-                        {/* Header: Logo Icon, Name, Domain & Rating */}
+                        {/* Header: Name, Domain & Badge */}
                         <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-xl bg-[#120d2b] border border-purple-500/30 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all shadow-inner">
-                              {site.icon}
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-1">
+                              <h3 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-purple-300 transition-colors line-clamp-1">
+                                {site.name}
+                              </h3>
+                              <span className="text-emerald-400 text-[10px]" title="Verified Site">✓</span>
                             </div>
-                            <div className="flex flex-col">
-                              <div className="flex items-center gap-1">
-                                <h3 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-purple-300 transition-colors line-clamp-1">
-                                  {site.name}
-                                </h3>
-                                <span className="text-emerald-400 text-[10px]" title="Verified Site">✓</span>
-                              </div>
-                              <span className="text-[10px] font-mono text-purple-300/80">
-                                {site.domain}
-                              </span>
-                            </div>
+                            <span className="text-[10px] font-mono text-purple-300/80">
+                              {site.domain}
+                            </span>
                           </div>
 
-                          <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded-md border border-amber-400/20 whitespace-nowrap shrink-0">
-                            {site.rating}
-                          </span>
+                          {site.badge && (
+                            <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 whitespace-nowrap shrink-0">
+                              {site.badge}
+                            </span>
+                          )}
                         </div>
 
                         {/* Minimal Feature Tags */}
