@@ -46,14 +46,14 @@ export default function AdminDashboard() {
     },
   ]);
 
-  // Passcode Auth
+  // Passcode Auth with New Secret Password
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode === "admin123" || passcode === "admin") {
+    if (passcode === "shobhitallsitehubadmin8115591448") {
       setIsAuthenticated(true);
       setAuthError("");
     } else {
-      setAuthError("Incorrect passcode (Default: admin123)");
+      setAuthError("Incorrect Administrator Secret Passcode");
     }
   };
 
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     if (!newSiteName.trim() || !newSiteUrl.trim()) return;
 
-    const domain = newSiteUrl.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+    const domain = getCleanDomain(newSiteUrl);
 
     const newSite: SiteItem = {
       id: `site-${Date.now()}`,
@@ -99,7 +99,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     if (!editingSite || !editName.trim() || !editUrl.trim()) return;
 
-    const domain = editUrl.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+    const domain = getCleanDomain(editUrl);
     const updated = sitesList.map((s) => {
       if (s.id === editingSite.id) {
         return {
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
 
   // Approve Request
   const handleApproveRequest = (req: typeof userRequests[0]) => {
-    const domain = req.url.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+    const domain = getCleanDomain(req.url);
     const approvedSite: SiteItem = {
       id: `approved-${Date.now()}`,
       name: req.name,
@@ -146,17 +146,17 @@ export default function AdminDashboard() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#05050c] text-white flex items-center justify-center p-4 selection:bg-purple-600">
-        <div className="w-full max-w-sm bg-[#090717] border border-purple-500/30 rounded-3xl p-6 sm:p-8 flex flex-col gap-5 shadow-[0_0_40px_rgba(168,85,247,0.3)]">
+        <div className="w-full max-w-md bg-[#090717] border border-purple-500/30 rounded-3xl p-6 sm:p-8 flex flex-col gap-5 shadow-[0_0_40px_rgba(168,85,247,0.3)]">
           <div className="text-center flex flex-col items-center gap-1.5">
-            <h1 className="text-xl font-extrabold tracking-tight">Admin Control</h1>
-            <p className="text-xs text-slate-400">Enter passcode to manage directory</p>
+            <h1 className="text-xl font-extrabold tracking-tight">Secret Admin Access</h1>
+            <p className="text-xs text-slate-400">Enter master administrator key</p>
           </div>
 
           <form onSubmit={handleLogin} className="flex flex-col gap-3.5">
             <input
               type="password"
               required
-              placeholder="Passcode (Default: admin123)"
+              placeholder="Enter Master Secret Passcode"
               value={passcode}
               onChange={(e) => setPasscode(e.target.value)}
               className="w-full px-4 py-3 bg-[#120e2b] border border-slate-800 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none transition-all"
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
 
             <button
               type="submit"
-              className="purple-btn-primary py-3 rounded-xl text-white font-bold text-xs uppercase tracking-wider cursor-pointer"
+              className="purple-btn-primary py-3.5 rounded-xl text-white font-bold text-xs uppercase tracking-wider cursor-pointer shadow-lg"
             >
               Unlock Dashboard
             </button>
@@ -181,13 +181,14 @@ export default function AdminDashboard() {
     );
   }
 
-  // 2. Simple Admin Panel
+  // 2. Secret Admin Panel
   return (
     <div className="min-h-screen bg-[#05050c] text-white flex flex-col selection:bg-purple-600">
       {/* Sleek Top Header */}
       <header className="sticky top-0 z-50 glass-nav-dark px-4 sm:px-8 py-3.5 border-b border-purple-500/20 flex items-center justify-between">
-        <h1 className="font-extrabold text-sm sm:text-base tracking-tight text-white">
-          Admin Panel
+        <h1 className="font-extrabold text-sm sm:text-base tracking-tight text-white flex items-center gap-2">
+          <span>🛡️</span>
+          <span>Admin Portal (/adminvenom)</span>
         </h1>
 
         <div className="flex items-center gap-3">
@@ -208,7 +209,7 @@ export default function AdminDashboard() {
 
       {/* Main Content Container */}
       <main className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-8 flex flex-col gap-7">
-        {/* Simple Tab Buttons */}
+        {/* Tab Buttons */}
         <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
           <button
             onClick={() => setActiveTab("sites")}

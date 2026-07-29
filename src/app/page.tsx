@@ -174,14 +174,6 @@ export default function Home() {
                 )}
               </button>
             ))}
-
-            <Link
-              href="/admin"
-              className="px-3.5 py-1.5 rounded-full text-xs font-extrabold text-purple-300 hover:text-white bg-purple-950/50 hover:bg-purple-900/80 border border-purple-500/40 transition-all flex items-center gap-1 shadow-inner"
-            >
-              <span>🔐</span>
-              <span>Admin</span>
-            </Link>
           </nav>
 
           {/* Right Header Items: Search Bar, Live Counter Pill, Region */}
