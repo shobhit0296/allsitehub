@@ -110,7 +110,6 @@ export default function Home() {
       return (
         site.name.toLowerCase().includes(q) ||
         site.domain.toLowerCase().includes(q) ||
-        site.description.toLowerCase().includes(q) ||
         site.tags.some((t) => t.toLowerCase().includes(q))
       );
     });
