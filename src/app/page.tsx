@@ -725,19 +725,7 @@ export default function Home() {
                           ))}
                         </div>
 
-                        {/* Footer: Uptime & Launch Button */}
-                        <div className="pt-3.5 border-t border-slate-800/80 flex items-center justify-between text-xs sm:text-sm mt-1">
-                          <span className="text-emerald-400 font-extrabold flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                            {site.uptime} Online
-                          </span>
-
-                          <span className="text-purple-300 font-black group-hover:text-white group-hover:translate-x-1 transition-all flex items-center gap-1">
-                            <span>Open Portal</span>
-                            <span className="text-sm">↗</span>
-                          </span>
                         </div>
-                      </div>
                     </a>
                   ))}
                 </div>
