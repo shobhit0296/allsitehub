@@ -167,12 +167,12 @@ export default function AdminDashboard() {
       {/* Main Content Container */}
       <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
         {/* Simple Tab Buttons */}
-        <div className="flex items-center gap-2 border-b border-slate-800/80 pb-3">
+        <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
           <button
             onClick={() => setActiveTab("sites")}
-            className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+            className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-black tracking-wide transition-all cursor-pointer ${
               activeTab === "sites"
-                ? "bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.35)]"
+                ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] scale-105"
                 : "bg-[#090717] text-slate-400 hover:text-white"
             }`}
           >
@@ -181,9 +181,9 @@ export default function AdminDashboard() {
 
           <button
             onClick={() => setActiveTab("add")}
-            className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+            className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-black tracking-wide transition-all cursor-pointer ${
               activeTab === "add"
-                ? "bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.35)]"
+                ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] scale-105"
                 : "bg-[#090717] text-slate-400 hover:text-white"
             }`}
           >
@@ -192,9 +192,9 @@ export default function AdminDashboard() {
 
           <button
             onClick={() => setActiveTab("requests")}
-            className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+            className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-black tracking-wide transition-all cursor-pointer ${
               activeTab === "requests"
-                ? "bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.35)]"
+                ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] scale-105"
                 : "bg-[#090717] text-slate-400 hover:text-white"
             }`}
           >
@@ -204,27 +204,27 @@ export default function AdminDashboard() {
 
         {/* TAB 1: SITES LIST */}
         {activeTab === "sites" && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             <input
               type="text"
               value={adminSearch}
               onChange={(e) => setAdminSearch(e.target.value)}
               placeholder="Search portal name..."
-              className="w-full max-w-sm px-3.5 py-2 bg-[#090717] border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500"
+              className="w-full max-w-md px-4 py-3 bg-[#090717] border border-slate-800 focus:border-purple-500 rounded-2xl text-xs sm:text-sm text-white focus:outline-none shadow-inner"
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {sitesList
                 .filter((s) => s.name.toLowerCase().includes(adminSearch.toLowerCase()))
                 .map((site) => (
                   <div
                     key={site.id}
-                    className="p-3.5 rounded-2xl bg-[#090717] border border-purple-500/20 flex items-center justify-between gap-3 shadow-md hover:border-purple-500/50 transition-all"
+                    className="p-5 rounded-3xl bg-[#090717] border border-purple-500/30 flex items-center justify-between gap-4 shadow-lg hover:border-purple-500/60 transition-all"
                   >
-                    <div className="flex flex-col truncate">
-                      <span className="font-extrabold text-xs text-white truncate">{site.name}</span>
-                      <span className="text-[10px] text-purple-300 font-mono truncate">{site.domain}</span>
-                      <span className="text-[9px] font-semibold text-slate-400 mt-0.5">{site.category}</span>
+                    <div className="flex flex-col truncate gap-0.5">
+                      <span className="font-black text-sm sm:text-base text-white truncate">{site.name}</span>
+                      <span className="text-xs font-mono font-bold text-purple-300 truncate">{site.domain}</span>
+                      <span className="text-xs font-bold text-slate-400 mt-1 px-2 py-0.5 rounded-md bg-[#120e2e] w-max">{site.category}</span>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
@@ -232,14 +232,14 @@ export default function AdminDashboard() {
                         href={site.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs"
+                        className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-extrabold"
                         title="Visit Site"
                       >
                         Open ↗
                       </a>
                       <button
                         onClick={() => handleDeleteSite(site.id)}
-                        className="px-2.5 py-1 rounded-lg bg-rose-950/60 hover:bg-rose-900 border border-rose-500/30 text-rose-300 text-[10px] font-bold cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl bg-rose-950/70 hover:bg-rose-900 border border-rose-500/30 text-rose-300 text-xs font-extrabold cursor-pointer"
                       >
                         Delete
                       </button>

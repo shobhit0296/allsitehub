@@ -641,11 +641,11 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Cards Grid - Compact Rhombus-Shaped Clickable Cards */}
+              {/* Cards Grid - Large, Bold, Professional Cards */}
               {filteredSites.length === 0 ? (
-                <div className="p-10 rounded-3xl bg-[#090717]/80 border border-purple-500/20 text-center flex flex-col items-center justify-center gap-3">
-                  <h3 className="text-base font-bold text-white">No portals found</h3>
-                  <p className="text-xs text-slate-400 max-w-sm">
+                <div className="p-12 sm:p-16 rounded-3xl bg-[#090717]/80 border border-purple-500/20 text-center flex flex-col items-center justify-center gap-4">
+                  <h3 className="text-lg sm:text-xl font-bold text-white">No portals found</h3>
+                  <p className="text-sm text-slate-400 max-w-md">
                     No sites match your search query or category filter.
                   </p>
                   <button
@@ -653,69 +653,69 @@ export default function Home() {
                       setSearchQuery("");
                       setSelectedCategory("All");
                     }}
-                    className="mt-2 px-4 py-2 rounded-xl bg-purple-600/30 hover:bg-purple-600 text-white text-xs font-bold border border-purple-500/50"
+                    className="mt-2 px-6 py-3 rounded-2xl bg-purple-600/30 hover:bg-purple-600 text-white text-sm font-bold border border-purple-500/50 transition-all cursor-pointer"
                   >
                     Reset Filters
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
                   {filteredSites.map((site) => (
                     <a
                       key={site.id}
                       href={site.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group relative card-rhombus -skew-x-3 hover:-skew-x-1 bg-[#090717]/95 border border-purple-500/25 hover:border-purple-500/80 rounded-2xl p-3.5 flex flex-col justify-between gap-3 transition-all duration-300 hover:scale-105 active:scale-[0.98] shadow-lg hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] cursor-pointer overflow-hidden"
+                      className="group relative card-rhombus -skew-x-2 hover:skew-x-0 bg-[#090717]/95 border border-purple-500/30 hover:border-purple-500/80 rounded-3xl p-5 sm:p-6 flex flex-col justify-between gap-5 transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] shadow-xl hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] cursor-pointer overflow-hidden"
                     >
                       {/* Top Glowing Accent Line */}
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400 opacity-70 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400 opacity-75 group-hover:opacity-100 transition-opacity" />
 
-                      {/* Deskewed Inner Content for Perfect Text Legibility */}
-                      <div className="skew-x-3 flex flex-col gap-2.5">
+                      {/* Deskewed Inner Content */}
+                      <div className="skew-x-2 flex flex-col gap-4">
                         {/* Header: Name, Domain & Badge */}
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex flex-col">
-                            <div className="flex items-center gap-1">
-                              <h3 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-purple-300 transition-colors line-clamp-1">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-1.5">
+                              <h3 className="font-black text-white text-base sm:text-lg group-hover:text-purple-300 transition-colors line-clamp-1">
                                 {site.name}
                               </h3>
-                              <span className="text-emerald-400 text-[10px]" title="Verified Site">✓</span>
+                              <span className="text-emerald-400 text-xs sm:text-sm" title="Verified Site">✓</span>
                             </div>
-                            <span className="text-[10px] font-mono text-purple-300/80">
+                            <span className="text-xs sm:text-sm font-mono font-bold text-purple-300/90">
                               {site.domain}
                             </span>
                           </div>
 
                           {site.badge && (
-                            <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 whitespace-nowrap shrink-0">
+                            <span className="text-xs font-black uppercase px-2.5 py-1 rounded-lg bg-purple-500/25 text-purple-200 border border-purple-500/40 whitespace-nowrap shrink-0 shadow-sm">
                               {site.badge}
                             </span>
                           )}
                         </div>
 
                         {/* Minimal Feature Tags */}
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1.5">
                           {site.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="text-[9px] font-semibold px-2 py-0.5 rounded-md bg-[#130f30] text-purple-200 border border-purple-500/20"
+                              className="text-xs font-bold px-2.5 py-1 rounded-lg bg-[#140f36] text-purple-200 border border-purple-500/30"
                             >
                               #{tag}
                             </span>
                           ))}
                         </div>
 
-                        {/* Footer: Uptime & Click-Anywhere Launch Cue */}
-                        <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] mt-1">
-                          <span className="text-emerald-400 font-bold flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        {/* Footer: Uptime & Launch Button */}
+                        <div className="pt-3.5 border-t border-slate-800/80 flex items-center justify-between text-xs sm:text-sm mt-1">
+                          <span className="text-emerald-400 font-extrabold flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                             {site.uptime} Online
                           </span>
 
-                          <span className="text-purple-400 font-extrabold group-hover:text-purple-200 group-hover:translate-x-1 transition-all flex items-center gap-1">
-                            <span>Open</span>
-                            <span className="text-xs">↗</span>
+                          <span className="text-purple-300 font-black group-hover:text-white group-hover:translate-x-1 transition-all flex items-center gap-1">
+                            <span>Open Portal</span>
+                            <span className="text-sm">↗</span>
                           </span>
                         </div>
                       </div>
