@@ -440,10 +440,11 @@ export default function Home() {
                   else if (item === "Contact") setShowModal("contact");
                   else if (item === "About") setShowModal("about");
                 }}
-                className={`px-4 lg:px-6 py-2 rounded-full text-xs lg:text-sm font-semibold transition-all relative cursor-pointer ${activeNav === item
+                className={`px-3 lg:px-5 py-2 rounded-full text-xs lg:text-sm font-semibold transition-all relative cursor-pointer ${
+                  activeNav === item
                     ? "text-white bg-purple-600/30 border border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.3)] scale-105"
                     : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
+                }`}
               >
                 {item}
                 {activeNav === item && (
@@ -451,6 +452,14 @@ export default function Home() {
                 )}
               </button>
             ))}
+
+            <Link
+              href="/admin"
+              className="px-3.5 py-1.5 rounded-full text-xs font-extrabold text-purple-300 hover:text-white bg-purple-950/50 hover:bg-purple-900/80 border border-purple-500/40 transition-all flex items-center gap-1 shadow-inner"
+            >
+              <span>🔐</span>
+              <span>Admin</span>
+            </Link>
           </nav>
 
           {/* Right Header Items: Search Bar, Live Counter Pill, Region */}
