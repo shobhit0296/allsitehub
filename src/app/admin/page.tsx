@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { STREAMING_SITES, SiteItem } from "../page";
+import { STREAMING_SITES, SiteItem } from "../data";
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
