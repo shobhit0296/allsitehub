@@ -290,13 +290,28 @@ export default function Home() {
 
           {/* Left Column Text Content - ULTRA CLEAR & HIGH CONTRAST */}
           <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-7 relative z-20 text-center lg:text-left items-center lg:items-start">
+            
+            {/* MOBILE TOP DIRECT JUMP BUTTON - Appears at top on Phone/Tablet */}
+            <div className="w-full lg:hidden pt-1">
+              <button
+                onClick={() => {
+                  const el = document.getElementById("browse-directory");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white text-sm font-black tracking-wider uppercase flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(168,85,247,0.6)] border border-purple-400/50 animate-pulse active:scale-95 cursor-pointer"
+              >
+                <span>⚡ JUMP TO WEBSITE CATEGORIES</span>
+                <span className="text-base font-bold animate-bounce">↓</span>
+              </button>
+            </div>
+
             {/* Top Glowing Purple Badge */}
-            <div className="w-fit flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-950/80 border border-purple-500/50 text-purple-300 text-xs sm:text-sm font-bold tracking-wider uppercase shadow-[0_0_20px_rgba(168,85,247,0.3)] animate-pulse backdrop-blur-md">
+            <div className="w-fit flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-950/80 border border-purple-500/50 text-purple-300 text-xs sm:text-sm font-bold tracking-wider uppercase shadow-[0_0_20px_rgba(168,85,247,0.3)] backdrop-blur-md">
               <span className="text-purple-400 text-sm sm:text-base">⚡</span>
               THE ULTIMATE STREAMING HUB
             </div>
 
-            {/* Main Headline - High contrast with drop-shadow */}
+            {/* Main Headline */}
             <div className="flex flex-col gap-1 w-full drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]">
               <h1 className="text-3xl xs:text-4xl sm:text-6xl xl:text-7xl 2xl:text-8xl font-black tracking-tight text-white uppercase leading-[1.1]">
                 STREAM{" "}
@@ -328,8 +343,8 @@ export default function Home() {
                 className="purple-btn-primary w-full sm:w-auto px-9 py-4 rounded-full text-white font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_0_25px_rgba(168,85,247,0.4)]"
               >
                 <span>🚀</span>
-                <span>EXPLORE NOW</span>
-                <span className="text-lg">→</span>
+                <span>EXPLORE CATEGORIES</span>
+                <span className="text-lg">↓</span>
               </button>
 
               <button
@@ -912,6 +927,20 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* FLOATING STICKY MOBILE JUMP TO CATEGORIES BUTTON */}
+      <div className="fixed bottom-5 right-5 z-40 lg:hidden">
+        <button
+          onClick={() => {
+            const el = document.getElementById("browse-directory");
+            if (el) el.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="px-4.5 py-3 rounded-full bg-purple-600/90 hover:bg-purple-600 text-white font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 border border-purple-400/60 shadow-[0_0_25px_rgba(168,85,247,0.7)] backdrop-blur-md active:scale-95 cursor-pointer"
+        >
+          <span>📁 Categories</span>
+          <span className="text-sm font-bold animate-bounce">↓</span>
+        </button>
+      </div>
     </div>
   );
 }
