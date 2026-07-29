@@ -9,6 +9,17 @@ export interface SiteItem {
   badge?: string;
 }
 
+export const getCleanDomain = (rawUrl: string): string => {
+  if (!rawUrl) return "";
+  return rawUrl.trim().replace(/^https?:\/\//, "").replace(/\/.*$/, "").replace(/^www\./, "");
+};
+
+export const getFaviconUrl = (domainOrUrl: string): string => {
+  const domain = getCleanDomain(domainOrUrl);
+  if (!domain) return "";
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+};
+
 export const STREAMING_SITES: SiteItem[] = [
   {
     id: "flixtor",

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { STREAMING_SITES, SiteItem } from "./data";
+import { STREAMING_SITES, SiteItem, getCleanDomain, getFaviconUrl } from "./data";
 
 export default function Home() {
   const [activeNav, setActiveNav] = useState("Home");
@@ -676,14 +676,19 @@ export default function Home() {
                         {/* Header: Logo Image, Name, Domain & Badge */}
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="w-11 h-11 rounded-2xl bg-[#130e30] border border-purple-500/30 flex items-center justify-center p-1.5 shrink-0 group-hover:scale-110 group-hover:border-purple-500/80 transition-all shadow-md">
+                            <div className="w-12 h-12 rounded-2xl bg-[#130e30] border border-purple-500/40 flex items-center justify-center p-1.5 shrink-0 group-hover:scale-110 group-hover:border-purple-500/80 transition-all shadow-md overflow-hidden">
                               {/* Auto-Fetched High-Res Website Logo */}
                               <img
-                                src={`https://www.google.com/s2/favicons?domain=${site.domain}&sz=128`}
+                                src={getFaviconUrl(site.domain || site.url)}
                                 alt={site.name}
-                                className="w-full h-full object-contain rounded-lg"
+                                className="w-full h-full object-contain rounded-xl"
                                 onError={(e) => {
-                                  (e.target as HTMLElement).style.display = "none";
+                                  const target = e.target as HTMLImageElement;
+                                  const domain = getCleanDomain(site.domain || site.url);
+                                  if (!target.dataset.triedFallback) {
+                                    target.dataset.triedFallback = "true";
+                                    target.src = `https://icon.horse/icon/${domain}`;
+                                  }
                                 }}
                               />
                             </div>
