@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+:root {
+  --background: #05050c;
+  --foreground: #f3f4f6;
+  --accent-purple: #a855f7;
+  --accent-purple-glow: rgba(168, 85, 247, 0.4);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-brush: 'Caveat', cursive, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: #05050c;
+  color: #f3f4f6;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  background-image: 
+    radial-gradient(ellipse at 10% 20%, rgba(147, 51, 234, 0.15) 0%, transparent 45%),
+    radial-gradient(ellipse at 90% 10%, rgba(168, 85, 247, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 90%, rgba(79, 70, 229, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(10, 10, 24, 0.95) 0%, #040409 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.brush-font {
+  font-family: 'Caveat', cursive;
+  letter-spacing: 0.05em;
+}
+
+/* 3D Perspective Container */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* GPU Hardware Layer Promotion for Buttery-Smooth 120fps Performance */
+.tilt-card-3d,
+a,
+button,
+input,
+select,
+.card-rhombus {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Ultra-Smooth Rhombus Card Hover Effect with Light Sheen Sweep */
+.card-rhombus {
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.3s ease, 
+              background-color 0.3s ease;
+  will-change: transform, box-shadow;
+}
+
+.card-rhombus::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.card-rhombus:hover::after {
+  left: 150%;
+}
+
+.tilt-card-3d {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.tilt-card-3d:hover {
+  transform: translateY(-5px) scale(1.02) translateZ(0);
+  box-shadow: 0 20px 40px -10px rgba(168, 85, 247, 0.35), 0 0 20px rgba(168, 85, 247, 0.25);
+  border-color: rgba(192, 132, 252, 0.6) !important;
+}
+
+.purple-btn-primary {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(126, 34, 206, 0.6));
+  border: 1px solid rgba(192, 132, 252, 0.6);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.45);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.purple-btn-primary:hover {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.6), rgba(126, 34, 206, 0.9));
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.8), 0 4px 20px rgba(168, 85, 247, 0.4);
+  border-color: rgba(216, 180, 254, 0.95);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.purple-btn-primary:active {
+  transform: translateY(0px) scale(0.97);
+}
+
+/* Floating animation keyframes */
+@keyframes float3D {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+.animate-float-3d {
+  animation: float3D 6s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #05050c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.35);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.7);
+}
