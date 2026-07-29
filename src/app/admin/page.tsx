@@ -267,16 +267,32 @@ export default function AdminDashboard() {
                     key={site.id}
                     className="p-6 rounded-3xl bg-[#090717] border border-purple-500/30 flex flex-col justify-between gap-4 shadow-xl hover:border-purple-500/70 transition-all hover:scale-[1.02]"
                   >
-                    <div className="flex flex-col gap-1.5">
+                    <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between gap-2">
-                        <h3 className="font-black text-base sm:text-lg text-white truncate">{site.name}</h3>
-                        <span className="text-xs font-bold text-slate-400 px-2.5 py-1 rounded-lg bg-[#140f36] border border-purple-500/20">
+                        <div className="flex items-center gap-3 overflow-hidden">
+                          <div className="w-10 h-10 rounded-xl bg-[#130e30] border border-purple-500/30 flex items-center justify-center p-1 shrink-0 shadow-inner">
+                            <img
+                              src={`https://www.google.com/s2/favicons?domain=${site.domain}&sz=128`}
+                              alt={site.name}
+                              className="w-full h-full object-contain rounded-lg"
+                              onError={(e) => {
+                                (e.target as HTMLElement).style.display = "none";
+                              }}
+                            />
+                          </div>
+                          <div className="flex flex-col truncate">
+                            <h3 className="font-black text-base sm:text-lg text-white truncate">{site.name}</h3>
+                            <span className="text-xs font-mono font-bold text-purple-300 truncate">
+                              {site.domain}
+                            </span>
+                          </div>
+                        </div>
+
+                        <span className="text-xs font-bold text-slate-400 px-2.5 py-1 rounded-lg bg-[#140f36] border border-purple-500/20 shrink-0">
                           {site.category}
                         </span>
                       </div>
-                      <span className="text-xs sm:text-sm font-mono font-bold text-purple-300 truncate">
-                        {site.domain}
-                      </span>
+
                       <div className="flex flex-wrap gap-1 mt-1">
                         {site.tags.map((tag) => (
                           <span

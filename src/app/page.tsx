@@ -673,18 +673,32 @@ export default function Home() {
 
                       {/* Deskewed Inner Content */}
                       <div className="skew-x-2 flex flex-col gap-4">
-                        {/* Header: Name, Domain & Badge */}
+                        {/* Header: Logo Image, Name, Domain & Badge */}
                         <div className="flex items-start justify-between gap-3">
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-1.5">
-                              <h3 className="font-black text-white text-base sm:text-lg group-hover:text-purple-300 transition-colors line-clamp-1">
-                                {site.name}
-                              </h3>
-                              <span className="text-emerald-400 text-xs sm:text-sm" title="Verified Site">✓</span>
+                          <div className="flex items-center gap-3 overflow-hidden">
+                            <div className="w-11 h-11 rounded-2xl bg-[#130e30] border border-purple-500/30 flex items-center justify-center p-1.5 shrink-0 group-hover:scale-110 group-hover:border-purple-500/80 transition-all shadow-md">
+                              {/* Auto-Fetched High-Res Website Logo */}
+                              <img
+                                src={`https://www.google.com/s2/favicons?domain=${site.domain}&sz=128`}
+                                alt={site.name}
+                                className="w-full h-full object-contain rounded-lg"
+                                onError={(e) => {
+                                  (e.target as HTMLElement).style.display = "none";
+                                }}
+                              />
                             </div>
-                            <span className="text-xs sm:text-sm font-mono font-bold text-purple-300/90">
-                              {site.domain}
-                            </span>
+
+                            <div className="flex flex-col gap-0.5 truncate">
+                              <div className="flex items-center gap-1.5">
+                                <h3 className="font-black text-white text-base sm:text-lg group-hover:text-purple-300 transition-colors line-clamp-1">
+                                  {site.name}
+                                </h3>
+                                <span className="text-emerald-400 text-xs sm:text-sm" title="Verified Site">✓</span>
+                              </div>
+                              <span className="text-xs sm:text-sm font-mono font-bold text-purple-300/90 truncate">
+                                {site.domain}
+                              </span>
+                            </div>
                           </div>
 
                           {site.badge && (
