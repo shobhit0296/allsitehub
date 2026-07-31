@@ -1,8 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { STREAMING_SITES, SiteItem, getCleanDomain, getFaviconUrl } from "../data";
+import {
+  STREAMING_SITES,
+  SiteItem,
+  getCleanDomain,
+  getFaviconUrl,
+  BannerConfig,
+  DEFAULT_BANNER_CONFIG,
+  getBannerConfig,
+  saveBannerConfig,
+} from "../data";
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,8 +20,17 @@ export default function AdminDashboard() {
 
   // Directory & Requests State
   const [sitesList, setSitesList] = useState<SiteItem[]>(STREAMING_SITES);
-  const [activeTab, setActiveTab] = useState<"sites" | "add" | "requests">("sites");
+  const [activeTab, setActiveTab] = useState<"sites" | "add" | "requests" | "banner">("sites");
   const [adminSearch, setAdminSearch] = useState("");
+
+  // Banner Customization State
+  const [bannerConfig, setBannerConfigState] = useState<BannerConfig>(DEFAULT_BANNER_CONFIG);
+  const [bannerSuccess, setBannerSuccess] = useState(false);
+
+  useEffect(() => {
+    setBannerConfigState(getBannerConfig());
+  }, []);
+
 
   // Big Add Site Form State
   const [newSiteName, setNewSiteName] = useState("");
@@ -142,6 +160,24 @@ export default function AdminDashboard() {
     setUserRequests(userRequests.filter((r) => r.id !== req.id));
   };
 
+  // Banner Customization Handlers
+  const handleSaveBanner = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveBannerConfig(bannerConfig);
+    setBannerSuccess(true);
+    setTimeout(() => setBannerSuccess(false), 2500);
+  };
+
+  const handleResetBanner = () => {
+    if (confirm("Are you sure you want to reset the home page banner to defaults?")) {
+      setBannerConfigState(DEFAULT_BANNER_CONFIG);
+      saveBannerConfig(DEFAULT_BANNER_CONFIG);
+      setBannerSuccess(true);
+      setTimeout(() => setBannerSuccess(false), 2500);
+    }
+  };
+
+
   // 1. Passcode Screen
   if (!isAuthenticated) {
     return (
@@ -258,7 +294,19 @@ export default function AdminDashboard() {
           >
             Requests ({userRequests.length})
           </button>
+
+          <button
+            onClick={() => setActiveTab("banner")}
+            className={`px-6 py-3.5 rounded-2xl text-sm sm:text-base font-black tracking-wide transition-all cursor-pointer ${
+              activeTab === "banner"
+                ? "bg-purple-600 text-white shadow-[0_0_22px_rgba(168,85,247,0.45)] scale-105"
+                : "bg-[#090717] text-slate-400 hover:text-white"
+            }`}
+          >
+            Banner Customization 🎨
+          </button>
         </div>
+
 
         {/* TAB 1: ENLARGED PORTALS LIST WITH EDIT OPTION */}
         {activeTab === "sites" && (
@@ -482,6 +530,311 @@ export default function AdminDashboard() {
             )}
           </div>
         )}
+
+        {/* TAB 4: BANNER CUSTOMIZATION PANEL */}
+        {activeTab === "banner" && (
+          <div className="flex flex-col gap-8">
+            <div className="bg-[#090717]/95 border border-purple-500/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 shadow-[0_0_50px_rgba(168,85,247,0.35)]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
+                    <span>🎨</span>
+                    <span>Home Page Banner Customization</span>
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                    Update headlines, subtext, badge tags, CTA button links (with website URLs & # feature hashes), and hero visual.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleResetBanner}
+                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
+                  >
+                    Reset Defaults 🔄
+                  </button>
+                </div>
+              </div>
+
+              {bannerSuccess && (
+                <div className="p-4 rounded-2xl bg-emerald-950/90 border border-emerald-500/50 text-center text-emerald-300 font-bold text-sm shadow-lg animate-in fade-in duration-200">
+                  ✓ Home Page Banner updated successfully! Changes are live.
+                </div>
+              )}
+
+              <form onSubmit={handleSaveBanner} className="flex flex-col gap-6">
+                {/* Section 1: Badge Settings */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
+                      Badge Icon
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={bannerConfig.badgeIcon}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, badgeIcon: e.target.value })}
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
+                      placeholder="e.g. ⚡"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
+                      Badge Label Text
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={bannerConfig.badgeText}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, badgeText: e.target.value })}
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
+                      placeholder="e.g. THE ULTIMATE STREAMING HUB"
+                    />
+                  </div>
+                </div>
+
+                {/* Section 2: Headline Lines */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
+                      Line 1 Prefix Text
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={bannerConfig.line1Text}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, line1Text: e.target.value })}
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-bold"
+                      placeholder="e.g. STREAM"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-extrabold text-purple-300 block mb-1.5 uppercase tracking-wider">
+                      Line 1 Brush Highlight Keyword
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={bannerConfig.line1Highlight}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, line1Highlight: e.target.value })}
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-purple-500/50 focus:border-purple-400 rounded-xl text-purple-300 text-sm focus:outline-none font-bold"
+                      placeholder="e.g. Limitless."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
+                      Line 2 Prefix Text
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={bannerConfig.line2Text}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, line2Text: e.target.value })}
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-bold"
+                      placeholder="e.g. DISCOVER"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-extrabold text-purple-300 block mb-1.5 uppercase tracking-wider">
+                      Line 2 Brush Highlight Keyword
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={bannerConfig.line2Highlight}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, line2Highlight: e.target.value })}
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-purple-500/50 focus:border-purple-400 rounded-xl text-purple-300 text-sm focus:outline-none font-bold"
+                      placeholder="e.g. Endless."
+                    />
+                  </div>
+                </div>
+
+                {/* Section 3: Subtitle / Description */}
+                <div>
+                  <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
+                    Banner Subtext / Description
+                  </label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={bannerConfig.description}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, description: e.target.value })}
+                    className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
+                    placeholder="Enter hero banner subtitle text..."
+                  />
+                </div>
+
+                {/* Section 4: Primary CTA Button (Text & Feature Hash URL) */}
+                <div className="p-4 rounded-2xl bg-[#0e0a24] border border-purple-500/30 flex flex-col gap-4">
+                  <span className="text-xs font-extrabold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>🚀</span> Primary Action Button (Target URL / Feature Hash)
+                  </span>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-slate-300 block mb-1">Button Label</label>
+                      <input
+                        type="text"
+                        required
+                        value={bannerConfig.primaryBtnText}
+                        onChange={(e) => setBannerConfigState({ ...bannerConfig, primaryBtnText: e.target.value })}
+                        className="w-full px-4 py-3 bg-[#161138] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
+                        placeholder="e.g. EXPLORE CATEGORIES"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-bold text-slate-300 block mb-1">
+                        Target URL / Feature Link (with #)
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={bannerConfig.primaryBtnUrl}
+                        onChange={(e) => setBannerConfigState({ ...bannerConfig, primaryBtnUrl: e.target.value })}
+                        className="w-full px-4 py-3 bg-[#161138] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-mono text-xs"
+                        placeholder="e.g. #browse-directory OR https://example.com/app#feature"
+                      />
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        💡 Enter <code className="text-purple-300">#browse-directory</code> or any website URL with feature hash like <code className="text-purple-300">https://mywebsite.com#feature</code>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 5: Secondary CTA Button (Text & Feature Hash URL) */}
+                <div className="p-4 rounded-2xl bg-[#0e0a24] border border-purple-500/30 flex flex-col gap-4">
+                  <span className="text-xs font-extrabold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>💬</span> Secondary Action Button (Target URL / Feature Hash)
+                  </span>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-slate-300 block mb-1">Button Label</label>
+                      <input
+                        type="text"
+                        required
+                        value={bannerConfig.secondaryBtnText}
+                        onChange={(e) => setBannerConfigState({ ...bannerConfig, secondaryBtnText: e.target.value })}
+                        className="w-full px-4 py-3 bg-[#161138] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
+                        placeholder="e.g. REQUEST A SITE"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-bold text-slate-300 block mb-1">
+                        Target URL / Feature Link (with #)
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={bannerConfig.secondaryBtnUrl}
+                        onChange={(e) => setBannerConfigState({ ...bannerConfig, secondaryBtnUrl: e.target.value })}
+                        className="w-full px-4 py-3 bg-[#161138] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-mono text-xs"
+                        placeholder="e.g. request-modal OR https://example.com/site#feature-key"
+                      />
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        💡 Enter <code className="text-purple-300">request-modal</code> or direct URL followed by hash <code className="text-purple-300">https://website.com/page#feature</code>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 6: Image & Card Badge */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
+                      Hero Image URL / Path
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={bannerConfig.heroImageUrl}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, heroImageUrl: e.target.value })}
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-mono text-xs"
+                      placeholder="e.g. /hero_banner.png or https://..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
+                      Hero Card Footer Status Label
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={bannerConfig.cardBadgeText}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, cardBadgeText: e.target.value })}
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
+                      placeholder="e.g. Live Stream Hub"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="purple-btn-primary py-4 rounded-2xl text-white font-black text-sm uppercase tracking-wider cursor-pointer shadow-xl mt-2"
+                >
+                  Save Banner Changes 💾
+                </button>
+              </form>
+            </div>
+
+            {/* Real-time Banner Preview Box */}
+            <div className="bg-[#090717]/95 border border-purple-500/30 rounded-3xl p-6 sm:p-8 flex flex-col gap-4 shadow-xl">
+              <h3 className="text-sm font-extrabold text-purple-300 uppercase tracking-wider flex items-center gap-2">
+                <span>👁️</span> Real-time Home Banner Preview
+              </h3>
+              
+              <div className="p-6 rounded-2xl bg-[#05050c] border border-slate-800 flex flex-col lg:flex-row items-center justify-between gap-6">
+                <div className="flex flex-col gap-3 max-w-xl text-center lg:text-left items-center lg:items-start">
+                  <div className="px-3 py-1 rounded-full bg-purple-950/80 border border-purple-500/40 text-purple-300 text-xs font-bold tracking-wider uppercase">
+                    <span>{bannerConfig.badgeIcon}</span> {bannerConfig.badgeText}
+                  </div>
+                  
+                  <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight leading-tight">
+                    {bannerConfig.line1Text}{" "}
+                    <span className="brush-font text-purple-400 italic font-bold ml-1">{bannerConfig.line1Highlight}</span>
+                    <br />
+                    {bannerConfig.line2Text}{" "}
+                    <span className="brush-font text-purple-400 italic font-bold ml-1">{bannerConfig.line2Highlight}</span>
+                  </h2>
+
+                  <p className="text-xs sm:text-sm text-slate-300 line-clamp-3">{bannerConfig.description}</p>
+
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    <span className="px-4 py-2 rounded-full bg-purple-600 text-white font-bold text-xs uppercase shadow-md">
+                      🚀 {bannerConfig.primaryBtnText}
+                    </span>
+                    <span className="px-4 py-2 rounded-full bg-slate-900 border border-slate-700 text-slate-300 font-bold text-xs uppercase">
+                      💬 {bannerConfig.secondaryBtnText}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="relative w-48 aspect-[4/3] rounded-2xl overflow-hidden border border-purple-500/40 shrink-0 bg-[#090716]">
+                  <img
+                    src={bannerConfig.heroImageUrl}
+                    alt="Hero Preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/hero_banner.png";
+                    }}
+                  />
+                  <div className="absolute bottom-2 left-2 right-2 p-1.5 rounded-lg bg-black/80 text-[10px] text-white font-bold text-center border border-purple-500/30">
+                    {bannerConfig.cardBadgeText}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
       </main>
 
       {/* EDIT PORTAL MODAL OVERLAY */}

@@ -9,6 +9,64 @@ export interface SiteItem {
   badge?: string;
 }
 
+export interface BannerConfig {
+  badgeIcon: string;
+  badgeText: string;
+  line1Text: string;
+  line1Highlight: string;
+  line2Text: string;
+  line2Highlight: string;
+  description: string;
+  primaryBtnText: string;
+  primaryBtnUrl: string;
+  secondaryBtnText: string;
+  secondaryBtnUrl: string;
+  heroImageUrl: string;
+  cardBadgeText: string;
+}
+
+export const DEFAULT_BANNER_CONFIG: BannerConfig = {
+  badgeIcon: "⚡",
+  badgeText: "THE ULTIMATE STREAMING HUB",
+  line1Text: "STREAM",
+  line1Highlight: "Limitless.",
+  line2Text: "DISCOVER",
+  line2Highlight: "Endless.",
+  description: "One search. Infinite entertainment. Explore the best movies, anime, series, sports and more — all in one place. No sign-up. No nonsense.",
+  primaryBtnText: "EXPLORE CATEGORIES",
+  primaryBtnUrl: "#browse-directory",
+  secondaryBtnText: "REQUEST A SITE",
+  secondaryBtnUrl: "request-modal",
+  heroImageUrl: "/hero_banner.png",
+  cardBadgeText: "Live Stream Hub",
+};
+
+export const BANNER_STORAGE_KEY = "allsitehub_banner_config";
+
+export const getBannerConfig = (): BannerConfig => {
+  if (typeof window === "undefined") return DEFAULT_BANNER_CONFIG;
+  try {
+    const saved = localStorage.getItem(BANNER_STORAGE_KEY);
+    if (saved) {
+      return { ...DEFAULT_BANNER_CONFIG, ...JSON.parse(saved) };
+    }
+  } catch (e) {
+    console.error("Failed to parse banner config", e);
+  }
+  return DEFAULT_BANNER_CONFIG;
+};
+
+export const saveBannerConfig = (config: BannerConfig): void => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(BANNER_STORAGE_KEY, JSON.stringify(config));
+    window.dispatchEvent(new Event("allsitehub_banner_updated"));
+  } catch (e) {
+    console.error("Failed to save banner config", e);
+  }
+};
+
+
 export const getCleanDomain = (rawUrl: string): string => {
   if (!rawUrl) return "";
   return rawUrl.trim().replace(/^https?:\/\//, "").replace(/\/.*$/, "").replace(/^www\./, "");

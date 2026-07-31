@@ -4,7 +4,15 @@ import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { STREAMING_SITES, SiteItem, getCleanDomain, getFaviconUrl } from "./data";
+import {
+  STREAMING_SITES,
+  SiteItem,
+  getCleanDomain,
+  getFaviconUrl,
+  BannerConfig,
+  DEFAULT_BANNER_CONFIG,
+  getBannerConfig,
+} from "./data";
 
 export default function Home() {
   const [activeNav, setActiveNav] = useState("Home");
@@ -12,6 +20,20 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedRegion, setSelectedRegion] = useState("US");
   const [showModal, setShowModal] = useState<string | null>(null);
+
+  // Dynamic Home Banner State
+  const [bannerConfig, setBannerConfig] = useState<BannerConfig>(DEFAULT_BANNER_CONFIG);
+
+  useEffect(() => {
+    setBannerConfig(getBannerConfig());
+    const handleUpdate = () => setBannerConfig(getBannerConfig());
+    window.addEventListener("allsitehub_banner_updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener("allsitehub_banner_updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, []);
 
   // Mobile Menu Drawer State
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -21,33 +43,8 @@ export default function Home() {
   const [siteCount, setSiteCount] = useState(0);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // 3D Parallax Tilt State
+  // 3D Parallax Mouse Tilt State (Clean hover without scroll blur)
   const [tiltStyle, setTiltStyle] = useState({ rotateX: 0, rotateY: 0 });
-
-  // Scroll Parallax State
-  const [scrollY, setScrollY] = useState(0);
-
-  // Lightweight Throttled Scroll Parallax Handler (120FPS smooth)
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setScrollY(window.scrollY);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Scroll Parallax calculations for 3D picture depth
-  const heroParallaxY = Math.min(scrollY * 0.3, 160);
-  const heroParallaxRotateX = tiltStyle.rotateX + Math.min(scrollY * 0.04, 12);
-  const heroDepthBlur = Math.min(scrollY * 0.012, 5);
-  const heroScale = 1 + Math.min(scrollY * 0.0003, 0.05);
 
   // Form states for Request Site Modal
   const [reqSiteName, setReqSiteName] = useState("");
@@ -57,6 +54,7 @@ export default function Home() {
   const [reqRegion, setReqRegion] = useState("US");
   const [payMethod, setPayMethod] = useState<"free" | "upi" | "crypto" | "paypal">("free");
   const [reqSuccess, setReqSuccess] = useState(false);
+
 
   // Smooth count-up animation on mount to exact STREAMING_SITES.length
   useEffect(() => {
@@ -95,7 +93,31 @@ export default function Home() {
     setTiltStyle({ rotateX: 0, rotateY: 0 });
   };
 
+  // Banner CTA Click Handler (Supports local # element anchors, modal triggers, & full website URLs with # feature hash)
+  const handleBannerCtaClick = (url: string) => {
+    if (!url) return;
+    const targetUrl = url.trim();
+    if (targetUrl === "request-modal") {
+      setShowModal("request");
+      return;
+    }
+    if (targetUrl.startsWith("#")) {
+      const elementId = targetUrl.replace("#", "");
+      const el = document.getElementById(elementId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+      return;
+    }
+    if (targetUrl.startsWith("http://") || targetUrl.startsWith("https://") || targetUrl.startsWith("//")) {
+      window.open(targetUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+    window.location.href = targetUrl;
+  };
+
   // Copy site URL helper
+
   const handleCopyLink = (site: SiteItem) => {
     navigator.clipboard.writeText(site.url);
     setCopiedId(site.id);
@@ -286,107 +308,87 @@ export default function Home() {
       {/* MAIN CONTAINER - EXPANDED TO ULTRA WIDE 1700px */}
       <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 xl:px-12 py-6 sm:py-12 flex flex-col gap-8 sm:gap-14">
 
-        {/* HERO SECTION WITH RESPONSIVE BREAKPOINTS & 3D SCROLL PARALLAX */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-center relative perspective-1000">
+        {/* HERO SECTION WITH DYNAMIC BANNER & CLEAN CRISP VISUAL (3D BLUR SCROLL REMOVED) */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-center relative">
 
-          {/* Left Column Text Content - ULTRA CLEAR & HIGH CONTRAST */}
+          {/* Left Column Text Content - ULTRA CLEAR & DYNAMIC */}
           <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-7 relative z-20 text-center lg:text-left items-center lg:items-start">
             
             {/* MOBILE TOP DIRECT JUMP BUTTON - Appears at top on Phone/Tablet */}
             <div className="w-full lg:hidden pt-1">
               <button
-                onClick={() => {
-                  const el = document.getElementById("browse-directory");
-                  if (el) el.scrollIntoView({ behavior: "smooth" });
-                }}
+                onClick={() => handleBannerCtaClick(bannerConfig.primaryBtnUrl || "#browse-directory")}
                 className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white text-sm font-black tracking-wider uppercase flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(168,85,247,0.6)] border border-purple-400/50 animate-pulse active:scale-95 cursor-pointer"
               >
-                <span>⚡ JUMP TO WEBSITE CATEGORIES</span>
+                <span>⚡ {bannerConfig.primaryBtnText || "JUMP TO WEBSITE CATEGORIES"}</span>
                 <span className="text-base font-bold animate-bounce">↓</span>
               </button>
             </div>
 
             {/* Top Glowing Purple Badge */}
             <div className="w-fit flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-950/80 border border-purple-500/50 text-purple-300 text-xs sm:text-sm font-bold tracking-wider uppercase shadow-[0_0_20px_rgba(168,85,247,0.3)] backdrop-blur-md">
-              <span className="text-purple-400 text-sm sm:text-base">⚡</span>
-              THE ULTIMATE STREAMING HUB
+              <span className="text-purple-400 text-sm sm:text-base">{bannerConfig.badgeIcon || "⚡"}</span>
+              {bannerConfig.badgeText || "THE ULTIMATE STREAMING HUB"}
             </div>
 
             {/* Main Headline */}
             <div className="flex flex-col gap-1 w-full drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]">
               <h1 className="text-3xl xs:text-4xl sm:text-6xl xl:text-7xl 2xl:text-8xl font-black tracking-tight text-white uppercase leading-[1.1]">
-                STREAM{" "}
+                {bannerConfig.line1Text}{" "}
                 <span className="brush-font text-purple-400 font-bold tracking-wider italic text-4xl xs:text-5xl sm:text-7xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-[0_0_35px_rgba(168,85,247,0.9)]">
-                  Limitless.
+                  {bannerConfig.line1Highlight}
                 </span>
               </h1>
               <h1 className="text-3xl xs:text-4xl sm:text-6xl xl:text-7xl 2xl:text-8xl font-black tracking-tight text-white uppercase leading-[1.1]">
-                DISCOVER{" "}
+                {bannerConfig.line2Text}{" "}
                 <span className="brush-font text-purple-400 font-bold tracking-wider italic text-4xl xs:text-5xl sm:text-7xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-[0_0_35px_rgba(168,85,247,0.9)]">
-                  Endless.
+                  {bannerConfig.line2Highlight}
                 </span>
               </h1>
             </div>
 
             {/* Subtext */}
             <p className="text-sm sm:text-base lg:text-xl text-slate-200 font-medium max-w-2xl leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
-              One search. Infinite entertainment. Explore the best movies, anime, series, sports and more — all in one place. No sign-up. No nonsense.{" "}
-              <span className="text-purple-400 font-bold text-shadow-purple">Just endless vibes.</span>
+              {bannerConfig.description}
             </p>
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 w-full sm:w-auto pt-2">
               <button
-                onClick={() => {
-                  const el = document.getElementById("browse-directory");
-                  if (el) el.scrollIntoView({ behavior: "smooth" });
-                }}
+                onClick={() => handleBannerCtaClick(bannerConfig.primaryBtnUrl)}
                 className="purple-btn-primary w-full sm:w-auto px-9 py-4 rounded-full text-white font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_0_25px_rgba(168,85,247,0.4)]"
               >
                 <span>🚀</span>
-                <span>EXPLORE CATEGORIES</span>
+                <span>{bannerConfig.primaryBtnText}</span>
                 <span className="text-lg">↓</span>
               </button>
 
               <button
-                onClick={() => setShowModal("request")}
+                onClick={() => handleBannerCtaClick(bannerConfig.secondaryBtnUrl)}
                 className="w-full sm:w-auto px-7 py-4 rounded-full bg-[#0d091e]/90 hover:bg-[#15102e] border border-slate-800 hover:border-purple-500/40 text-slate-300 hover:text-white font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-lg hover:scale-105"
               >
                 <span>💬</span>
-                <span>REQUEST A SITE</span>
+                <span>{bannerConfig.secondaryBtnText}</span>
               </button>
             </div>
           </div>
 
-          {/* Right Column Character 3D Dynamic Parallax Picture Card */}
-          <div
-            className="lg:col-span-5 relative flex justify-center items-center perspective-1000 mt-4 lg:mt-0 z-10"
-            style={{
-              transform: `translateY(${heroParallaxY}px)`,
-              transition: "transform 0.1s linear",
-            }}
-          >
-            {/* Ambient Lighting Aura with Dynamic Depth Blur */}
-            <div
-              className="absolute inset-0 bg-gradient-to-r from-purple-600/40 via-indigo-600/30 to-purple-900/40 rounded-3xl blur-3xl -z-10 transition-all duration-300"
-              style={{
-                filter: `blur(${16 + heroDepthBlur * 2}px)`,
-                opacity: Math.max(0.3, 1 - scrollY * 0.002),
-              }}
-            />
+          {/* Right Column Character Card - Sharp, Crisp, 3D Blur Scroll Removed */}
+          <div className="lg:col-span-5 relative flex justify-center items-center mt-4 lg:mt-0 z-10">
+            {/* Ambient Lighting Aura */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/40 via-indigo-600/30 to-purple-900/40 rounded-3xl blur-3xl -z-10" />
 
             <div
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               style={{
-                transform: `rotateX(${heroParallaxRotateX}deg) rotateY(${tiltStyle.rotateY}deg) scale(${heroScale})`,
-                filter: `blur(${heroDepthBlur}px)`,
-                transition: "transform 0.15s ease-out, filter 0.2s ease-out",
+                transform: `rotateX(${tiltStyle.rotateX}deg) rotateY(${tiltStyle.rotateY}deg)`,
+                transition: "transform 0.15s ease-out",
               }}
-              className="relative w-full max-w-md xl:max-w-lg aspect-[4/3] rounded-3xl overflow-hidden border border-purple-500/50 shadow-[0_0_60px_rgba(168,85,247,0.4)] bg-[#090716] preserve-3d cursor-pointer"
+              className="relative w-full max-w-md xl:max-w-lg aspect-[4/3] rounded-3xl overflow-hidden border border-purple-500/50 shadow-[0_0_60px_rgba(168,85,247,0.4)] bg-[#090716] cursor-pointer"
             >
               <Image
-                src="/hero_banner.png"
+                src={bannerConfig.heroImageUrl || "/hero_banner.png"}
                 alt="Allsitehub Character Visual"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -396,10 +398,12 @@ export default function Home() {
 
               <div className="absolute inset-0 bg-gradient-to-t from-[#05050c] via-transparent to-transparent opacity-60" />
 
-              <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-3.5 sm:p-4 rounded-2xl bg-black/80 backdrop-blur-md border border-purple-500/40 flex items-center justify-between translate-z-10 shadow-2xl">
+              <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-3.5 sm:p-4 rounded-2xl bg-black/80 backdrop-blur-md border border-purple-500/40 flex items-center justify-between shadow-2xl">
                 <div className="flex items-center gap-2 sm:gap-2.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-purple-400 animate-ping" />
-                  <span className="text-xs sm:text-sm font-extrabold text-white tracking-wide">Live Stream Hub</span>
+                  <span className="text-xs sm:text-sm font-extrabold text-white tracking-wide">
+                    {bannerConfig.cardBadgeText || "Live Stream Hub"}
+                  </span>
                 </div>
                 <span className="text-xs sm:text-sm text-purple-300 font-mono font-bold bg-purple-950/80 px-3 py-1 rounded-full border border-purple-500/30">
                   ⚡ {siteCount} Sites
@@ -409,6 +413,7 @@ export default function Home() {
           </div>
 
         </section>
+
 
         {/* 4 STATS CARDS ROW WITH ULTRA-WIDE FIT */}
         <section className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 perspective-1000">
