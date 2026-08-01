@@ -693,13 +693,21 @@ export default function Home() {
                 })}
               </div>
 
-              {/* Directory Active Category & Results Header + Square View Toggle */}
-              <div className="flex flex-wrap items-center justify-between gap-3 px-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400 font-semibold">Showing:</span>
-                  <span className="text-xs font-bold text-purple-300 px-3 py-1 rounded-full bg-purple-950/60 border border-purple-500/30">
-                    {selectedCategory} ({filteredSites.length})
-                  </span>
+              {/* Category Header with Vertical Purple Bar (Exact Screenshot Style) */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-1 pb-1">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-3">
+                    <span className="w-1.5 h-6 bg-purple-500 rounded-full shadow-[0_0_12px_#a855f7]" />
+                    <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                      <span>{selectedCategory === "All" ? "All Categories" : selectedCategory}</span>
+                    </h2>
+                    <span className="text-xs font-mono font-bold bg-[#140e36] text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/30">
+                      {filteredSites.length}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 font-medium pl-4.5">
+                    Verified streaming and web portals directory.
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -733,7 +741,7 @@ export default function Home() {
                           ? "bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)] scale-[1.03]"
                           : "text-slate-400 hover:text-white hover:bg-white/5"
                       }`}
-                      title="Compact List Row View"
+                      title="Compact List View"
                     >
                       <span className="text-xs font-black">☰</span>
                       <span>List View</span>
@@ -760,53 +768,43 @@ export default function Home() {
                   </button>
                 </div>
               ) : viewMode === "grid" ? (
-                /* SQUARE CARD GRID VIEW */
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5">
+                /* EXACT SQUARE CARD GRID VIEW (MATCHING USER SCREENSHOT) */
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3.5 sm:gap-4">
                   {filteredSites.map((site) => (
                     <a
                       key={site.id}
                       href={site.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group card-square relative bg-gradient-to-b from-[#0e0a24]/90 via-[#0a071b]/95 to-[#060412]/98 border border-purple-500/30 hover:border-purple-400/90 rounded-3xl p-4 sm:p-5 aspect-square flex flex-col justify-between items-center text-center transition-all duration-300 hover:-translate-y-2 hover:scale-[1.03] active:scale-[0.98] shadow-lg hover:shadow-[0_0_35px_rgba(168,85,247,0.45)] cursor-pointer overflow-hidden backdrop-blur-md"
+                      className="group card-square relative bg-[#0b0918]/95 hover:bg-[#120e29] border border-purple-500/20 hover:border-purple-400/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 aspect-square flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] shadow-md hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] cursor-pointer overflow-hidden backdrop-blur-md"
                     >
-                      {/* Ambient Glow Aura behind card on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/0 via-indigo-500/0 to-purple-400/0 group-hover:from-purple-600/15 group-hover:via-indigo-500/10 group-hover:to-purple-400/20 transition-all duration-500 pointer-events-none rounded-3xl" />
-
-                      {/* Top Line Accent */}
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-400 to-emerald-400 opacity-60 group-hover:opacity-100 transition-opacity" />
-
-                      {/* Top Badges / Domain */}
-                      <div className="w-full flex items-center justify-between gap-1 z-10">
-                        <span className="text-[10px] font-mono font-bold text-purple-300/80 bg-purple-950/60 px-2 py-0.5 rounded-full border border-purple-500/20 truncate max-w-[75%]">
-                          {site.domain}
-                        </span>
-
+                      {/* Top-Left Floating Status Badge (Exact Screenshot Style) */}
+                      <div className="absolute top-2.5 left-2.5 z-20">
                         {site.isTrusted ? (
-                          <span className="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-sm shrink-0" title="Trusted Portal">
-                            🛡️
+                          <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider shadow-sm">
+                            TRUSTED
                           </span>
                         ) : site.isFeatured ? (
-                          <span className="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-sm shrink-0" title="Featured Portal">
-                            ⭐
+                          <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-950/90 text-amber-400 border border-amber-500/40 uppercase tracking-wider shadow-sm">
+                            FEATURED
                           </span>
                         ) : site.isNew ? (
-                          <span className="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-rose-950/80 text-rose-300 border border-rose-500/40 shadow-sm shrink-0" title="New Addition">
-                            🔥
+                          <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-950/90 text-blue-400 border border-blue-500/40 uppercase tracking-wider shadow-sm">
+                            NEW
                           </span>
                         ) : site.badge ? (
-                          <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded-md bg-purple-950/80 text-purple-200 border border-purple-500/40 shadow-sm shrink-0">
+                          <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-purple-950/90 text-purple-300 border border-purple-500/40 uppercase tracking-wider shadow-sm">
                             {site.badge}
                           </span>
                         ) : null}
                       </div>
 
-                      {/* Center Square Shape Icon Container */}
-                      <div className="sq-icon-btn w-13 h-13 sm:w-16 sm:h-16 p-2.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 my-auto shadow-xl">
+                      {/* Center Glowing Square Icon Container */}
+                      <div className="sq-icon-btn w-12 h-12 sm:w-14 sm:h-14 p-2.5 rounded-2xl bg-[#140e33] border border-purple-500/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 shadow-md my-auto">
                         <img
                           src={getFaviconUrl(site.domain || site.url)}
                           alt={site.name}
-                          className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
+                          className="w-full h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             const domain = getCleanDomain(site.domain || site.url);
@@ -818,22 +816,22 @@ export default function Home() {
                         />
                       </div>
 
-                      {/* Bottom Name & Visit Action */}
-                      <div className="w-full flex flex-col items-center gap-1.5 z-10">
-                        <h3 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-purple-300 transition-colors truncate w-full">
+                      {/* Bottom Site Name & Domain URL */}
+                      <div className="w-full flex flex-col items-center gap-0.5 mt-auto z-10">
+                        <h3 className="font-black text-white text-xs sm:text-sm tracking-wider uppercase group-hover:text-purple-300 transition-colors truncate w-full">
                           {site.name}
                         </h3>
 
-                        <div className="w-full py-1.5 px-2.5 rounded-xl bg-purple-950/40 border border-purple-500/20 group-hover:bg-purple-600 group-hover:border-purple-400 group-hover:text-white text-purple-300 text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase flex items-center justify-center gap-1 transition-all duration-300 shadow-sm">
-                          <span>Visit</span>
-                          <span className="text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">↗</span>
-                        </div>
+                        <span className="text-[10px] sm:text-[11px] font-mono text-slate-400 group-hover:text-slate-300 flex items-center justify-center gap-1 truncate w-full">
+                          <span className="text-[9px] opacity-70">🌐</span>
+                          <span className="truncate">{site.domain}</span>
+                        </span>
                       </div>
                     </a>
                   ))}
                 </div>
               ) : (
-                /* LIST VIEW MODE (ROW CARDS WITH SQUARE ICON CONTAINER) */
+                /* LIST VIEW MODE */
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
                   {filteredSites.map((site) => (
                     <a
@@ -888,7 +886,7 @@ export default function Home() {
                           </span>
                         )}
                         {site.isNew && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-rose-950/80 text-rose-300 border border-rose-500/40 shadow-sm whitespace-nowrap">
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-950/80 text-blue-300 border border-blue-500/40 shadow-sm whitespace-nowrap">
                             🔥 New
                           </span>
                         )}
