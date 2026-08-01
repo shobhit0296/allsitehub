@@ -390,11 +390,11 @@ export default function AdminDashboard() {
                     <div className="flex flex-col gap-2">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-3 overflow-hidden">
-                          <div className="w-10 h-10 rounded-xl bg-[#130e30] border border-purple-500/30 flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                          <div className="sq-icon-btn w-11 h-11 p-2 flex items-center justify-center shrink-0">
                             <img
                               src={getFaviconUrl(site.domain || site.url)}
                               alt={site.name}
-                              className="w-full h-full object-contain"
+                              className="w-full h-full object-contain drop-shadow-sm"
                             />
                           </div>
                           <div className="flex flex-col truncate">

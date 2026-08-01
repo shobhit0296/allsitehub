@@ -22,6 +22,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedRegion, setSelectedRegion] = useState("US");
   const [showModal, setShowModal] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Dynamic Sites List State
   const [sitesList, setSitesList] = useState<SiteItem[]>(STREAMING_SITES);
@@ -692,8 +693,8 @@ export default function Home() {
                 })}
               </div>
 
-              {/* Directory Active Category & Results Header */}
-              <div className="flex items-center justify-between px-1">
+              {/* Directory Active Category & Results Header + Square View Toggle */}
+              <div className="flex flex-wrap items-center justify-between gap-3 px-1">
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-slate-400 font-semibold">Showing:</span>
                   <span className="text-xs font-bold text-purple-300 px-3 py-1 rounded-full bg-purple-950/60 border border-purple-500/30">
@@ -701,14 +702,47 @@ export default function Home() {
                   </span>
                 </div>
 
-                {searchQuery && (
-                  <span className="text-xs text-slate-400">
-                    Found <strong className="text-white">{filteredSites.length}</strong> matches for &quot;{searchQuery}&quot;
-                  </span>
-                )}
+                <div className="flex items-center gap-3">
+                  {searchQuery && (
+                    <span className="text-xs text-slate-400 hidden sm:inline">
+                      Found <strong className="text-white">{filteredSites.length}</strong> matches
+                    </span>
+                  )}
+
+                  {/* Square View Layout Toggle Switch */}
+                  <div className="flex items-center gap-1 bg-[#0c091e] border border-purple-500/30 p-1 rounded-2xl shadow-inner">
+                    <button
+                      onClick={() => setViewMode("grid")}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                        viewMode === "grid"
+                          ? "bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)] scale-[1.03]"
+                          : "text-slate-400 hover:text-white hover:bg-white/5"
+                      }`}
+                      title="Square Card Grid View"
+                    >
+                      <span className="w-3.5 h-3.5 border-2 border-current rounded-md flex items-center justify-center font-mono text-[9px] font-black">
+                        ⊞
+                      </span>
+                      <span>Square Grid</span>
+                    </button>
+
+                    <button
+                      onClick={() => setViewMode("list")}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                        viewMode === "list"
+                          ? "bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)] scale-[1.03]"
+                          : "text-slate-400 hover:text-white hover:bg-white/5"
+                      }`}
+                      title="Compact List Row View"
+                    >
+                      <span className="text-xs font-black">☰</span>
+                      <span>List View</span>
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              {/* Small Rhombus-Shaped Cards Grid */}
+              {/* Directory Sites Rendering: Square Grid or List View */}
               {filteredSites.length === 0 ? (
                 <div className="p-12 sm:p-16 rounded-3xl bg-[#090717]/80 border border-purple-500/20 text-center flex flex-col items-center justify-center gap-4">
                   <h3 className="text-lg sm:text-xl font-bold text-white">No portals found</h3>
@@ -725,7 +759,81 @@ export default function Home() {
                     Reset Filters
                   </button>
                 </div>
+              ) : viewMode === "grid" ? (
+                /* SQUARE CARD GRID VIEW */
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5">
+                  {filteredSites.map((site) => (
+                    <a
+                      key={site.id}
+                      href={site.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group card-square relative bg-gradient-to-b from-[#0e0a24]/90 via-[#0a071b]/95 to-[#060412]/98 border border-purple-500/30 hover:border-purple-400/90 rounded-3xl p-4 sm:p-5 aspect-square flex flex-col justify-between items-center text-center transition-all duration-300 hover:-translate-y-2 hover:scale-[1.03] active:scale-[0.98] shadow-lg hover:shadow-[0_0_35px_rgba(168,85,247,0.45)] cursor-pointer overflow-hidden backdrop-blur-md"
+                    >
+                      {/* Ambient Glow Aura behind card on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/0 via-indigo-500/0 to-purple-400/0 group-hover:from-purple-600/15 group-hover:via-indigo-500/10 group-hover:to-purple-400/20 transition-all duration-500 pointer-events-none rounded-3xl" />
+
+                      {/* Top Line Accent */}
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-400 to-emerald-400 opacity-60 group-hover:opacity-100 transition-opacity" />
+
+                      {/* Top Badges / Domain */}
+                      <div className="w-full flex items-center justify-between gap-1 z-10">
+                        <span className="text-[10px] font-mono font-bold text-purple-300/80 bg-purple-950/60 px-2 py-0.5 rounded-full border border-purple-500/20 truncate max-w-[75%]">
+                          {site.domain}
+                        </span>
+
+                        {site.isTrusted ? (
+                          <span className="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-sm shrink-0" title="Trusted Portal">
+                            🛡️
+                          </span>
+                        ) : site.isFeatured ? (
+                          <span className="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-sm shrink-0" title="Featured Portal">
+                            ⭐
+                          </span>
+                        ) : site.isNew ? (
+                          <span className="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-rose-950/80 text-rose-300 border border-rose-500/40 shadow-sm shrink-0" title="New Addition">
+                            🔥
+                          </span>
+                        ) : site.badge ? (
+                          <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded-md bg-purple-950/80 text-purple-200 border border-purple-500/40 shadow-sm shrink-0">
+                            {site.badge}
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {/* Center Square Shape Icon Container */}
+                      <div className="sq-icon-btn w-13 h-13 sm:w-16 sm:h-16 p-2.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 my-auto shadow-xl">
+                        <img
+                          src={getFaviconUrl(site.domain || site.url)}
+                          alt={site.name}
+                          className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            const domain = getCleanDomain(site.domain || site.url);
+                            if (!target.dataset.triedFallback) {
+                              target.dataset.triedFallback = "true";
+                              target.src = `https://icon.horse/icon/${domain}`;
+                            }
+                          }}
+                        />
+                      </div>
+
+                      {/* Bottom Name & Visit Action */}
+                      <div className="w-full flex flex-col items-center gap-1.5 z-10">
+                        <h3 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-purple-300 transition-colors truncate w-full">
+                          {site.name}
+                        </h3>
+
+                        <div className="w-full py-1.5 px-2.5 rounded-xl bg-purple-950/40 border border-purple-500/20 group-hover:bg-purple-600 group-hover:border-purple-400 group-hover:text-white text-purple-300 text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase flex items-center justify-center gap-1 transition-all duration-300 shadow-sm">
+                          <span>Visit</span>
+                          <span className="text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">↗</span>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
               ) : (
+                /* LIST VIEW MODE (ROW CARDS WITH SQUARE ICON CONTAINER) */
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
                   {filteredSites.map((site) => (
                     <a
@@ -733,19 +841,18 @@ export default function Home() {
                       href={site.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group relative bg-[#090717]/95 border border-purple-500/30 hover:border-purple-500/80 rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-[0_0_25px_rgba(168,85,247,0.3)] cursor-pointer overflow-hidden"
+                      className="group card-square relative bg-[#090717]/95 border border-purple-500/30 hover:border-purple-500/80 rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-[0_0_25px_rgba(168,85,247,0.3)] cursor-pointer overflow-hidden"
                     >
                       {/* Top Accent Line */}
                       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400 opacity-60 group-hover:opacity-100 transition-opacity" />
 
-                      {/* Left Info with Rhombus Icon */}
+                      {/* Left Info with Square Icon */}
                       <div className="flex items-center gap-3 min-w-0">
-                        {/* Rhombus (Diamond) Logo Container */}
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 rotate-45 rounded-xl bg-gradient-to-br from-purple-900/90 to-indigo-950 border border-purple-500/50 flex items-center justify-center shrink-0 shadow-md group-hover:border-purple-400 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all duration-300 overflow-hidden">
+                        <div className="sq-icon-btn w-11 h-11 sm:w-12 sm:h-12 p-2 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-300">
                           <img
                             src={getFaviconUrl(site.domain || site.url)}
                             alt={site.name}
-                            className="-rotate-45 w-5 h-5 sm:w-6 sm:h-6 object-contain"
+                            className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-300"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               const domain = getCleanDomain(site.domain || site.url);
@@ -768,7 +875,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Right Editable Marks Badges */}
+                      {/* Right Badges */}
                       <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
                         {site.isTrusted && (
                           <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-sm whitespace-nowrap">
