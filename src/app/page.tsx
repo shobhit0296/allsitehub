@@ -773,8 +773,8 @@ export default function Home() {
 
             {showModal === "request" && (
               <div className="flex flex-col gap-5 py-2 text-center items-center">
-                <p className="text-slate-200 text-sm sm:text-base font-semibold leading-relaxed">
-                  wanna add your website just join discord and message me
+                <p className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-300 to-indigo-200 text-base sm:text-lg font-black uppercase tracking-wider leading-snug drop-shadow-sm">
+                  WANNA ADD YOUR WEBSITE? JUST JOIN DISCORD AND MESSAGE ME
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full pt-2">
