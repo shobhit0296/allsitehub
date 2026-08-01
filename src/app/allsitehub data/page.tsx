@@ -1040,108 +1040,33 @@ export default function Home() {
                         </div>
 
                         {showModal === "request" && (
-                            <form onSubmit={handleRequestSubmit} className="flex flex-col gap-4">
-                                {reqSuccess ? (
-                                    <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-center text-emerald-300 text-xs sm:text-sm font-semibold">
-                                        ✓ Request submitted! Our team will index and list this site shortly.
-                                    </div>
-                                ) : (
-                                    <>
-                                        {/* 1. Site Name */}
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-300 block mb-1">
-                                                Site Name *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                required
-                                                placeholder="e.g. AnimeFlix HD"
-                                                value={reqSiteName}
-                                                onChange={(e) => setReqSiteName(e.target.value)}
-                                                className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                                            />
-                                        </div>
+                            <div className="flex flex-col gap-5 py-2 text-center items-center">
+                                <p className="text-slate-200 text-sm sm:text-base font-semibold leading-relaxed">
+                                    wanna add your website just join discord and message me
+                                </p>
 
-                                        {/* 2. Site URL */}
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-300 block mb-1">
-                                                Site URL *
-                                            </label>
-                                            <input
-                                                type="url"
-                                                required
-                                                placeholder="e.g. https://animeflix.to"
-                                                value={reqSiteUrl}
-                                                onChange={(e) => setReqSiteUrl(e.target.value)}
-                                                className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                                            />
-                                        </div>
+                                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full pt-2">
+                                    <a
+                                        href="https://discord.gg/QnTrWqwcJ"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-[#5865F2] hover:bg-[#404EED] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-95 cursor-pointer"
+                                    >
+                                        <span>💬 Join Discord</span>
+                                        <span className="text-xs">↗</span>
+                                    </a>
 
-                                        {/* 3. Category */}
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-300 block mb-1">Category *</label>
-                                            <select
-                                                value={reqSiteCategory}
-                                                onChange={(e) => setReqSiteCategory(e.target.value)}
-                                                className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                                            >
-                                                <option value="Movies">Movies & Cinema</option>
-                                                <option value="Anime">Anime & Manga</option>
-                                                <option value="Series">Series & Shows</option>
-                                                <option value="Sports">Live Sports</option>
-                                                <option value="AI & Tools">AI & Web Tools</option>
-                                                <option value="Live Streams">Live Streams 24/7</option>
-                                            </select>
-                                        </div>
-
-                                        {/* 4. Features & Tags */}
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-300 block mb-1">
-                                                Features / Tags
-                                            </label>
-                                            <input
-                                                type="text"
-                                                placeholder="e.g. 4K, Subbed, No-Ads, Fast Player"
-                                                value={reqFeatures}
-                                                onChange={(e) => setReqFeatures(e.target.value)}
-                                                className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                                            />
-                                        </div>
-
-                                        {/* 5. Regions */}
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-300 block mb-1">Target Region / Access *</label>
-                                            <select
-                                                value={reqRegion}
-                                                onChange={(e) => setReqRegion(e.target.value)}
-                                                className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                                            >
-                                                <option value="US">🌐 US (United States)</option>
-                                                <option value="UK">🌐 UK (United Kingdom)</option>
-                                                <option value="EU">🌐 EU (Europe)</option>
-                                                <option value="IN">🌐 IN (India)</option>
-                                                <option value="GLOBAL">🌐 Global (Worldwide Access)</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="flex justify-end gap-3 pt-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowModal(null)}
-                                                className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                className="purple-btn-primary px-5 py-2 rounded-xl text-white text-xs font-bold uppercase tracking-wider"
-                                            >
-                                                Submit Request 🚀
-                                            </button>
-                                        </div>
-                                    </>
-                                )}
-                            </form>
+                                    <a
+                                        href="https://t.me/+7SjX1pMek4c1ZDA1"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-[#229ED9] hover:bg-[#1d87b9] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-sky-500/25 active:scale-95 cursor-pointer"
+                                    >
+                                        <span>✈️ Join Telegram</span>
+                                        <span className="text-xs">↗</span>
+                                    </a>
+                                </div>
+                            </div>
                         )}
 
                         {showModal === "about" && (

@@ -772,244 +772,33 @@ export default function Home() {
             </div>
 
             {showModal === "request" && (
-              <form onSubmit={handleRequestSubmit} className="flex flex-col gap-4">
-                {/* DIRECT COMMUNITY REDIRECT BUTTONS */}
-                <div className="flex flex-col sm:flex-row items-center gap-2 p-2.5 rounded-2xl bg-purple-950/40 border border-purple-500/30">
+              <div className="flex flex-col gap-5 py-2 text-center items-center">
+                <p className="text-slate-200 text-sm sm:text-base font-semibold leading-relaxed">
+                  wanna add your website just join discord and message me
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full pt-2">
                   <a
                     href="https://discord.gg/QnTrWqwcJ"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl bg-[#5865F2] hover:bg-[#404EED] text-white text-xs font-black flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer"
+                    className="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-[#5865F2] hover:bg-[#404EED] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-95 cursor-pointer"
                   >
                     <span>💬 Join Discord</span>
                     <span className="text-xs">↗</span>
                   </a>
 
                   <a
-                    href="https://t.me/allsitehub"
+                    href="https://t.me/+7SjX1pMek4c1ZDA1"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-1/2 py-2.5 px-3 rounded-xl bg-[#229ED9] hover:bg-[#1d87b9] text-white text-xs font-black flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer"
+                    className="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-[#229ED9] hover:bg-[#1d87b9] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-sky-500/25 active:scale-95 cursor-pointer"
                   >
                     <span>✈️ Join Telegram</span>
                     <span className="text-xs">↗</span>
                   </a>
                 </div>
-
-                {reqSuccess ? (
-                  <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-center text-emerald-300 text-xs sm:text-sm font-semibold">
-                    ✓ Request submitted! Our team will index and list this site shortly.
-                  </div>
-                ) : (
-                  <>
-                    {/* 1. Site Name */}
-                    <div>
-                      <label className="text-xs font-semibold text-slate-300 block mb-1">
-                        Site Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. AnimeFlix HD"
-                        value={reqSiteName}
-                        onChange={(e) => setReqSiteName(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                      />
-                    </div>
-
-                    {/* 2. Site URL */}
-                    <div>
-                      <label className="text-xs font-semibold text-slate-300 block mb-1">
-                        Site URL *
-                      </label>
-                      <input
-                        type="url"
-                        required
-                        placeholder="e.g. https://animeflix.to"
-                        value={reqSiteUrl}
-                        onChange={(e) => setReqSiteUrl(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                      />
-                    </div>
-
-                    {/* 3. Category */}
-                    <div>
-                      <label className="text-xs font-semibold text-slate-300 block mb-1">Category *</label>
-                      <select
-                        value={reqSiteCategory}
-                        onChange={(e) => setReqSiteCategory(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                      >
-                        <option value="Movies">Movies & Cinema</option>
-                        <option value="Anime">Anime & Manga</option>
-                        <option value="Series">Series & Shows</option>
-                        <option value="Sports">Live Sports</option>
-                        <option value="AI & Tools">AI & Web Tools</option>
-                        <option value="Live Streams">Live Streams 24/7</option>
-                      </select>
-                    </div>
-
-                    {/* 4. Features & Tags */}
-                    <div>
-                      <label className="text-xs font-semibold text-slate-300 block mb-1">
-                        Features / Tags
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. 4K, Subbed, No-Ads, Fast Player"
-                        value={reqFeatures}
-                        onChange={(e) => setReqFeatures(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                      />
-                    </div>
-
-                    {/* 5. Regions */}
-                    <div>
-                      <label className="text-xs font-semibold text-slate-300 block mb-1">Target Region / Access *</label>
-                      <select
-                        value={reqRegion}
-                        onChange={(e) => setReqRegion(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs sm:text-sm focus:outline-none transition-all"
-                      >
-                        <option value="US">🌐 US (United States)</option>
-                        <option value="UK">🌐 UK (United Kingdom)</option>
-                        <option value="EU">🌐 EU (Europe)</option>
-                        <option value="IN">🌐 IN (India)</option>
-                        <option value="GLOBAL">🌐 Global (Worldwide Access)</option>
-                      </select>
-                    </div>
-
-                    {/* 6. LISTING PRIORITY & PAYMENT OPTIONS */}
-                    <div className="flex flex-col gap-2 pt-1 border-t border-slate-800/80">
-                      <label className="text-xs font-bold text-purple-300 flex items-center justify-between">
-                        <span>Listing Priority & Instant Verification</span>
-                        <span className="text-[10px] text-slate-400 font-mono">Optional</span>
-                      </label>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setPayMethod("free")}
-                          className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                            payMethod === "free"
-                              ? "bg-purple-600/30 text-white border-purple-500 shadow-md"
-                              : "bg-[#120e2b] text-slate-400 border-slate-800 hover:text-white"
-                          }`}
-                        >
-                          🆓 Free Queue
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setPayMethod("upi")}
-                          className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                            payMethod === "upi"
-                              ? "bg-purple-600 text-white border-purple-400 shadow-md"
-                              : "bg-[#120e2b] text-slate-400 border-slate-800 hover:text-white"
-                          }`}
-                        >
-                          ⚡ Fast UPI / QR
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setPayMethod("crypto")}
-                          className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                            payMethod === "crypto"
-                              ? "bg-purple-600 text-white border-purple-400 shadow-md"
-                              : "bg-[#120e2b] text-slate-400 border-slate-800 hover:text-white"
-                          }`}
-                        >
-                          🪙 Crypto (USDT)
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setPayMethod("paypal")}
-                          className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                            payMethod === "paypal"
-                              ? "bg-purple-600 text-white border-purple-400 shadow-md"
-                              : "bg-[#120e2b] text-slate-400 border-slate-800 hover:text-white"
-                          }`}
-                        >
-                          💳 Card / PayPal
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* PAYMENT DETAILS BOXES */}
-                    {payMethod === "upi" && (
-                      <div className="p-3.5 rounded-2xl bg-[#120d2f] border border-purple-500/40 flex flex-col gap-2">
-                        <div className="flex items-center justify-between text-xs font-bold">
-                          <span className="text-emerald-400">⚡ Instant Fast-Track Listing</span>
-                          <span className="text-purple-300 font-mono">0% Fee (Instant)</span>
-                        </div>
-                        <div className="p-2.5 rounded-xl bg-[#09061a] border border-slate-800 flex items-center justify-between gap-2">
-                          <span className="text-xs font-mono font-bold text-white select-all">shobhit@upi</span>
-                          <button
-                            type="button"
-                            onClick={() => navigator.clipboard.writeText("shobhit@upi")}
-                            className="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-bold cursor-pointer"
-                          >
-                            Copy UPI ID
-                          </button>
-                        </div>
-                        <p className="text-[10px] text-slate-400 font-medium">Pay via GPay, PhonePe, Paytm or BHIM for instant 10-minute priority approval.</p>
-                      </div>
-                    )}
-
-                    {payMethod === "crypto" && (
-                      <div className="p-3.5 rounded-2xl bg-[#120d2f] border border-purple-500/40 flex flex-col gap-2">
-                        <div className="flex items-center justify-between text-xs font-bold">
-                          <span className="text-emerald-400">🪙 Instant Crypto Payment</span>
-                          <span className="text-purple-300 font-mono">Zero Merchant Fee</span>
-                        </div>
-                        <div className="p-2.5 rounded-xl bg-[#09061a] border border-slate-800 flex items-center justify-between gap-2">
-                          <span className="text-[11px] font-mono text-white select-all truncate">0x71C765E87D781B8469C289456</span>
-                          <button
-                            type="button"
-                            onClick={() => navigator.clipboard.writeText("0x71C765E87D781B8469C289456")}
-                            className="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-bold shrink-0 cursor-pointer"
-                          >
-                            Copy Address
-                          </button>
-                        </div>
-                        <p className="text-[10px] text-slate-400 font-medium">Send USDT (TRC20 / BEP20) for instant global priority approval.</p>
-                      </div>
-                    )}
-
-                    {payMethod === "paypal" && (
-                      <div className="p-3.5 rounded-2xl bg-[#120d2f] border border-purple-500/40 flex flex-col gap-2">
-                        <div className="flex items-center justify-between text-xs font-bold">
-                          <span className="text-emerald-400">💳 Direct Payment Link</span>
-                          <span className="text-purple-300 font-mono">PayPal / Card</span>
-                        </div>
-                        <a
-                          href="https://paypal.me"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs text-center flex items-center justify-center gap-2 shadow-md cursor-pointer"
-                        >
-                          <span>Pay via PayPal / Card ↗</span>
-                        </a>
-                      </div>
-                    )}
-
-                    <div className="flex justify-end gap-3 pt-2">
-                      <button
-                        type="button"
-                        onClick={() => setShowModal(null)}
-                        className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="purple-btn-primary px-5 py-2 rounded-xl text-white text-xs font-bold uppercase tracking-wider"
-                      >
-                        Submit Request 🚀
-                      </button>
-                    </div>
-                  </>
-                )}
-              </form>
+              </div>
             )}
 
             {showModal === "about" && (
