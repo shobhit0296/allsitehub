@@ -1092,10 +1092,27 @@ export default function Home() {
                         )}
 
                         {showModal === "contact" && (
-                            <div className="text-xs sm:text-sm text-slate-300 flex flex-col gap-3">
-                                <p>Have questions or want to partner with us?</p>
-                                <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-500/30 text-purple-300 text-xs font-mono">
-                                    support@allsitehub.com
+                            <div className="text-xs sm:text-sm text-slate-300 flex flex-col gap-4 py-1">
+                                <p className="text-slate-200 font-medium">
+                                    Have questions, partnership inquiries, or need support? Reach out to us directly:
+                                </p>
+                                <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/60 to-indigo-950/60 border border-purple-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg">
+                                    <div className="flex items-center gap-2.5 overflow-hidden">
+                                        <span className="text-lg">✉️</span>
+                                        <a
+                                            href="mailto:allsitehubsupport@gmail.com"
+                                            className="text-purple-200 hover:text-white font-mono font-bold text-xs sm:text-sm tracking-wide transition-colors truncate"
+                                        >
+                                            allsitehubsupport@gmail.com
+                                        </a>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => navigator.clipboard.writeText("allsitehubsupport@gmail.com")}
+                                        className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-all shadow-md active:scale-95 shrink-0 cursor-pointer"
+                                    >
+                                        Copy Email
+                                    </button>
                                 </div>
                             </div>
                         )}
