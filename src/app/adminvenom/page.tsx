@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   STREAMING_SITES,
+  CATEGORIES,
   SiteItem,
   getCleanDomain,
   getFaviconUrl,
@@ -11,6 +12,8 @@ import {
   DEFAULT_BANNER_CONFIG,
   getBannerConfig,
   saveBannerConfig,
+  getSavedSites,
+  saveSitesToStorage,
 } from "../data";
 
 export default function AdminDashboard() {
@@ -23,6 +26,17 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<"sites" | "add" | "requests" | "banner">("sites");
   const [adminSearch, setAdminSearch] = useState("");
 
+  // Load saved sites on mount
+  useEffect(() => {
+    setSitesList(getSavedSites());
+  }, []);
+
+  // Helper to update sites & sync localStorage
+  const updateSites = (newSites: SiteItem[]) => {
+    setSitesList(newSites);
+    saveSitesToStorage(newSites);
+  };
+
   // Banner Customization State
   const [bannerConfig, setBannerConfigState] = useState<BannerConfig>(DEFAULT_BANNER_CONFIG);
   const [bannerSuccess, setBannerSuccess] = useState(false);
@@ -31,20 +45,27 @@ export default function AdminDashboard() {
     setBannerConfigState(getBannerConfig());
   }, []);
 
-
   // Big Add Site Form State
   const [newSiteName, setNewSiteName] = useState("");
   const [newSiteUrl, setNewSiteUrl] = useState("");
-  const [newSiteCategory, setNewSiteCategory] = useState("Movies");
+  const [newSiteCategory, setNewSiteCategory] = useState<string>(CATEGORIES[0]);
   const [newSiteTags, setNewSiteTags] = useState("");
+  const [newIsTrusted, setNewIsTrusted] = useState(false);
+  const [newIsFeatured, setNewIsFeatured] = useState(false);
+  const [newIsNew, setNewIsNew] = useState(false);
+  const [newBadge, setNewBadge] = useState("");
   const [formSuccess, setFormSuccess] = useState(false);
 
   // Edit Site State
   const [editingSite, setEditingSite] = useState<SiteItem | null>(null);
   const [editName, setEditName] = useState("");
   const [editUrl, setEditUrl] = useState("");
-  const [editCategory, setEditCategory] = useState("Movies");
+  const [editCategory, setEditCategory] = useState<string>(CATEGORIES[0]);
   const [editTags, setEditTags] = useState("");
+  const [editIsTrusted, setEditIsTrusted] = useState(false);
+  const [editIsFeatured, setEditIsFeatured] = useState(false);
+  const [editIsNew, setEditIsNew] = useState(false);
+  const [editBadge, setEditBadge] = useState("");
 
   // User Requests Queue
   const [userRequests, setUserRequests] = useState([
@@ -52,19 +73,19 @@ export default function AdminDashboard() {
       id: "req-1",
       name: "AniStream HD",
       url: "https://anistream.live",
-      category: "Anime",
+      category: "ANIME",
       tags: "4K, Dubbed",
     },
     {
       id: "req-2",
       name: "SportsLive 24",
       url: "https://sportslive24.com",
-      category: "Sports",
+      category: "LIVE TV & SPORTS",
       tags: "Football, HD",
     },
   ]);
 
-  // Passcode Auth with New Secret Password
+  // Passcode Auth with Secret Password
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (passcode === "shobhitallsitehubadmin8115591448") {
@@ -90,9 +111,13 @@ export default function AdminDashboard() {
       category: newSiteCategory,
       tags: newSiteTags ? newSiteTags.split(",").map((t) => t.trim()) : ["HD", "Fast"],
       uptime: "99.9%",
+      badge: newBadge.trim() || undefined,
+      isTrusted: newIsTrusted,
+      isFeatured: newIsFeatured,
+      isNew: newIsNew,
     };
 
-    setSitesList([newSite, ...sitesList]);
+    updateSites([newSite, ...sitesList]);
     setFormSuccess(true);
     setTimeout(() => {
       setFormSuccess(false);
@@ -100,6 +125,10 @@ export default function AdminDashboard() {
       setNewSiteName("");
       setNewSiteUrl("");
       setNewSiteTags("");
+      setNewIsTrusted(false);
+      setNewIsFeatured(false);
+      setNewIsNew(false);
+      setNewBadge("");
     }, 1200);
   };
 
@@ -110,6 +139,10 @@ export default function AdminDashboard() {
     setEditUrl(site.url);
     setEditCategory(site.category);
     setEditTags(site.tags.join(", "));
+    setEditIsTrusted(!!site.isTrusted);
+    setEditIsFeatured(!!site.isFeatured);
+    setEditIsNew(!!site.isNew);
+    setEditBadge(site.badge || "");
   };
 
   // Save Edit Site Changes
@@ -127,19 +160,23 @@ export default function AdminDashboard() {
           url: editUrl,
           category: editCategory,
           tags: editTags ? editTags.split(",").map((t) => t.trim()) : ["HD"],
+          badge: editBadge.trim() || undefined,
+          isTrusted: editIsTrusted,
+          isFeatured: editIsFeatured,
+          isNew: editIsNew,
         };
       }
       return s;
     });
 
-    setSitesList(updated);
+    updateSites(updated);
     setEditingSite(null);
   };
 
   // Delete Site
   const handleDeleteSite = (id: string) => {
     if (confirm("Are you sure you want to remove this portal?")) {
-      setSitesList(sitesList.filter((s) => s.id !== id));
+      updateSites(sitesList.filter((s) => s.id !== id));
     }
   };
 
@@ -154,9 +191,10 @@ export default function AdminDashboard() {
       category: req.category,
       tags: req.tags.split(",").map((t) => t.trim()),
       uptime: "99.9%",
+      isTrusted: true,
     };
 
-    setSitesList([approvedSite, ...sitesList]);
+    updateSites([approvedSite, ...sitesList]);
     setUserRequests(userRequests.filter((r) => r.id !== req.id));
   };
 
@@ -176,7 +214,6 @@ export default function AdminDashboard() {
       setTimeout(() => setBannerSuccess(false), 2500);
     }
   };
-
 
   // 1. Passcode Screen
   if (!isAuthenticated) {
@@ -247,106 +284,117 @@ export default function AdminDashboard() {
             href="/"
             className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs sm:text-sm font-bold transition-all"
           >
-            Live Site
+            Live Site ↗
           </Link>
           <button
             onClick={() => setIsAuthenticated(false)}
-            className="px-4 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900 border border-rose-500/30 text-rose-300 text-xs sm:text-sm font-bold transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 border border-rose-500/30 text-rose-300 text-xs sm:text-sm font-bold transition-all"
           >
-            Logout
+            Lock Dashboard 🔒
           </button>
         </div>
       </header>
 
-      {/* Main Content Container */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-8 flex flex-col gap-7">
-        {/* Tab Buttons */}
-        <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
+      {/* Main Content Area */}
+      <main className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+        
+        {/* Navigation Tabs Bar */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-slate-800/80">
           <button
             onClick={() => setActiveTab("sites")}
-            className={`px-6 py-3.5 rounded-2xl text-sm sm:text-base font-black tracking-wide transition-all cursor-pointer ${
+            className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
               activeTab === "sites"
-                ? "bg-purple-600 text-white shadow-[0_0_22px_rgba(168,85,247,0.45)] scale-105"
-                : "bg-[#090717] text-slate-400 hover:text-white"
+                ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                : "bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800"
             }`}
           >
-            Portals ({sitesList.length})
+            <span>📁 Live Directory</span>
+            <span className="px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 text-[10px] font-mono border border-purple-500/30">
+              {sitesList.length}
+            </span>
           </button>
 
           <button
             onClick={() => setActiveTab("add")}
-            className={`px-6 py-3.5 rounded-2xl text-sm sm:text-base font-black tracking-wide transition-all cursor-pointer ${
+            className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
               activeTab === "add"
-                ? "bg-purple-600 text-white shadow-[0_0_22px_rgba(168,85,247,0.45)] scale-105"
-                : "bg-[#090717] text-slate-400 hover:text-white"
+                ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                : "bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800"
             }`}
           >
-            Add Portal
+            <span>➕ Add New Portal</span>
           </button>
 
           <button
             onClick={() => setActiveTab("requests")}
-            className={`px-6 py-3.5 rounded-2xl text-sm sm:text-base font-black tracking-wide transition-all cursor-pointer ${
+            className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
               activeTab === "requests"
-                ? "bg-purple-600 text-white shadow-[0_0_22px_rgba(168,85,247,0.45)] scale-105"
-                : "bg-[#090717] text-slate-400 hover:text-white"
+                ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                : "bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800"
             }`}
           >
-            Requests ({userRequests.length})
+            <span>📥 Requests Inbox</span>
+            <span className="px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 text-[10px] font-mono border border-purple-500/30">
+              {userRequests.length}
+            </span>
           </button>
 
           <button
             onClick={() => setActiveTab("banner")}
-            className={`px-6 py-3.5 rounded-2xl text-sm sm:text-base font-black tracking-wide transition-all cursor-pointer ${
+            className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
               activeTab === "banner"
-                ? "bg-purple-600 text-white shadow-[0_0_22px_rgba(168,85,247,0.45)] scale-105"
-                : "bg-[#090717] text-slate-400 hover:text-white"
+                ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                : "bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800"
             }`}
           >
-            Banner Customization 🎨
+            <span>✨ Edit Home Banner</span>
           </button>
         </div>
 
-
-        {/* TAB 1: ENLARGED PORTALS LIST WITH EDIT OPTION */}
+        {/* TAB 1: SITES MANAGER */}
         {activeTab === "sites" && (
           <div className="flex flex-col gap-5">
-            <input
-              type="text"
-              value={adminSearch}
-              onChange={(e) => setAdminSearch(e.target.value)}
-              placeholder="Search portal name or domain..."
-              className="w-full max-w-md px-5 py-3.5 bg-[#090717] border border-slate-800 focus:border-purple-500 rounded-2xl text-sm text-white focus:outline-none shadow-inner"
-            />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <input
+                type="text"
+                placeholder="Filter sites by name, category or domain..."
+                value={adminSearch}
+                onChange={(e) => setAdminSearch(e.target.value)}
+                className="px-4 py-3 bg-[#090717] border border-slate-800 focus:border-purple-500 rounded-2xl text-xs sm:text-sm text-white focus:outline-none w-full sm:w-80"
+              />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <button
+                onClick={() => setActiveTab("add")}
+                className="purple-btn-primary px-5 py-3 rounded-2xl text-white text-xs font-black uppercase tracking-wider cursor-pointer shadow-lg shrink-0"
+              >
+                + Add Portal
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {sitesList
-                .filter(
-                  (s) =>
-                    s.name.toLowerCase().includes(adminSearch.toLowerCase()) ||
-                    s.domain.toLowerCase().includes(adminSearch.toLowerCase())
-                )
+                .filter((s) => {
+                  if (!adminSearch.trim()) return true;
+                  const q = adminSearch.toLowerCase();
+                  return (
+                    s.name.toLowerCase().includes(q) ||
+                    s.domain.toLowerCase().includes(q) ||
+                    s.category.toLowerCase().includes(q)
+                  );
+                })
                 .map((site) => (
                   <div
                     key={site.id}
-                    className="p-6 rounded-3xl bg-[#090717] border border-purple-500/30 flex flex-col justify-between gap-4 shadow-xl hover:border-purple-500/70 transition-all hover:scale-[1.02]"
+                    className="p-5 rounded-2xl bg-[#090717]/95 border border-slate-800 flex flex-col justify-between gap-4 shadow-lg hover:border-purple-500/50 transition-all"
                   >
                     <div className="flex flex-col gap-2">
-                      <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-3 overflow-hidden">
-                          <div className="w-11 h-11 rounded-2xl bg-[#130e30] border border-purple-500/40 flex items-center justify-center p-1 shrink-0 shadow-inner overflow-hidden">
+                          <div className="w-10 h-10 rounded-xl bg-[#130e30] border border-purple-500/30 flex items-center justify-center p-1 shrink-0 overflow-hidden">
                             <img
                               src={getFaviconUrl(site.domain || site.url)}
                               alt={site.name}
-                              className="w-full h-full object-contain rounded-xl"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                const domain = getCleanDomain(site.domain || site.url);
-                                if (!target.dataset.triedFallback) {
-                                  target.dataset.triedFallback = "true";
-                                  target.src = `https://icon.horse/icon/${domain}`;
-                                }
-                              }}
+                              className="w-full h-full object-contain"
                             />
                           </div>
                           <div className="flex flex-col truncate">
@@ -362,19 +410,32 @@ export default function AdminDashboard() {
                         </span>
                       </div>
 
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {site.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-900 text-purple-300 border border-purple-500/20"
-                          >
-                            #{tag}
+                      {/* Marks Badges */}
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {site.isTrusted && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">
+                            🛡️ Trusted
                           </span>
-                        ))}
+                        )}
+                        {site.isFeatured && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40">
+                            ⭐ Featured
+                          </span>
+                        )}
+                        {site.isNew && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40">
+                            🔥 New
+                          </span>
+                        )}
+                        {site.badge && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded bg-purple-950 text-purple-200 border border-purple-500/40">
+                            {site.badge}
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    {/* Action Buttons: Open, Edit, Delete */}
+                    {/* Action Buttons */}
                     <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
                       <a
                         href={site.url}
@@ -407,7 +468,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 2: BIG ELEVATED ADD PORTAL PANEL */}
+        {/* TAB 2: ADD PORTAL PANEL */}
         {activeTab === "add" && (
           <div className="max-w-2xl w-full bg-[#090717]/95 border border-purple-500/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 mx-auto shadow-[0_0_50px_rgba(168,85,247,0.35)] transition-all">
             <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
@@ -446,12 +507,11 @@ export default function AdminDashboard() {
                       onChange={(e) => setNewSiteCategory(e.target.value)}
                       className="w-full px-4 py-3.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none transition-all shadow-inner"
                     >
-                      <option value="Movies">Movies & Cinema</option>
-                      <option value="Anime">Anime & Manga</option>
-                      <option value="Series">Series & Shows</option>
-                      <option value="Sports">Live Sports</option>
-                      <option value="AI & Tools">AI & Web Tools</option>
-                      <option value="Live Streams">Live Streams 24/7</option>
+                      {CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -479,6 +539,53 @@ export default function AdminDashboard() {
                   />
                 </div>
 
+                {/* Editable Marks Checkboxes */}
+                <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
+                  <label className="text-xs font-bold text-purple-300">Editable Site Marks / Badges</label>
+                  <div className="flex flex-wrap items-center gap-4">
+                    <label className="flex items-center gap-2 text-xs text-white font-bold cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={newIsTrusted}
+                        onChange={(e) => setNewIsTrusted(e.target.checked)}
+                        className="rounded border-slate-700 text-purple-600 focus:ring-purple-500"
+                      />
+                      <span>🛡️ Trusted</span>
+                    </label>
+
+                    <label className="flex items-center gap-2 text-xs text-white font-bold cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={newIsFeatured}
+                        onChange={(e) => setNewIsFeatured(e.target.checked)}
+                        className="rounded border-slate-700 text-purple-600 focus:ring-purple-500"
+                      />
+                      <span>⭐ Featured</span>
+                    </label>
+
+                    <label className="flex items-center gap-2 text-xs text-white font-bold cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={newIsNew}
+                        onChange={(e) => setNewIsNew(e.target.checked)}
+                        className="rounded border-slate-700 text-purple-600 focus:ring-purple-500"
+                      />
+                      <span>🔥 New</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Custom Badge (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. POPULAR, TOP MANGA"
+                    value={newBadge}
+                    onChange={(e) => setNewBadge(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                  />
+                </div>
+
                 <button
                   type="submit"
                   className="purple-btn-primary py-4 rounded-2xl text-white font-black text-xs sm:text-sm uppercase tracking-wider cursor-pointer mt-2 shadow-lg"
@@ -492,346 +599,192 @@ export default function AdminDashboard() {
 
         {/* TAB 3: REQUESTS INBOX */}
         {activeTab === "requests" && (
-          <div className="flex flex-col gap-4">
+          <div className="max-w-3xl w-full flex flex-col gap-4 mx-auto">
             {userRequests.length === 0 ? (
-              <div className="p-8 rounded-3xl bg-[#090717] border border-slate-800 text-center text-slate-400 text-sm font-semibold">
+              <div className="p-8 rounded-2xl bg-[#090717] border border-slate-800 text-center text-slate-400 text-sm">
                 ✓ No pending user site requests.
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {userRequests.map((req) => (
-                  <div
-                    key={req.id}
-                    className="p-5 rounded-3xl bg-[#090717] border border-purple-500/30 flex items-center justify-between gap-4 shadow-lg"
-                  >
-                    <div className="flex flex-col truncate gap-0.5">
-                      <span className="font-black text-sm sm:text-base text-white truncate">{req.name}</span>
-                      <span className="text-xs text-purple-300 font-mono truncate">{req.url}</span>
-                      <span className="text-xs text-slate-400 font-bold mt-1">{req.category} • #{req.tags}</span>
+              userRequests.map((req) => (
+                <div
+                  key={req.id}
+                  className="p-5 rounded-2xl bg-[#090717]/95 border border-purple-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md"
+                >
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-extrabold text-white text-base">{req.name}</h3>
+                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-500/30">
+                        {req.category}
+                      </span>
                     </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        onClick={() => setUserRequests(userRequests.filter((r) => r.id !== req.id))}
-                        className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold cursor-pointer"
-                      >
-                        Dismiss
-                      </button>
-                      <button
-                        onClick={() => handleApproveRequest(req)}
-                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-md cursor-pointer"
-                      >
-                        Approve 🚀
-                      </button>
-                    </div>
+                    <span className="text-xs font-mono text-slate-400">{req.url}</span>
                   </div>
-                ))}
-              </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setUserRequests(userRequests.filter((r) => r.id !== req.id))}
+                      className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold"
+                    >
+                      Dismiss
+                    </button>
+                    <button
+                      onClick={() => handleApproveRequest(req)}
+                      className="purple-btn-primary px-4 py-2 rounded-xl text-white text-xs font-black uppercase tracking-wider"
+                    >
+                      Approve & Publish 🚀
+                    </button>
+                  </div>
+                </div>
+              ))
             )}
           </div>
         )}
 
-        {/* TAB 4: BANNER CUSTOMIZATION PANEL */}
+        {/* TAB 4: BANNER CUSTOMIZATION */}
         {activeTab === "banner" && (
-          <div className="flex flex-col gap-8">
-            <div className="bg-[#090717]/95 border border-purple-500/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 shadow-[0_0_50px_rgba(168,85,247,0.35)]">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-4">
-                <div>
-                  <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-                    <span>🎨</span>
-                    <span>Home Page Banner Customization</span>
-                  </h2>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                    Update headlines, subtext, badge tags, CTA button links (with website URLs & # feature hashes), and hero visual.
-                  </p>
-                </div>
+          <div className="max-w-2xl w-full bg-[#090717]/95 border border-purple-500/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 mx-auto shadow-[0_0_50px_rgba(168,85,247,0.35)]">
+            <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+              <div>
+                <h2 className="text-xl font-black text-white tracking-tight">Edit Home Banner</h2>
+                <p className="text-xs text-slate-400 mt-0.5">Customize headline text, hero image, and CTA button links live on home page.</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleResetBanner}
+                className="px-3.5 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900 border border-rose-500/30 text-rose-300 text-xs font-bold"
+              >
+                Reset Defaults
+              </button>
+            </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={handleResetBanner}
-                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
-                  >
-                    Reset Defaults 🔄
-                  </button>
+            {bannerSuccess && (
+              <div className="p-4 rounded-2xl bg-emerald-950/90 border border-emerald-500/50 text-center text-emerald-300 font-bold text-xs shadow-md">
+                ✓ Home Banner updated live!
+              </div>
+            )}
+
+            <form onSubmit={handleSaveBanner} className="flex flex-col gap-4">
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Top Badge Text</label>
+                <input
+                  type="text"
+                  value={bannerConfig.badgeText}
+                  onChange={(e) => setBannerConfigState({ ...bannerConfig, badgeText: e.target.value })}
+                  className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Headline Line 1</label>
+                  <input
+                    type="text"
+                    value={bannerConfig.line1Text}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, line1Text: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-purple-300 block mb-1">Line 1 Highlighted</label>
+                  <input
+                    type="text"
+                    value={bannerConfig.line1Highlight}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, line1Highlight: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                  />
                 </div>
               </div>
 
-              {bannerSuccess && (
-                <div className="p-4 rounded-2xl bg-emerald-950/90 border border-emerald-500/50 text-center text-emerald-300 font-bold text-sm shadow-lg animate-in fade-in duration-200">
-                  ✓ Home Page Banner updated successfully! Changes are live.
-                </div>
-              )}
-
-              <form onSubmit={handleSaveBanner} className="flex flex-col gap-6">
-                {/* Section 1: Badge Settings */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
-                      Badge Icon
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={bannerConfig.badgeIcon}
-                      onChange={(e) => setBannerConfigState({ ...bannerConfig, badgeIcon: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
-                      placeholder="e.g. ⚡"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
-                      Badge Label Text
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={bannerConfig.badgeText}
-                      onChange={(e) => setBannerConfigState({ ...bannerConfig, badgeText: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
-                      placeholder="e.g. THE ULTIMATE STREAMING HUB"
-                    />
-                  </div>
-                </div>
-
-                {/* Section 2: Headline Lines */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
-                      Line 1 Prefix Text
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={bannerConfig.line1Text}
-                      onChange={(e) => setBannerConfigState({ ...bannerConfig, line1Text: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-bold"
-                      placeholder="e.g. STREAM"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-extrabold text-purple-300 block mb-1.5 uppercase tracking-wider">
-                      Line 1 Brush Highlight Keyword
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={bannerConfig.line1Highlight}
-                      onChange={(e) => setBannerConfigState({ ...bannerConfig, line1Highlight: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#120e2b] border border-purple-500/50 focus:border-purple-400 rounded-xl text-purple-300 text-sm focus:outline-none font-bold"
-                      placeholder="e.g. Limitless."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
-                      Line 2 Prefix Text
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={bannerConfig.line2Text}
-                      onChange={(e) => setBannerConfigState({ ...bannerConfig, line2Text: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-bold"
-                      placeholder="e.g. DISCOVER"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-extrabold text-purple-300 block mb-1.5 uppercase tracking-wider">
-                      Line 2 Brush Highlight Keyword
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={bannerConfig.line2Highlight}
-                      onChange={(e) => setBannerConfigState({ ...bannerConfig, line2Highlight: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#120e2b] border border-purple-500/50 focus:border-purple-400 rounded-xl text-purple-300 text-sm focus:outline-none font-bold"
-                      placeholder="e.g. Endless."
-                    />
-                  </div>
-                </div>
-
-                {/* Section 3: Subtitle / Description */}
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
-                    Banner Subtext / Description
-                  </label>
-                  <textarea
-                    rows={3}
-                    required
-                    value={bannerConfig.description}
-                    onChange={(e) => setBannerConfigState({ ...bannerConfig, description: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
-                    placeholder="Enter hero banner subtitle text..."
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Headline Line 2</label>
+                  <input
+                    type="text"
+                    value={bannerConfig.line2Text}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, line2Text: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
                   />
                 </div>
-
-                {/* Section 4: Primary CTA Button (Text & Feature Hash URL) */}
-                <div className="p-4 rounded-2xl bg-[#0e0a24] border border-purple-500/30 flex flex-col gap-4">
-                  <span className="text-xs font-extrabold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>🚀</span> Primary Action Button (Target URL / Feature Hash)
-                  </span>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs font-bold text-slate-300 block mb-1">Button Label</label>
-                      <input
-                        type="text"
-                        required
-                        value={bannerConfig.primaryBtnText}
-                        onChange={(e) => setBannerConfigState({ ...bannerConfig, primaryBtnText: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#161138] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
-                        placeholder="e.g. EXPLORE CATEGORIES"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-bold text-slate-300 block mb-1">
-                        Target URL / Feature Link (with #)
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={bannerConfig.primaryBtnUrl}
-                        onChange={(e) => setBannerConfigState({ ...bannerConfig, primaryBtnUrl: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#161138] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-mono text-xs"
-                        placeholder="e.g. #browse-directory OR https://example.com/app#feature"
-                      />
-                      <p className="text-[11px] text-slate-400 mt-1">
-                        💡 Enter <code className="text-purple-300">#browse-directory</code> or any website URL with feature hash like <code className="text-purple-300">https://mywebsite.com#feature</code>.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Section 5: Secondary CTA Button (Text & Feature Hash URL) */}
-                <div className="p-4 rounded-2xl bg-[#0e0a24] border border-purple-500/30 flex flex-col gap-4">
-                  <span className="text-xs font-extrabold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>💬</span> Secondary Action Button (Target URL / Feature Hash)
-                  </span>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs font-bold text-slate-300 block mb-1">Button Label</label>
-                      <input
-                        type="text"
-                        required
-                        value={bannerConfig.secondaryBtnText}
-                        onChange={(e) => setBannerConfigState({ ...bannerConfig, secondaryBtnText: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#161138] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
-                        placeholder="e.g. REQUEST A SITE"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-bold text-slate-300 block mb-1">
-                        Target URL / Feature Link (with #)
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={bannerConfig.secondaryBtnUrl}
-                        onChange={(e) => setBannerConfigState({ ...bannerConfig, secondaryBtnUrl: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#161138] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-mono text-xs"
-                        placeholder="e.g. request-modal OR https://example.com/site#feature-key"
-                      />
-                      <p className="text-[11px] text-slate-400 mt-1">
-                        💡 Enter <code className="text-purple-300">request-modal</code> or direct URL followed by hash <code className="text-purple-300">https://website.com/page#feature</code>.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Section 6: Image & Card Badge */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
-                      Hero Image URL / Path
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={bannerConfig.heroImageUrl}
-                      onChange={(e) => setBannerConfigState({ ...bannerConfig, heroImageUrl: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none font-mono text-xs"
-                      placeholder="e.g. /hero_banner.png or https://..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-extrabold text-slate-300 block mb-1.5 uppercase tracking-wider">
-                      Hero Card Footer Status Label
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={bannerConfig.cardBadgeText}
-                      onChange={(e) => setBannerConfigState({ ...bannerConfig, cardBadgeText: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
-                      placeholder="e.g. Live Stream Hub"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="purple-btn-primary py-4 rounded-2xl text-white font-black text-sm uppercase tracking-wider cursor-pointer shadow-xl mt-2"
-                >
-                  Save Banner Changes 💾
-                </button>
-              </form>
-            </div>
-
-            {/* Real-time Banner Preview Box */}
-            <div className="bg-[#090717]/95 border border-purple-500/30 rounded-3xl p-6 sm:p-8 flex flex-col gap-4 shadow-xl">
-              <h3 className="text-sm font-extrabold text-purple-300 uppercase tracking-wider flex items-center gap-2">
-                <span>👁️</span> Real-time Home Banner Preview
-              </h3>
-              
-              <div className="p-6 rounded-2xl bg-[#05050c] border border-slate-800 flex flex-col lg:flex-row items-center justify-between gap-6">
-                <div className="flex flex-col gap-3 max-w-xl text-center lg:text-left items-center lg:items-start">
-                  <div className="px-3 py-1 rounded-full bg-purple-950/80 border border-purple-500/40 text-purple-300 text-xs font-bold tracking-wider uppercase">
-                    <span>{bannerConfig.badgeIcon}</span> {bannerConfig.badgeText}
-                  </div>
-                  
-                  <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight leading-tight">
-                    {bannerConfig.line1Text}{" "}
-                    <span className="brush-font text-purple-400 italic font-bold ml-1">{bannerConfig.line1Highlight}</span>
-                    <br />
-                    {bannerConfig.line2Text}{" "}
-                    <span className="brush-font text-purple-400 italic font-bold ml-1">{bannerConfig.line2Highlight}</span>
-                  </h2>
-
-                  <p className="text-xs sm:text-sm text-slate-300 line-clamp-3">{bannerConfig.description}</p>
-
-                  <div className="flex flex-wrap gap-3 pt-2">
-                    <span className="px-4 py-2 rounded-full bg-purple-600 text-white font-bold text-xs uppercase shadow-md">
-                      🚀 {bannerConfig.primaryBtnText}
-                    </span>
-                    <span className="px-4 py-2 rounded-full bg-slate-900 border border-slate-700 text-slate-300 font-bold text-xs uppercase">
-                      💬 {bannerConfig.secondaryBtnText}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="relative w-48 aspect-[4/3] rounded-2xl overflow-hidden border border-purple-500/40 shrink-0 bg-[#090716]">
-                  <img
-                    src={bannerConfig.heroImageUrl}
-                    alt="Hero Preview"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/hero_banner.png";
-                    }}
+                <div>
+                  <label className="text-xs font-bold text-purple-300 block mb-1">Line 2 Highlighted</label>
+                  <input
+                    type="text"
+                    value={bannerConfig.line2Highlight}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, line2Highlight: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
                   />
-                  <div className="absolute bottom-2 left-2 right-2 p-1.5 rounded-lg bg-black/80 text-[10px] text-white font-bold text-center border border-purple-500/30">
-                    {bannerConfig.cardBadgeText}
-                  </div>
                 </div>
               </div>
-            </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Description Paragraph</label>
+                <textarea
+                  rows={2}
+                  value={bannerConfig.description}
+                  onChange={(e) => setBannerConfigState({ ...bannerConfig, description: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Primary Button Text</label>
+                  <input
+                    type="text"
+                    value={bannerConfig.primaryBtnText}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, primaryBtnText: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Primary Button Target URL</label>
+                  <input
+                    type="text"
+                    value={bannerConfig.primaryBtnUrl}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, primaryBtnUrl: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Secondary Button Text</label>
+                  <input
+                    type="text"
+                    value={bannerConfig.secondaryBtnText}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, secondaryBtnText: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Secondary Button Target URL</label>
+                  <input
+                    type="text"
+                    value={bannerConfig.secondaryBtnUrl}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, secondaryBtnUrl: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Hero Image URL</label>
+                <input
+                  type="text"
+                  value={bannerConfig.heroImageUrl}
+                  onChange={(e) => setBannerConfigState({ ...bannerConfig, heroImageUrl: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="purple-btn-primary py-3.5 rounded-2xl text-white font-black text-xs uppercase tracking-wider cursor-pointer shadow-lg mt-2"
+              >
+                Save Banner Settings 💾
+              </button>
+            </form>
           </div>
         )}
 
@@ -870,12 +823,11 @@ export default function AdminDashboard() {
                   onChange={(e) => setEditCategory(e.target.value)}
                   className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
                 >
-                  <option value="Movies">Movies & Cinema</option>
-                  <option value="Anime">Anime & Manga</option>
-                  <option value="Series">Series & Shows</option>
-                  <option value="Sports">Live Sports</option>
-                  <option value="AI & Tools">AI & Web Tools</option>
-                  <option value="Live Streams">Live Streams 24/7</option>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -897,6 +849,53 @@ export default function AdminDashboard() {
                   value={editTags}
                   onChange={(e) => setEditTags(e.target.value)}
                   className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-sm focus:outline-none"
+                />
+              </div>
+
+              {/* Editable Marks Checkboxes */}
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
+                <label className="text-xs font-bold text-purple-300">Editable Marks / Badges</label>
+                <div className="flex flex-wrap items-center gap-4">
+                  <label className="flex items-center gap-2 text-xs text-white font-bold cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editIsTrusted}
+                      onChange={(e) => setEditIsTrusted(e.target.checked)}
+                      className="rounded border-slate-700 text-purple-600 focus:ring-purple-500"
+                    />
+                    <span>🛡️ Trusted</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 text-xs text-white font-bold cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editIsFeatured}
+                      onChange={(e) => setEditIsFeatured(e.target.checked)}
+                      className="rounded border-slate-700 text-purple-600 focus:ring-purple-500"
+                    />
+                    <span>⭐ Featured</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 text-xs text-white font-bold cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editIsNew}
+                      onChange={(e) => setEditIsNew(e.target.checked)}
+                      className="rounded border-slate-700 text-purple-600 focus:ring-purple-500"
+                    />
+                    <span>🔥 New</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Custom Badge (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. POPULAR, TOP ANIME"
+                  value={editBadge}
+                  onChange={(e) => setEditBadge(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
                 />
               </div>
 

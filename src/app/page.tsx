@@ -6,12 +6,14 @@ import Link from "next/link";
 
 import {
   STREAMING_SITES,
+  CATEGORIES,
   SiteItem,
   getCleanDomain,
   getFaviconUrl,
   BannerConfig,
   DEFAULT_BANNER_CONFIG,
   getBannerConfig,
+  getSavedSites,
 } from "./data";
 
 export default function Home() {
@@ -20,6 +22,20 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedRegion, setSelectedRegion] = useState("US");
   const [showModal, setShowModal] = useState<string | null>(null);
+
+  // Dynamic Sites List State
+  const [sitesList, setSitesList] = useState<SiteItem[]>(STREAMING_SITES);
+
+  useEffect(() => {
+    setSitesList(getSavedSites());
+    const handleSitesUpdate = () => setSitesList(getSavedSites());
+    window.addEventListener("allsitehub_sites_updated", handleSitesUpdate);
+    window.addEventListener("storage", handleSitesUpdate);
+    return () => {
+      window.removeEventListener("allsitehub_sites_updated", handleSitesUpdate);
+      window.removeEventListener("storage", handleSitesUpdate);
+    };
+  }, []);
 
   // Dynamic Home Banner State
   const [bannerConfig, setBannerConfig] = useState<BannerConfig>(DEFAULT_BANNER_CONFIG);
@@ -38,8 +54,8 @@ export default function Home() {
   // Mobile Menu Drawer State
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Live Site Counter State - Strictly bound to STREAMING_SITES.length
-  const totalSitesCount = STREAMING_SITES.length;
+  // Live Site Counter State - bound to sitesList.length
+  const totalSitesCount = sitesList.length;
   const [siteCount, setSiteCount] = useState(0);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -49,21 +65,23 @@ export default function Home() {
   // Form states for Request Site Modal
   const [reqSiteName, setReqSiteName] = useState("");
   const [reqSiteUrl, setReqSiteUrl] = useState("");
-  const [reqSiteCategory, setReqSiteCategory] = useState("Movies");
+  const [reqSiteCategory, setReqSiteCategory] = useState("MOVIES & TV SHOWS");
   const [reqFeatures, setReqFeatures] = useState("");
   const [reqRegion, setReqRegion] = useState("US");
   const [payMethod, setPayMethod] = useState<"free" | "upi" | "crypto" | "paypal">("free");
   const [reqSuccess, setReqSuccess] = useState(false);
 
-
-  // Smooth count-up animation on mount to exact STREAMING_SITES.length
+  // Smooth count-up animation on mount
   useEffect(() => {
     let start = 0;
     const end = totalSitesCount;
-    if (start === end) return;
+    if (start === end) {
+      setSiteCount(end);
+      return;
+    }
 
     const duration = 1000;
-    const stepTime = Math.abs(Math.floor(duration / end));
+    const stepTime = Math.abs(Math.floor(duration / Math.max(end, 1)));
 
     const timer = setInterval(() => {
       start += 1;
@@ -93,7 +111,7 @@ export default function Home() {
     setTiltStyle({ rotateX: 0, rotateY: 0 });
   };
 
-  // Banner CTA Click Handler (Supports local # element anchors, modal triggers, & full website URLs with # feature hash)
+  // Banner CTA Click Handler
   const handleBannerCtaClick = (url: string) => {
     if (!url) return;
     const targetUrl = url.trim();
@@ -116,17 +134,21 @@ export default function Home() {
     window.location.href = targetUrl;
   };
 
-  // Copy site URL helper
-
   const handleCopyLink = (site: SiteItem) => {
     navigator.clipboard.writeText(site.url);
     setCopiedId(site.id);
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  // Category counts helper
+  const getCategoryCount = (catName: string) => {
+    if (catName === "All") return sitesList.length;
+    return sitesList.filter((s) => s.category === catName).length;
+  };
+
   // Filtered sites for browsing section
   const filteredSites = useMemo(() => {
-    return STREAMING_SITES.filter((site) => {
+    return sitesList.filter((site) => {
       if (selectedCategory !== "All" && site.category !== selectedCategory) return false;
       if (!searchQuery.trim()) return true;
       const q = searchQuery.toLowerCase();
@@ -136,7 +158,7 @@ export default function Home() {
         site.tags.some((t) => t.toLowerCase().includes(q))
       );
     });
-  }, [selectedCategory, searchQuery]);
+  }, [sitesList, selectedCategory, searchQuery]);
 
   const handleRequestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -548,59 +570,54 @@ export default function Home() {
             <aside className="lg:col-span-3 flex flex-col gap-3 sticky top-20 bg-[#090717]/95 border border-purple-500/30 rounded-3xl p-4 sm:p-5 shadow-[0_0_30px_rgba(168,85,247,0.15)]">
               <div className="flex items-center justify-between px-2 pb-3 border-b border-slate-800/80">
                 <span className="text-xs font-black uppercase tracking-wider text-purple-300">
-                  Categories
+                  Categories ({CATEGORIES.length})
                 </span>
                 <span className="text-[10px] font-mono font-bold bg-purple-950/80 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30">
                   {totalSitesCount} Portals
                 </span>
               </div>
 
-              {/* Category Buttons List */}
-              <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 scrollbar-none">
+              {/* Desktop Category Buttons List */}
+              <div className="hidden lg:flex flex-col gap-2">
                 {[
-                  { name: "All", label: "All Categories" },
-                  { name: "Movies", label: "Movies & Cinema" },
-                  { name: "Anime", label: "Anime & Manga" },
-                  { name: "Sports", label: "Live Sports" },
-                  { name: "Series", label: "Series & Shows" },
-                  { name: "AI & Tools", label: "AI & Web Tools" },
-                  { name: "Live Streams", label: "Live Streams 24/7" },
+                  { name: "All", label: "All Categories", icon: "🌐" },
+                  { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
+                  { name: "ANIME", label: "ANIME", icon: "⚡" },
+                  { name: "MANGA", label: "MANGA", icon: "📖" },
+                  { name: "LIVE TV & SPORTS", label: "LIVE TV & SPORTS", icon: "📺" },
+                  { name: "PAID", label: "PAID", icon: "💎" },
+                  { name: "AI TOOLS", label: "AI TOOLS", icon: "🤖" },
+                  { name: "DOWNLOADS", label: "DOWNLOADS", icon: "⬇️" },
+                  { name: "AD BLOCKERS", label: "AD BLOCKERS", icon: "🛡️" },
                 ].map((cat) => {
                   const isSelected = selectedCategory === cat.name;
-                  const catCount =
-                    cat.name === "All"
-                      ? STREAMING_SITES.length
-                      : STREAMING_SITES.filter((s) => s.category === cat.name).length;
+                  const catCount = getCategoryCount(cat.name);
 
                   return (
                     <button
                       key={cat.name}
                       onClick={() => setSelectedCategory(cat.name)}
-                      className={`group relative flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap lg:whitespace-normal ${
+                      className={`group relative flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
                         isSelected
                           ? "bg-gradient-to-r from-purple-900/90 via-indigo-900/80 to-purple-950/90 border border-purple-500/60 shadow-[0_0_22px_rgba(168,85,247,0.4)] scale-[1.02]"
                           : "bg-[#0c091f]/80 hover:bg-[#130f30] border border-slate-800/80 hover:border-purple-500/40 text-slate-400 hover:text-white hover:scale-[1.01]"
                       }`}
                     >
-                      {/* Left Active Line Accent */}
                       {isSelected && (
-                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-7 bg-purple-400 rounded-r-full shadow-[0_0_10px_#a855f7]" />
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-purple-400 rounded-r-full shadow-[0_0_10px_#a855f7]" />
                       )}
 
-                      {/* Category Label */}
-                      <span
-                        className={`text-xs sm:text-sm font-extrabold tracking-wide ${isSelected ? "text-white" : "text-slate-300 group-hover:text-white"
-                          }`}
-                      >
-                        {cat.label}
+                      <span className="flex items-center gap-2 text-xs font-extrabold tracking-wide text-white truncate">
+                        <span>{cat.icon}</span>
+                        <span className="truncate">{cat.label}</span>
                       </span>
 
-                      {/* Right Count Badge */}
                       <span
-                        className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${isSelected
+                        className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                          isSelected
                             ? "bg-purple-400 text-black border-purple-300 font-extrabold"
                             : "bg-[#120e2e] text-slate-400 border-slate-800 group-hover:text-purple-300"
-                          }`}
+                        }`}
                       >
                         {catCount}
                       </span>
@@ -638,6 +655,43 @@ export default function Home() {
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
             <div className="lg:col-span-9 flex flex-col gap-5">
 
+              {/* MOBILE CATEGORY SCROLLBAR (PHONE OPTIMIZED) */}
+              <div className="lg:hidden flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 mb-1 snap-x">
+                <button
+                  onClick={() => setSelectedCategory("All")}
+                  className={`snap-start shrink-0 px-3.5 py-2.5 rounded-2xl text-xs font-black transition-all border flex items-center gap-1.5 whitespace-nowrap active:scale-95 cursor-pointer ${
+                    selectedCategory === "All"
+                      ? "bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)] scale-[1.02]"
+                      : "bg-[#0c091f]/90 text-slate-300 border-slate-800 hover:border-purple-500/40"
+                  }`}
+                >
+                  <span>🌐 ALL</span>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-500/30">
+                    {sitesList.length}
+                  </span>
+                </button>
+                {CATEGORIES.map((cat) => {
+                  const isSelected = selectedCategory === cat;
+                  const count = getCategoryCount(cat);
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`snap-start shrink-0 px-3.5 py-2.5 rounded-2xl text-xs font-black transition-all border flex items-center gap-1.5 whitespace-nowrap active:scale-95 cursor-pointer ${
+                        isSelected
+                          ? "bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)] scale-[1.02]"
+                          : "bg-[#0c091f]/90 text-slate-300 border-slate-800 hover:border-purple-500/40"
+                      }`}
+                    >
+                      <span>{cat}</span>
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-500/30">
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
               {/* Directory Active Category & Results Header */}
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
@@ -654,7 +708,7 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Cards Grid - Large, Bold, Professional Cards */}
+              {/* Small Rhombus-Shaped Cards Grid */}
               {filteredSites.length === 0 ? (
                 <div className="p-12 sm:p-16 rounded-3xl bg-[#090717]/80 border border-purple-500/20 text-center flex flex-col items-center justify-center gap-4">
                   <h3 className="text-lg sm:text-xl font-bold text-white">No portals found</h3>
@@ -672,73 +726,71 @@ export default function Home() {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
                   {filteredSites.map((site) => (
                     <a
                       key={site.id}
                       href={site.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group relative card-rhombus -skew-x-2 hover:skew-x-0 bg-[#090717]/95 border border-purple-500/30 hover:border-purple-500/80 rounded-3xl p-5 sm:p-6 flex flex-col justify-between gap-5 transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] shadow-xl hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] cursor-pointer overflow-hidden"
+                      className="group relative bg-[#090717]/95 border border-purple-500/30 hover:border-purple-500/80 rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-[0_0_25px_rgba(168,85,247,0.3)] cursor-pointer overflow-hidden"
                     >
-                      {/* Top Glowing Accent Line */}
-                      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400 opacity-75 group-hover:opacity-100 transition-opacity" />
+                      {/* Top Accent Line */}
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400 opacity-60 group-hover:opacity-100 transition-opacity" />
 
-                      {/* Deskewed Inner Content */}
-                      <div className="skew-x-2 flex flex-col gap-4">
-                        {/* Header: Logo Image, Name, Domain & Badge */}
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="w-12 h-12 rounded-2xl bg-[#130e30] border border-purple-500/40 flex items-center justify-center p-1.5 shrink-0 group-hover:scale-110 group-hover:border-purple-500/80 transition-all shadow-md overflow-hidden">
-                              {/* Auto-Fetched High-Res Website Logo */}
-                              <img
-                                src={getFaviconUrl(site.domain || site.url)}
-                                alt={site.name}
-                                className="w-full h-full object-contain rounded-xl"
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement;
-                                  const domain = getCleanDomain(site.domain || site.url);
-                                  if (!target.dataset.triedFallback) {
-                                    target.dataset.triedFallback = "true";
-                                    target.src = `https://icon.horse/icon/${domain}`;
-                                  }
-                                }}
-                              />
-                            </div>
-
-                            <div className="flex flex-col gap-0.5 truncate">
-                              <div className="flex items-center gap-1.5">
-                                <h3 className="font-black text-white text-base sm:text-lg group-hover:text-purple-300 transition-colors line-clamp-1">
-                                  {site.name}
-                                </h3>
-                                <span className="text-emerald-400 text-xs sm:text-sm" title="Verified Site">✓</span>
-                              </div>
-                              <span className="text-xs sm:text-sm font-mono font-bold text-purple-300/90 truncate">
-                                {site.domain}
-                              </span>
-                            </div>
-                          </div>
-
-                          {site.badge && (
-                            <span className="text-xs font-black uppercase px-2.5 py-1 rounded-lg bg-purple-500/25 text-purple-200 border border-purple-500/40 whitespace-nowrap shrink-0 shadow-sm">
-                              {site.badge}
-                            </span>
-                          )}
+                      {/* Left Info with Rhombus Icon */}
+                      <div className="flex items-center gap-3 min-w-0">
+                        {/* Rhombus (Diamond) Logo Container */}
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 rotate-45 rounded-xl bg-gradient-to-br from-purple-900/90 to-indigo-950 border border-purple-500/50 flex items-center justify-center shrink-0 shadow-md group-hover:border-purple-400 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all duration-300 overflow-hidden">
+                          <img
+                            src={getFaviconUrl(site.domain || site.url)}
+                            alt={site.name}
+                            className="-rotate-45 w-5 h-5 sm:w-6 sm:h-6 object-contain"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              const domain = getCleanDomain(site.domain || site.url);
+                              if (!target.dataset.triedFallback) {
+                                target.dataset.triedFallback = "true";
+                                target.src = `https://icon.horse/icon/${domain}`;
+                              }
+                            }}
+                          />
                         </div>
 
-                        {/* Minimal Feature Tags */}
-                        <div className="flex flex-wrap gap-1.5">
-                          {site.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-xs font-bold px-2.5 py-1 rounded-lg bg-[#140f36] text-purple-200 border border-purple-500/30"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
+                        {/* Site Name & Domain */}
+                        <div className="flex flex-col min-w-0 gap-0.5">
+                          <h3 className="font-extrabold text-white text-sm sm:text-base group-hover:text-purple-300 transition-colors truncate">
+                            {site.name}
+                          </h3>
+                          <span className="text-[11px] sm:text-xs font-mono font-bold text-purple-300/80 truncate">
+                            {site.domain}
+                          </span>
                         </div>
+                      </div>
 
-                        </div>
+                      {/* Right Editable Marks Badges */}
+                      <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+                        {site.isTrusted && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-sm whitespace-nowrap">
+                            🛡️ Trusted
+                          </span>
+                        )}
+                        {site.isFeatured && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-sm whitespace-nowrap">
+                            ⭐ Featured
+                          </span>
+                        )}
+                        {site.isNew && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-rose-950/80 text-rose-300 border border-rose-500/40 shadow-sm whitespace-nowrap">
+                            🔥 New
+                          </span>
+                        )}
+                        {site.badge && !site.isTrusted && !site.isFeatured && !site.isNew && (
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-purple-950/80 text-purple-200 border border-purple-500/40 shadow-sm whitespace-nowrap">
+                            {site.badge}
+                          </span>
+                        )}
+                      </div>
                     </a>
                   ))}
                 </div>
