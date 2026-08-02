@@ -1172,7 +1172,7 @@ export default function Home() {
             <div className="lg:col-span-9 flex flex-col gap-5">
 
               {/* MOBILE CATEGORY SCROLLBAR */}
-              <div className="lg:hidden flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1.5 px-1 mb-1 snap-x">
+              <div className="lg:hidden flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 mb-1 snap-x">
                 {CATEGORIES.map((cat) => {
                   const isSelected = selectedCategory === cat;
                   const count = getCategoryCount(cat);
@@ -1180,14 +1180,14 @@ export default function Home() {
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}
-                      className={`snap-start shrink-0 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all border flex items-center gap-1.5 whitespace-nowrap active:scale-95 cursor-pointer ${
+                      className={`snap-start shrink-0 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all border flex items-center gap-1.5 whitespace-nowrap active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
                           : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder}`
                       }`}
                     >
                       <span>{cat}</span>
-                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full ${activeTheme.accentBadge} border`}>
+                      <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${activeTheme.accentBadge} border`}>
                         {count}
                       </span>
                     </button>
@@ -1195,27 +1195,27 @@ export default function Home() {
                 })}
               </div>
 
-              {/* Sleek Compact Category Header & Indicator Row */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 px-1 pb-1">
-                <div className="flex flex-col gap-0.5">
-                  <div className="flex items-center gap-2.5">
-                    <span className={`w-1 h-4 sm:h-5 rounded-full ${activeTheme.categoryBar}`} />
-                    <h2 className={`text-base sm:text-lg font-black ${activeTheme.headingColor} tracking-tight flex items-center gap-2`}>
+              {/* Prominent Category Title Header & Search Row */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-1 pb-1">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-3">
+                    <span className={`w-1.5 h-6 sm:h-7 rounded-full ${activeTheme.categoryBar}`} />
+                    <h2 className={`text-xl sm:text-2xl md:text-3xl font-black ${activeTheme.headingColor} tracking-tight flex items-center gap-2.5`}>
                       <span>{selectedCategory === "All" ? "All Categories" : selectedCategory}</span>
                     </h2>
-                    <span className={`text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full border ${activeTheme.accentBadge}`}>
+                    <span className={`text-xs sm:text-sm font-mono font-bold px-2.5 py-0.5 rounded-full border ${activeTheme.accentBadge}`}>
                       {filteredSites.length}
                     </span>
                   </div>
-                  <p className={`text-[11px] sm:text-xs ${activeTheme.mutedText} font-medium pl-3.5`}>
+                  <p className={`text-xs sm:text-sm ${activeTheme.mutedText} font-medium pl-4.5`}>
                     Verified streaming and web portals directory.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
                   {/* DIRECTORY SEARCH INPUT BAR */}
-                  <div className="relative flex-1 sm:w-56 xl:w-64">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[11px] opacity-60">
+                  <div className="relative flex-1 sm:w-60 xl:w-68">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-xs opacity-60">
                       🔍
                     </div>
                     <input
@@ -1223,7 +1223,7 @@ export default function Home() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search portals..."
-                      className={`w-full pl-7 pr-6 py-1.5 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-full text-xs placeholder-slate-500 focus:outline-none transition-all shadow-inner`}
+                      className={`w-full pl-8 pr-7 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-full text-xs placeholder-slate-500 focus:outline-none transition-all shadow-inner`}
                     />
                     {searchQuery && (
                       <button
@@ -1236,17 +1236,17 @@ export default function Home() {
                   </div>
 
                   {/* Square View Layout Toggle Switch */}
-                  <div className={`flex items-center gap-1 ${activeTheme.inputBg} border ${activeTheme.inputBorder} p-0.5 rounded-xl shadow-inner shrink-0`}>
+                  <div className={`flex items-center gap-1 ${activeTheme.inputBg} border ${activeTheme.inputBorder} p-1 rounded-xl shadow-inner shrink-0`}>
                     <button
                       onClick={() => setViewMode("grid")}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all duration-200 flex items-center gap-1 cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
                         viewMode === "grid"
                           ? activeTheme.activeNavBg
                           : `${activeTheme.mutedText} hover:bg-white/5`
                       }`}
                       title="Square Card Grid View"
                     >
-                      <span className="w-3 h-3 border border-current rounded-xs flex items-center justify-center font-mono text-[8px] font-black">
+                      <span className="w-3.5 h-3.5 border border-current rounded-xs flex items-center justify-center font-mono text-[9px] font-black">
                         ⊞
                       </span>
                       <span className="hidden sm:inline">Grid</span>
@@ -1254,21 +1254,21 @@ export default function Home() {
 
                     <button
                       onClick={() => setViewMode("list")}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all duration-200 flex items-center gap-1 cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
                         viewMode === "list"
                           ? activeTheme.activeNavBg
                           : `${activeTheme.mutedText} hover:bg-white/5`
                       }`}
                       title="Compact List View"
                     >
-                      <span className="text-[11px] font-black">☰</span>
+                      <span className="text-xs font-black">☰</span>
                       <span className="hidden sm:inline">List</span>
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* Directory Sites Rendering: Square Grid or List View */}
+              {/* Directory Sites Rendering: Compact Square Grid or List View */}
               {filteredSites.length === 0 ? (
                 <div className={`p-12 sm:p-16 rounded-3xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} text-center flex flex-col items-center justify-center gap-4`}>
                   <h3 className={`text-lg sm:text-xl font-bold ${activeTheme.headingColor}`}>No portals found</h3>
@@ -1286,43 +1286,43 @@ export default function Home() {
                   </button>
                 </div>
               ) : viewMode === "grid" ? (
-                /* EXACT SQUARE CARD GRID VIEW */
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3.5 sm:gap-4">
+                /* COMPACT SITE INDICATOR CARDS GRID (8 CARDS PER ROW ON ULTRA WIDE) */
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-2.5 sm:gap-3">
                   {filteredSites.map((site) => (
                     <a
                       key={site.id}
                       href={site.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-2xl sm:rounded-3xl p-4 sm:p-4.5 aspect-square flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] shadow-md ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-md`}
+                      className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl sm:rounded-2xl p-2.5 sm:p-3 aspect-square flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] active:scale-[0.98] shadow-sm ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-md`}
                     >
                       {/* Top-Left Status Badge */}
-                      <div className="absolute top-2.5 left-2.5 z-20">
+                      <div className="absolute top-2 left-2 z-20">
                         {site.isTrusted ? (
-                          <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider shadow-sm">
+                          <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider shadow-xs">
                             TRUSTED
                           </span>
                         ) : site.isFeatured ? (
-                          <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-950/90 text-amber-400 border border-amber-500/40 uppercase tracking-wider shadow-sm">
+                          <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-950/90 text-amber-400 border border-amber-500/40 uppercase tracking-wider shadow-xs">
                             FEATURED
                           </span>
                         ) : site.isNew ? (
-                          <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-950/90 text-blue-400 border border-blue-500/40 uppercase tracking-wider shadow-sm">
+                          <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-950/90 text-blue-400 border border-blue-500/40 uppercase tracking-wider shadow-xs">
                             NEW
                           </span>
                         ) : site.badge ? (
-                          <span className={`text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md ${activeTheme.accentBadge} uppercase tracking-wider shadow-sm`}>
+                          <span className={`text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded ${activeTheme.accentBadge} uppercase tracking-wider shadow-xs`}>
                             {site.badge}
                           </span>
                         ) : null}
                       </div>
 
                       {/* Center Icon Container */}
-                      <div className={`sq-icon-btn w-12 h-12 sm:w-14 sm:h-14 p-2.5 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 shadow-md my-auto`}>
+                      <div className={`sq-icon-btn w-9 h-9 sm:w-11 sm:h-11 p-2 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 shadow-sm my-auto`}>
                         <img
                           src={getFaviconUrl(site.domain || site.url)}
                           alt={site.name}
-                          className="w-full h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             const domain = getCleanDomain(site.domain || site.url);
@@ -1336,12 +1336,12 @@ export default function Home() {
 
                       {/* Bottom Site Name & Domain */}
                       <div className="w-full flex flex-col items-center gap-0.5 mt-auto z-10">
-                        <h3 className={`font-black ${activeTheme.headingColor} text-xs sm:text-sm tracking-wider uppercase group-hover:${activeTheme.brandText} transition-colors truncate w-full`}>
+                        <h3 className={`font-black ${activeTheme.headingColor} text-[11px] sm:text-xs tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate w-full`}>
                           {site.name}
                         </h3>
 
-                        <span className={`text-[10px] sm:text-[11px] font-mono ${activeTheme.mutedText} flex items-center justify-center gap-1 truncate w-full`}>
-                          <span className="text-[9px] opacity-70">🌐</span>
+                        <span className={`text-[9px] sm:text-[10px] font-mono ${activeTheme.mutedText} flex items-center justify-center gap-0.5 truncate w-full`}>
+                          <span className="text-[8px] opacity-70">🌐</span>
                           <span className="truncate">{site.domain}</span>
                         </span>
                       </div>
@@ -1349,26 +1349,26 @@ export default function Home() {
                   ))}
                 </div>
               ) : (
-                /* LIST VIEW MODE */
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+                /* COMPACT LIST VIEW MODE */
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
                   {filteredSites.map((site) => (
                     <a
                       key={site.id}
                       href={site.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md ${activeTheme.cardGlow} cursor-pointer overflow-hidden`}
+                      className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2.5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-sm ${activeTheme.cardGlow} cursor-pointer overflow-hidden`}
                     >
                       {/* Top Accent Line */}
                       <div className={`absolute top-0 left-0 right-0 h-1 ${activeTheme.categoryBar} opacity-60 group-hover:opacity-100 transition-opacity`} />
 
                       {/* Left Info */}
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className={`sq-icon-btn w-11 h-11 sm:w-12 sm:h-12 p-2 ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-300`}>
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className={`sq-icon-btn w-9 h-9 sm:w-10 sm:h-10 p-1.5 ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-300`}>
                           <img
                             src={getFaviconUrl(site.domain || site.url)}
                             alt={site.name}
-                            className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-300"
+                            className="w-full h-full object-contain drop-shadow-xs group-hover:scale-110 transition-transform duration-300"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               const domain = getCleanDomain(site.domain || site.url);
@@ -1381,34 +1381,34 @@ export default function Home() {
                         </div>
 
                         <div className="flex flex-col min-w-0 gap-0.5">
-                          <h3 className={`font-extrabold ${activeTheme.headingColor} text-sm sm:text-base group-hover:${activeTheme.brandText} transition-colors truncate`}>
+                          <h3 className={`font-black ${activeTheme.headingColor} text-xs sm:text-sm group-hover:${activeTheme.brandText} transition-colors truncate`}>
                             {site.name}
                           </h3>
-                          <span className={`text-[11px] sm:text-xs font-mono font-bold ${activeTheme.subtextColor} truncate`}>
+                          <span className={`text-[10px] sm:text-[11px] font-mono font-bold ${activeTheme.subtextColor} truncate`}>
                             {site.domain}
                           </span>
                         </div>
                       </div>
 
                       {/* Right Badges */}
-                      <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+                      <div className="flex items-center gap-1 shrink-0 flex-wrap justify-end">
                         {site.isTrusted && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-sm whitespace-nowrap">
+                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-xs whitespace-nowrap">
                             🛡️ Trusted
                           </span>
                         )}
                         {site.isFeatured && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-sm whitespace-nowrap">
+                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-xs whitespace-nowrap">
                             ⭐ Featured
                           </span>
                         )}
                         {site.isNew && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-950/80 text-blue-300 border border-blue-500/40 shadow-sm whitespace-nowrap">
+                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-950/80 text-blue-300 border border-blue-500/40 shadow-xs whitespace-nowrap">
                             🔥 New
                           </span>
                         )}
                         {site.badge && !site.isTrusted && !site.isFeatured && !site.isNew && (
-                          <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${activeTheme.accentBadge} shadow-sm whitespace-nowrap`}>
+                          <span className={`text-[9px] font-black uppercase px-1.5 py-0.2 rounded ${activeTheme.accentBadge} shadow-xs whitespace-nowrap`}>
                             {site.badge}
                           </span>
                         )}
