@@ -1516,7 +1516,7 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     <span className="text-lg">💬</span>
                     <h4 className={`text-sm font-black ${activeTheme.headingColor}`}>
-                      To add your website, DM us now on Discord, Reddit or Telegram!
+                      To add your website fill this, and DM me on anyone of my supports to update
                     </h4>
                   </div>
 
