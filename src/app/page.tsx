@@ -679,23 +679,23 @@ export default function Home() {
       <div className={`absolute top-0 left-1/4 -mt-20 w-[400px] sm:w-[900px] h-[300px] sm:h-[600px] ${activeTheme.aura1} rounded-full blur-[100px] sm:blur-[180px] pointer-events-none transition-all duration-500`} />
       <div className={`absolute top-1/3 right-0 w-[350px] sm:w-[800px] h-[350px] sm:h-[700px] ${activeTheme.aura2} rounded-full blur-[100px] sm:blur-[190px] pointer-events-none transition-all duration-500`} />
 
-      {/* HEADER NAVBAR - ULTRA COMPACT HIGH-CONTRAST HEADER */}
-      <header className={`sticky top-0 z-50 ${activeTheme.headerBg} px-3 sm:px-6 xl:px-8 py-2 sm:py-2.5 transition-all border-b ${activeTheme.headerBorder}`}>
-        <div className="max-w-[1700px] w-full mx-auto flex items-center justify-between gap-3">
+      {/* HEADER NAVBAR - ULTRA WIDE MAX WIDTH */}
+      <header className={`sticky top-0 z-50 ${activeTheme.headerBg} px-4 sm:px-8 xl:px-12 py-3.5 transition-all border-b ${activeTheme.headerBorder}`}>
+        <div className="max-w-[1700px] w-full mx-auto flex items-center justify-between gap-4">
           {/* Left Brand Logo */}
-          <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setActiveNav("Home")}>
-            <div className="w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-lg bg-gradient-to-tr from-purple-600 via-indigo-600 to-purple-400 p-[1.5px] shadow-[0_0_15px_rgba(168,85,247,0.5)] flex items-center justify-center group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-[#090714] rounded-[7px] flex items-center justify-center font-black italic text-xs sm:text-sm text-purple-400">
+          <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => setActiveNav("Home")}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-purple-400 p-[2px] shadow-[0_0_20px_rgba(168,85,247,0.5)] flex items-center justify-center group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-[#090714] rounded-[10px] flex items-center justify-center font-black italic text-base sm:text-lg text-purple-400">
                 AH
               </div>
             </div>
-            <span className={`font-black text-lg sm:text-xl tracking-tight ${activeTheme.headingColor} flex items-center`}>
+            <span className={`font-extrabold text-xl sm:text-2xl tracking-tight ${activeTheme.headingColor} flex items-center`}>
               Allsite<span className={`${activeTheme.brandText} group-hover:opacity-90 transition-colors`}>hub</span>
             </span>
           </div>
 
           {/* Desktop Center Navigation Links */}
-          <nav className={`hidden md:flex items-center gap-1 ${activeTheme.inputBg} p-1 rounded-full border ${activeTheme.inputBorder} shadow-inner`}>
+          <nav className={`hidden md:flex items-center gap-1 ${activeTheme.inputBg} p-1.5 rounded-full border ${activeTheme.inputBorder} shadow-inner`}>
             {["Home", "About", "DMCA", "Contact"].map((item) => (
               <button
                 key={item}
@@ -705,7 +705,7 @@ export default function Home() {
                   else if (item === "Contact") setShowModal("contact");
                   else if (item === "About") setShowModal("about");
                 }}
-                className={`px-3 lg:px-4 py-1 sm:py-1.5 rounded-full text-xs font-bold transition-all relative cursor-pointer ${
+                className={`px-3 lg:px-5 py-2 rounded-full text-xs lg:text-sm font-semibold transition-all relative cursor-pointer ${
                   activeNav === item
                     ? activeTheme.activeNavBg
                     : activeTheme.inactiveNavText
@@ -720,16 +720,16 @@ export default function Home() {
           </nav>
 
           {/* Right Header Items: Community Badges, Themes, Region, Live Counter */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* DISCORD NAVBAR BADGE */}
             <a
               href="https://discord.gg/QnTrWqwcJ"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/50 text-white text-[11px] font-bold transition-all shadow-[0_0_10px_rgba(88,101,242,0.3)] hover:scale-105"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/50 text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(88,101,242,0.3)] hover:scale-105"
               title="Join Discord Community"
             >
-              <span className="text-xs">💬</span>
+              <span className="text-sm">💬</span>
               <span className="hidden xl:inline font-bold">Discord</span>
             </a>
 
@@ -738,10 +738,10 @@ export default function Home() {
               href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/50 text-white text-[11px] font-bold transition-all shadow-[0_0_10px_rgba(255,69,0,0.3)] hover:scale-105"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/50 text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(255,69,0,0.3)] hover:scale-105"
               title="Visit Reddit Profile"
             >
-              <svg className="w-3 h-3 fill-current text-[#FF4500] group-hover:text-white" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 fill-current text-[#FF4500] group-hover:text-white" viewBox="0 0 24 24">
                 <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.196-.491.961 0 1.741.78 1.741 1.742a1.737 1.737 0 0 1-1.144 1.637c.014.168.022.337.022.508 0 2.583-3.025 4.675-6.75 4.675-3.725 0-6.75-2.092-6.75-4.675 0-.166.007-.331.019-.496a1.734 1.734 0 0 1-1.127-1.63c0-.962.78-1.742 1.742-1.742.471 0 .897.187 1.206.502 1.187-.847 2.827-1.408 4.636-1.488l.943-4.417a.317.317 0 0 1 .374-.247l3.056.643c.123-.363.468-.627.876-.627zm-7.653 7.828c-.682 0-1.238.556-1.238 1.238 0 .681.556 1.237 1.238 1.237.681 0 1.237-.556 1.237-1.237 0-.682-.556-1.238-1.237-1.238zm5.284 0c-.682 0-1.237.556-1.237 1.238 0 .681.555 1.237 1.237 1.237.681 0 1.238-.556 1.238-1.237 0-.682-.557-1.238-1.238-1.238zm-5.467 3.498a.317.317 0 0 0-.225.541c.697.697 1.84.975 3.05.975 1.21 0 2.352-.278 3.05-.975a.317.317 0 0 0-.448-.448c-.536.536-1.487.77-2.602.77-1.115 0-2.066-.234-2.602-.77a.315.315 0 0 0-.223-.093z" />
               </svg>
               <span className="hidden xl:inline font-bold">Reddit</span>
@@ -750,12 +750,12 @@ export default function Home() {
             {/* Unified Themes Button */}
             <button
               onClick={() => setShowModal("themes")}
-              className={`hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold transition-all border cursor-pointer hover:scale-105 ${activeTheme.inputBg} ${activeTheme.inputBorder} ${activeTheme.textColor}`}
+              className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all border cursor-pointer hover:scale-105 ${activeTheme.inputBg} ${activeTheme.inputBorder} ${activeTheme.textColor}`}
               title="Explore Website Themes"
             >
               <span>🎨</span>
               <span>Themes</span>
-              <span className="text-[9px] font-mono font-bold opacity-75">({activeTheme.name})</span>
+              <span className="text-[10px] font-mono font-bold opacity-75">({activeTheme.name})</span>
             </button>
 
             {/* Region Selector */}
