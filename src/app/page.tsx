@@ -16,42 +16,105 @@ import {
   getSavedSites,
 } from "./data";
 
-const THEME_STYLES: Record<string, { aura1: string; aura2: string; brandText: string; activeNavBg: string }> = {
+interface ThemeConfig {
+  name: string;
+  icon: string;
+  aura1: string;
+  aura2: string;
+  brandText: string;
+  activeNavBg: string;
+  cardBorderHover: string;
+  cardGlow: string;
+  accentBadge: string;
+  heroGradient: string;
+  btnGradient: string;
+  categoryBar: string;
+}
+
+const THEME_STYLES: Record<string, ThemeConfig> = {
   midnight: {
+    name: "Midnight Purple",
+    icon: "🌌",
     aura1: "bg-purple-700/25",
     aura2: "bg-indigo-600/20",
     brandText: "text-purple-400",
     activeNavBg: "bg-purple-600/30 border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.3)]",
+    cardBorderHover: "hover:border-purple-500/70",
+    cardGlow: "hover:shadow-[0_0_25px_rgba(168,85,247,0.35)]",
+    accentBadge: "bg-purple-950/80 text-purple-300 border-purple-500/40",
+    heroGradient: "from-purple-950/40 via-slate-900/60 to-[#070514]",
+    btnGradient: "from-purple-600 via-indigo-600 to-purple-500 hover:shadow-purple-500/30",
+    categoryBar: "bg-purple-500 shadow-[0_0_12px_#a855f7]",
   },
   cyber: {
+    name: "Cyberpunk Neon",
+    icon: "⚡",
     aura1: "bg-pink-600/30",
     aura2: "bg-cyan-500/25",
     brandText: "text-pink-400",
     activeNavBg: "bg-pink-600/30 border-pink-500/40 shadow-[0_0_15px_rgba(236,72,153,0.3)]",
+    cardBorderHover: "hover:border-pink-500/70",
+    cardGlow: "hover:shadow-[0_0_25px_rgba(236,72,153,0.35)]",
+    accentBadge: "bg-pink-950/80 text-pink-300 border-pink-500/40",
+    heroGradient: "from-pink-950/40 via-slate-900/60 to-[#070514]",
+    btnGradient: "from-pink-600 via-rose-600 to-pink-500 hover:shadow-pink-500/30",
+    categoryBar: "bg-pink-500 shadow-[0_0_12px_#ec4899]",
   },
   emerald: {
+    name: "Emerald Matrix",
+    icon: "🟢",
     aura1: "bg-emerald-600/30",
     aura2: "bg-teal-500/25",
     brandText: "text-emerald-400",
     activeNavBg: "bg-emerald-600/30 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
+    cardBorderHover: "hover:border-emerald-500/70",
+    cardGlow: "hover:shadow-[0_0_25px_rgba(16,185,129,0.35)]",
+    accentBadge: "bg-emerald-950/80 text-emerald-300 border-emerald-500/40",
+    heroGradient: "from-emerald-950/40 via-slate-900/60 to-[#030e0b]",
+    btnGradient: "from-emerald-600 via-teal-600 to-emerald-500 hover:shadow-emerald-500/30",
+    categoryBar: "bg-emerald-500 shadow-[0_0_12px_#10b981]",
   },
   ocean: {
+    name: "Ocean Deep",
+    icon: "🌊",
     aura1: "bg-cyan-600/30",
     aura2: "bg-blue-600/25",
     brandText: "text-cyan-400",
     activeNavBg: "bg-cyan-600/30 border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.3)]",
+    cardBorderHover: "hover:border-cyan-500/70",
+    cardGlow: "hover:shadow-[0_0_25px_rgba(6,182,212,0.35)]",
+    accentBadge: "bg-cyan-950/80 text-cyan-300 border-cyan-500/40",
+    heroGradient: "from-cyan-950/40 via-slate-900/60 to-[#030914]",
+    btnGradient: "from-cyan-600 via-blue-600 to-cyan-500 hover:shadow-cyan-500/30",
+    categoryBar: "bg-cyan-500 shadow-[0_0_12px_#06b6d4]",
   },
   sunset: {
+    name: "Sunset Amber",
+    icon: "🌅",
     aura1: "bg-amber-600/30",
     aura2: "bg-orange-600/25",
     brandText: "text-amber-400",
     activeNavBg: "bg-amber-600/30 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.3)]",
+    cardBorderHover: "hover:border-amber-500/70",
+    cardGlow: "hover:shadow-[0_0_25px_rgba(245,158,11,0.35)]",
+    accentBadge: "bg-amber-950/80 text-amber-300 border-amber-500/40",
+    heroGradient: "from-amber-950/40 via-slate-900/60 to-[#0e0604]",
+    btnGradient: "from-amber-600 via-orange-600 to-amber-500 hover:shadow-amber-500/30",
+    categoryBar: "bg-amber-500 shadow-[0_0_12px_#f59e0b]",
   },
   crimson: {
+    name: "Crimson Red",
+    icon: "🔥",
     aura1: "bg-rose-600/30",
     aura2: "bg-red-600/25",
     brandText: "text-rose-400",
     activeNavBg: "bg-rose-600/30 border-rose-500/40 shadow-[0_0_15px_rgba(244,63,94,0.3)]",
+    cardBorderHover: "hover:border-rose-500/70",
+    cardGlow: "hover:shadow-[0_0_25px_rgba(244,63,94,0.35)]",
+    accentBadge: "bg-rose-950/80 text-rose-300 border-rose-500/40",
+    heroGradient: "from-rose-950/40 via-slate-900/60 to-[#0d0305]",
+    btnGradient: "from-rose-600 via-red-600 to-rose-500 hover:shadow-rose-500/30",
+    categoryBar: "bg-rose-500 shadow-[0_0_12px_#f43f5e]",
   },
 };
 
@@ -240,7 +303,7 @@ export default function Home() {
       <div className={`absolute top-1/3 right-0 w-[350px] sm:w-[800px] h-[350px] sm:h-[700px] ${THEME_STYLES[currentTheme]?.aura2 || "bg-indigo-600/15"} rounded-full blur-[100px] sm:blur-[190px] pointer-events-none transition-all duration-500`} />
 
       {/* HEADER NAVBAR - ULTRA WIDE MAX WIDTH */}
-      <header className="sticky top-0 z-50 glass-nav-dark px-4 sm:px-8 xl:px-12 py-3.5 transition-all">
+      <header className="sticky top-0 z-50 glass-nav-dark px-4 sm:px-8 xl:px-12 py-3.5 transition-all border-b border-slate-800/80">
         <div className="max-w-[1700px] w-full mx-auto flex items-center justify-between gap-4">
           {/* Left Brand Logo */}
           <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => setActiveNav("Home")}>
@@ -255,7 +318,7 @@ export default function Home() {
           </div>
 
           {/* Desktop Center Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 bg-[#0d0b1a]/80 p-1.5 rounded-full border border-purple-500/10">
+          <nav className="hidden md:flex items-center gap-1 bg-[#0d0b1a]/90 p-1.5 rounded-full border border-slate-800/80 shadow-inner">
             {["Home", "About", "Request Site", "DMCA", "Contact"].map((item) => (
               <button
                 key={item}
@@ -280,22 +343,8 @@ export default function Home() {
             ))}
           </nav>
 
-          {/* Right Header Items: Search Bar, Live Counter Pill, Region */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* Desktop Search Input Bar */}
-            <div className="relative hidden lg:block w-64 xl:w-80">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">
-                🔍
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search thousands of sites..."
-                className="w-full pl-8 pr-3 py-2 bg-[#0c0919] border border-slate-800 rounded-full text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500/80 transition-all"
-              />
-            </div>
-
+          {/* Right Header Items: Community Badges, Theme, Region, Live Counter */}
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* DISCORD NAVBAR BADGE */}
             <a
               href="https://discord.gg/QnTrWqwcJ"
@@ -305,7 +354,7 @@ export default function Home() {
               title="Join Discord Community"
             >
               <span className="text-sm">💬</span>
-              <span className="hidden sm:inline font-bold">Discord</span>
+              <span className="hidden xl:inline font-bold">Discord</span>
             </a>
 
             {/* REDDIT NAVBAR BADGE */}
@@ -319,16 +368,27 @@ export default function Home() {
               <svg className="w-3.5 h-3.5 fill-current text-[#FF4500] group-hover:text-white" viewBox="0 0 24 24">
                 <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.196-.491.961 0 1.741.78 1.741 1.742a1.737 1.737 0 0 1-1.144 1.637c.014.168.022.337.022.508 0 2.583-3.025 4.675-6.75 4.675-3.725 0-6.75-2.092-6.75-4.675 0-.166.007-.331.019-.496a1.734 1.734 0 0 1-1.127-1.63c0-.962.78-1.742 1.742-1.742.471 0 .897.187 1.206.502 1.187-.847 2.827-1.408 4.636-1.488l.943-4.417a.317.317 0 0 1 .374-.247l3.056.643c.123-.363.468-.627.876-.627zm-7.653 7.828c-.682 0-1.238.556-1.238 1.238 0 .681.556 1.237 1.238 1.237.681 0 1.237-.556 1.237-1.237 0-.682-.556-1.238-1.237-1.238zm5.284 0c-.682 0-1.237.556-1.237 1.238 0 .681.555 1.237 1.237 1.237.681 0 1.238-.556 1.238-1.237 0-.682-.557-1.238-1.238-1.238zm-5.467 3.498a.317.317 0 0 0-.225.541c.697.697 1.84.975 3.05.975 1.21 0 2.352-.278 3.05-.975a.317.317 0 0 0-.448-.448c-.536.536-1.487.77-2.602.77-1.115 0-2.066-.234-2.602-.77a.315.315 0 0 0-.223-.093z" />
               </svg>
-              <span className="hidden sm:inline font-bold">Reddit</span>
+              <span className="hidden xl:inline font-bold">Reddit</span>
             </a>
 
-            {/* LIVE ANIMATED COUNTER BADGE */}
-            <div className="relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#081814] border border-emerald-500/40 text-emerald-400 text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-              <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 animate-ping" />
-              <span className="font-mono text-xs sm:text-sm font-extrabold text-emerald-300">
-                {siteCount}
+            {/* Theme Selector Dropdown */}
+            <div className="relative hidden sm:block">
+              <select
+                value={currentTheme}
+                onChange={(e) => handleThemeChange(e.target.value)}
+                className="appearance-none bg-[#0c0919] border border-slate-700 hover:border-purple-500/50 text-slate-200 text-xs font-semibold px-3 py-1.5 pr-7 rounded-full cursor-pointer focus:outline-none transition-colors"
+                title="Select Theme"
+              >
+                <option value="midnight">🎨 Midnight</option>
+                <option value="cyber">⚡ Cyberpunk</option>
+                <option value="emerald">🟢 Emerald</option>
+                <option value="ocean">🌊 Ocean</option>
+                <option value="sunset">🌅 Sunset</option>
+                <option value="crimson">🔥 Crimson</option>
+              </select>
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] text-slate-400 pointer-events-none">
+                ▼
               </span>
-              <span className="text-emerald-500/80 font-normal hidden xl:inline">Sites Listed</span>
             </div>
 
             {/* Region Selector */}
@@ -336,7 +396,7 @@ export default function Home() {
               <select
                 value={selectedRegion}
                 onChange={(e) => setSelectedRegion(e.target.value)}
-                className="appearance-none bg-[#0c0919] border border-slate-800 hover:border-purple-500/40 text-slate-200 text-xs font-semibold px-3 py-2 pr-7 rounded-full cursor-pointer focus:outline-none transition-colors"
+                className="appearance-none bg-[#0c0919] border border-slate-700 hover:border-purple-500/50 text-slate-200 text-xs font-semibold px-3 py-1.5 pr-7 rounded-full cursor-pointer focus:outline-none transition-colors"
               >
                 <option value="US">🌐 US</option>
                 <option value="UK">🌐 UK</option>
@@ -349,24 +409,13 @@ export default function Home() {
               </span>
             </div>
 
-            {/* Theme Selector Dropdown */}
-            <div className="relative hidden sm:block">
-              <select
-                value={currentTheme}
-                onChange={(e) => handleThemeChange(e.target.value)}
-                className="appearance-none bg-[#0c0919] border border-slate-800 hover:border-purple-500/40 text-slate-200 text-xs font-semibold px-3 py-2 pr-7 rounded-full cursor-pointer focus:outline-none transition-colors"
-                title="Select Theme"
-              >
-                <option value="midnight">🎨 Midnight Purple</option>
-                <option value="cyber">⚡ Cyberpunk Neon</option>
-                <option value="emerald">🟢 Emerald Matrix</option>
-                <option value="ocean">🌊 Ocean Deep</option>
-                <option value="sunset">🌅 Sunset Amber</option>
-                <option value="crimson">🔥 Crimson Red</option>
-              </select>
-              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] text-slate-400 pointer-events-none">
-                ▼
+            {/* LIVE ANIMATED COUNTER BADGE */}
+            <div className="relative flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-[#081814] border border-emerald-500/40 text-emerald-400 text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <span className="font-mono text-xs font-extrabold text-emerald-300">
+                {siteCount}
               </span>
+              <span className="text-emerald-500/80 font-normal hidden 2xl:inline">Portals</span>
             </div>
 
             {/* Mobile Hamburger Toggle Button */}
@@ -813,15 +862,15 @@ export default function Home() {
                 })}
               </div>
 
-              {/* Category Header with Vertical Purple Bar (Exact Screenshot Style) */}
+              {/* Category Header with Vertical Theme Bar & Integrated Search Input */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-1 pb-1">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-3">
-                    <span className="w-1.5 h-6 bg-purple-500 rounded-full shadow-[0_0_12px_#a855f7]" />
+                    <span className={`w-1.5 h-6 rounded-full ${THEME_STYLES[currentTheme]?.categoryBar || "bg-purple-500 shadow-[0_0_12px_#a855f7]"}`} />
                     <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
                       <span>{selectedCategory === "All" ? "All Categories" : selectedCategory}</span>
                     </h2>
-                    <span className="text-xs font-mono font-bold bg-[#140e36] text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/30">
+                    <span className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border ${THEME_STYLES[currentTheme]?.accentBadge || "bg-purple-950/80 text-purple-300 border-purple-500/30"}`}>
                       {filteredSites.length}
                     </span>
                   </div>
@@ -830,15 +879,31 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {searchQuery && (
-                    <span className="text-xs text-slate-400 hidden sm:inline">
-                      Found <strong className="text-white">{filteredSites.length}</strong> matches
-                    </span>
-                  )}
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  {/* DIRECTORY SEARCH INPUT BAR */}
+                  <div className="relative flex-1 sm:w-64 xl:w-72">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">
+                      🔍
+                    </div>
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search portals..."
+                      className="w-full pl-8 pr-7 py-2 bg-[#0c0919] border border-slate-800 hover:border-purple-500/40 rounded-full text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500/80 transition-all shadow-inner"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery("")}
+                        className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-xs text-slate-400 hover:text-white"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
 
                   {/* Square View Layout Toggle Switch */}
-                  <div className="flex items-center gap-1 bg-[#0c091e] border border-purple-500/30 p-1 rounded-2xl shadow-inner">
+                  <div className="flex items-center gap-1 bg-[#0c091e] border border-slate-800 p-1 rounded-2xl shadow-inner shrink-0">
                     <button
                       onClick={() => setViewMode("grid")}
                       className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
@@ -851,7 +916,7 @@ export default function Home() {
                       <span className="w-3.5 h-3.5 border-2 border-current rounded-md flex items-center justify-center font-mono text-[9px] font-black">
                         ⊞
                       </span>
-                      <span>Square Grid</span>
+                      <span className="hidden sm:inline">Grid</span>
                     </button>
 
                     <button
@@ -864,7 +929,7 @@ export default function Home() {
                       title="Compact List View"
                     >
                       <span className="text-xs font-black">☰</span>
-                      <span>List View</span>
+                      <span className="hidden sm:inline">List</span>
                     </button>
                   </div>
                 </div>
@@ -880,7 +945,7 @@ export default function Home() {
                   <button
                     onClick={() => {
                       setSearchQuery("");
-                      setSelectedCategory("All");
+                      setSelectedCategory("MOVIES & TV SHOWS");
                     }}
                     className="mt-2 px-6 py-3 rounded-2xl bg-purple-600/30 hover:bg-purple-600 text-white text-sm font-bold border border-purple-500/50 transition-all cursor-pointer"
                   >
@@ -888,15 +953,15 @@ export default function Home() {
                   </button>
                 </div>
               ) : viewMode === "grid" ? (
-                /* EXACT SQUARE CARD GRID VIEW (MATCHING USER SCREENSHOT) */
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3.5 sm:gap-4">
+                /* EXACT SQUARE CARD GRID VIEW (IMPROVED STYLING & PERFECT FIT) */
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3.5 sm:gap-4">
                   {filteredSites.map((site) => (
                     <a
                       key={site.id}
                       href={site.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group card-square relative bg-[#0b0918]/95 hover:bg-[#120e29] border border-purple-500/20 hover:border-purple-400/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 aspect-square flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] shadow-md hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] cursor-pointer overflow-hidden backdrop-blur-md"
+                      className={`group card-square relative bg-gradient-to-b from-[#0e0b24]/90 to-[#080616]/95 border border-slate-800/80 ${THEME_STYLES[currentTheme]?.cardBorderHover || "hover:border-purple-400/80"} rounded-2xl sm:rounded-3xl p-4 sm:p-4.5 aspect-square flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] shadow-md ${THEME_STYLES[currentTheme]?.cardGlow || "hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]"} cursor-pointer overflow-hidden backdrop-blur-md`}
                     >
                       {/* Top-Left Floating Status Badge (Exact Screenshot Style) */}
                       <div className="absolute top-2.5 left-2.5 z-20">
