@@ -929,59 +929,59 @@ export default function Home() {
 
         </section>
 
-        {/* 4 STATS CARDS ROW WITH ULTRA-WIDE FIT */}
-        <section className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 perspective-1000">
-          <div className={`tilt-card-3d rounded-2xl p-5 sm:p-7 flex items-center gap-4 sm:gap-5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-sm`}>
+        {/* 4 STATS CARDS ROW WITH ULTRA-WIDE FIT - COMPACT SLEEK ROW */}
+        <section className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 perspective-1000">
+          <div className={`tilt-card-3d rounded-2xl p-3.5 sm:p-4.5 flex items-center gap-3 sm:gap-3.5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
+            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-xs`}>
               🪐
             </div>
             <div>
-              <h3 className={`text-2xl sm:text-3xl font-black ${activeTheme.headingColor} tracking-tight font-mono`}>
+              <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight font-mono`}>
                 {siteCount}
               </h3>
-              <p className={`text-xs sm:text-sm font-bold ${activeTheme.brandText}`}>Sites Indexed</p>
-              <p className={`text-[11px] sm:text-xs ${activeTheme.mutedText}`}>Verified active portals</p>
+              <p className={`text-xs font-bold ${activeTheme.brandText}`}>Sites Indexed</p>
+              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>Verified active portals</p>
             </div>
           </div>
 
-          <div className={`tilt-card-3d rounded-2xl p-5 sm:p-7 flex items-center gap-4 sm:gap-5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-sm`}>
+          <div className={`tilt-card-3d rounded-2xl p-3.5 sm:p-4.5 flex items-center gap-3 sm:gap-3.5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
+            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-xs`}>
               🎬
             </div>
             <div>
-              <h3 className={`text-2xl sm:text-3xl font-black ${activeTheme.headingColor} tracking-tight`}>25+</h3>
-              <p className={`text-xs sm:text-sm font-bold ${activeTheme.brandText}`}>Categories</p>
-              <p className={`text-[11px] sm:text-xs ${activeTheme.mutedText}`}>All your favorites</p>
+              <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight`}>25+</h3>
+              <p className={`text-xs font-bold ${activeTheme.brandText}`}>Categories</p>
+              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>All your favorites</p>
             </div>
           </div>
 
-          <div className={`tilt-card-3d rounded-2xl p-5 sm:p-7 flex items-center gap-4 sm:gap-5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-sm`}>
+          <div className={`tilt-card-3d rounded-2xl p-3.5 sm:p-4.5 flex items-center gap-3 sm:gap-3.5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
+            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-xs`}>
               🌐
             </div>
             <div>
-              <h3 className={`text-2xl sm:text-3xl font-black ${activeTheme.headingColor} tracking-tight`}>190+</h3>
-              <p className={`text-xs sm:text-sm font-bold ${activeTheme.brandText}`}>Countries Supported</p>
-              <p className={`text-[11px] sm:text-xs ${activeTheme.mutedText}`}>Worldwide access</p>
+              <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight`}>190+</h3>
+              <p className={`text-xs font-bold ${activeTheme.brandText}`}>Countries Supported</p>
+              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>Worldwide access</p>
             </div>
           </div>
 
-          <div className={`tilt-card-3d rounded-2xl p-5 sm:p-7 flex items-center gap-4 sm:gap-5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-sm`}>
+          <div className={`tilt-card-3d rounded-2xl p-3.5 sm:p-4.5 flex items-center gap-3 sm:gap-3.5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
+            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-xs`}>
               ⚡
             </div>
             <div>
-              <h3 className={`text-2xl sm:text-3xl font-black ${activeTheme.brandText} tracking-tight`}>100%</h3>
-              <p className={`text-xs sm:text-sm font-bold ${activeTheme.brandText}`}>Free Forever</p>
-              <p className={`text-[11px] sm:text-xs ${activeTheme.mutedText}`}>Always will be</p>
+              <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.brandText} tracking-tight`}>100%</h3>
+              <p className={`text-xs font-bold ${activeTheme.brandText}`}>Free Forever</p>
+              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>Always will be</p>
             </div>
           </div>
         </section>
 
-        {/* BOTTOM FEATURE HIGHLIGHTS STRIP */}
-        <section className={`rounded-2xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 shadow-md`}>
-          <div className="flex items-center gap-2.5">
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-sm sm:text-base shrink-0`}>
+        {/* BOTTOM FEATURE HIGHLIGHTS STRIP - COMPACT SLEEK ROW */}
+        <section className={`rounded-xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} p-2.5 sm:p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 shadow-sm`}>
+          <div className="flex items-center gap-2">
+            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs sm:text-sm shrink-0`}>
               ⚡
             </div>
             <div>
@@ -990,8 +990,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-sm sm:text-base shrink-0`}>
+          <div className="flex items-center gap-2">
+            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs sm:text-sm shrink-0`}>
               🌐
             </div>
             <div>
@@ -1000,8 +1000,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-sm sm:text-base shrink-0`}>
+          <div className="flex items-center gap-2">
+            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs sm:text-sm shrink-0`}>
               🛡️
             </div>
             <div>
@@ -1010,8 +1010,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-sm sm:text-base shrink-0`}>
+          <div className="flex items-center gap-2">
+            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs sm:text-sm shrink-0`}>
               🔄
             </div>
             <div>
