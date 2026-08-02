@@ -250,6 +250,20 @@ export default function Home() {
               <span className="hidden sm:inline font-bold">Discord</span>
             </a>
 
+            {/* REDDIT NAVBAR BADGE */}
+            <a
+              href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/50 text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(255,69,0,0.3)] hover:scale-105"
+              title="Visit Reddit Profile"
+            >
+              <svg className="w-3.5 h-3.5 fill-current text-[#FF4500] group-hover:text-white" viewBox="0 0 24 24">
+                <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.196-.491.961 0 1.741.78 1.741 1.742a1.737 1.737 0 0 1-1.144 1.637c.014.168.022.337.022.508 0 2.583-3.025 4.675-6.75 4.675-3.725 0-6.75-2.092-6.75-4.675 0-.166.007-.331.019-.496a1.734 1.734 0 0 1-1.127-1.63c0-.962.78-1.742 1.742-1.742.471 0 .897.187 1.206.502 1.187-.847 2.827-1.408 4.636-1.488l.943-4.417a.317.317 0 0 1 .374-.247l3.056.643c.123-.363.468-.627.876-.627zm-7.653 7.828c-.682 0-1.238.556-1.238 1.238 0 .681.556 1.237 1.238 1.237.681 0 1.237-.556 1.237-1.237 0-.682-.556-1.238-1.237-1.238zm5.284 0c-.682 0-1.237.556-1.237 1.238 0 .681.555 1.237 1.237 1.237.681 0 1.238-.556 1.238-1.237 0-.682-.557-1.238-1.238-1.238zm-5.467 3.498a.317.317 0 0 0-.225.541c.697.697 1.84.975 3.05.975 1.21 0 2.352-.278 3.05-.975a.317.317 0 0 0-.448-.448c-.536.536-1.487.77-2.602.77-1.115 0-2.066-.234-2.602-.77a.315.315 0 0 0-.223-.093z" />
+              </svg>
+              <span className="hidden sm:inline font-bold">Reddit</span>
+            </a>
+
             {/* LIVE ANIMATED COUNTER BADGE */}
             <div className="relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#081814] border border-emerald-500/40 text-emerald-400 text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
               <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 animate-ping" />
@@ -651,6 +665,31 @@ export default function Home() {
                   <span className="text-sm">↗</span>
                 </span>
               </a>
+
+              {/* REDDIT COMMUNITY BANNER */}
+              <a
+                href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#FF4500]/25 via-[#e03d00]/20 to-amber-900/30 border border-[#FF4500]/40 hover:border-[#FF4500] hover:shadow-[0_0_25px_rgba(255,69,0,0.4)] transition-all cursor-pointer overflow-hidden mt-2.5"
+              >
+                <div className="flex items-center gap-3 relative z-10">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black text-white group-hover:text-orange-200 flex items-center gap-1.5">
+                      <span>REDDIT PROFILE</span>
+                      <span className="text-[9px] text-orange-400 font-bold font-mono px-1.5 py-0.5 rounded bg-orange-950/80 border border-orange-500/30">● ACTIVE</span>
+                    </span>
+                    <span className="text-[10px] font-medium text-slate-300">
+                      Follow, Discuss & Request Sites
+                    </span>
+                  </div>
+                </div>
+
+                <span className="text-[#FF4500] font-black text-xs group-hover:translate-x-1 group-hover:text-white transition-all flex items-center gap-0.5 shrink-0">
+                  <span>Visit</span>
+                  <span className="text-sm">↗</span>
+                </span>
+              </a>
             </aside>
 
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
@@ -931,17 +970,30 @@ export default function Home() {
             {showModal === "request" && (
               <div className="flex flex-col gap-5 py-2 text-center items-center">
                 <p className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-300 to-indigo-200 text-base sm:text-lg font-black uppercase tracking-wider leading-snug drop-shadow-sm">
-                  WANNA ADD YOUR WEBSITE? JUST JOIN DISCORD AND MESSAGE ME
+                  WANNA ADD YOUR WEBSITE? JOIN DISCORD OR REDDIT AND MESSAGE ME
                 </p>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full pt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full pt-2">
                   <a
                     href="https://discord.gg/QnTrWqwcJ"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-[#5865F2] hover:bg-[#404EED] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-95 cursor-pointer"
+                    className="w-full py-3 px-3 rounded-xl bg-[#5865F2] hover:bg-[#404EED] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-95 cursor-pointer"
                   >
-                    <span>💬 Join Discord</span>
+                    <span>💬 Discord</span>
+                    <span className="text-xs">↗</span>
+                  </a>
+
+                  <a
+                    href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 px-3 rounded-xl bg-[#FF4500] hover:bg-[#e03d00] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 transition-all shadow-lg hover:shadow-orange-500/25 active:scale-95 cursor-pointer"
+                  >
+                    <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
+                      <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.196-.491.961 0 1.741.78 1.741 1.742a1.737 1.737 0 0 1-1.144 1.637c.014.168.022.337.022.508 0 2.583-3.025 4.675-6.75 4.675-3.725 0-6.75-2.092-6.75-4.675 0-.166.007-.331.019-.496a1.734 1.734 0 0 1-1.127-1.63c0-.962.78-1.742 1.742-1.742.471 0 .897.187 1.206.502 1.187-.847 2.827-1.408 4.636-1.488l.943-4.417a.317.317 0 0 1 .374-.247l3.056.643c.123-.363.468-.627.876-.627zm-7.653 7.828c-.682 0-1.238.556-1.238 1.238 0 .681.556 1.237 1.238 1.237.681 0 1.237-.556 1.237-1.237 0-.682-.556-1.238-1.237-1.238zm5.284 0c-.682 0-1.237.556-1.237 1.238 0 .681.555 1.237 1.237 1.237.681 0 1.238-.556 1.238-1.237 0-.682-.557-1.238-1.238-1.238zm-5.467 3.498a.317.317 0 0 0-.225.541c.697.697 1.84.975 3.05.975 1.21 0 2.352-.278 3.05-.975a.317.317 0 0 0-.448-.448c-.536.536-1.487.77-2.602.77-1.115 0-2.066-.234-2.602-.77a.315.315 0 0 0-.223-.093z" />
+                    </svg>
+                    <span>Reddit</span>
                     <span className="text-xs">↗</span>
                   </a>
 
@@ -949,9 +1001,9 @@ export default function Home() {
                     href="https://t.me/+7SjX1pMek4c1ZDA1"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-[#229ED9] hover:bg-[#1d87b9] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-sky-500/25 active:scale-95 cursor-pointer"
+                    className="w-full py-3 px-3 rounded-xl bg-[#229ED9] hover:bg-[#1d87b9] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 transition-all shadow-lg hover:shadow-sky-500/25 active:scale-95 cursor-pointer"
                   >
-                    <span>✈️ Join Telegram</span>
+                    <span>✈️ Telegram</span>
                     <span className="text-xs">↗</span>
                   </a>
                 </div>
@@ -1022,6 +1074,24 @@ export default function Home() {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               All Systems Operational
             </span>
+            <span>•</span>
+            <a
+              href="https://discord.gg/QnTrWqwcJ"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#5865F2] transition-colors font-semibold"
+            >
+              Discord
+            </a>
+            <span>•</span>
+            <a
+              href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#FF4500] transition-colors font-semibold"
+            >
+              Reddit
+            </a>
             <span>•</span>
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
