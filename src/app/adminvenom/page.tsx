@@ -201,7 +201,19 @@ export default function AdminDashboard() {
   // Banner Customization Handlers
   const handleSaveBanner = (e: React.FormEvent) => {
     e.preventDefault();
-    saveBannerConfig(bannerConfig);
+    const hashtagsArray = bannerConfig.promoHashtagsString
+      ? bannerConfig.promoHashtagsString.split(",").map((s) => {
+          const trimmed = s.trim();
+          return trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
+        }).filter(Boolean)
+      : bannerConfig.promoHashtags || ["#4KHDR", "#NoAds", "#FastServer", "#FreeStreaming"];
+
+    const updatedConfig: BannerConfig = {
+      ...bannerConfig,
+      promoHashtags: hashtagsArray,
+    };
+    setBannerConfigState(updatedConfig);
+    saveBannerConfig(updatedConfig);
     setBannerSuccess(true);
     setTimeout(() => setBannerSuccess(false), 2500);
   };
@@ -768,14 +780,70 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-300 block mb-1">Hero Image URL</label>
-                <input
-                  type="text"
-                  value={bannerConfig.heroImageUrl}
-                  onChange={(e) => setBannerConfigState({ ...bannerConfig, heroImageUrl: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
-                />
+              {/* PROMOTIONAL BANNER AREA CONTROLS */}
+              <div className="flex flex-col gap-3 pt-3 border-t border-purple-500/30">
+                <h3 className="text-xs font-black text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <span>🎨</span> Promotional Poster Banner Settings
+                </h3>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Poster Banner Image URL</label>
+                  <input
+                    type="text"
+                    value={bannerConfig.heroImageUrl || ""}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, heroImageUrl: e.target.value })}
+                    placeholder="/hero_banner.png or https://example.com/banner.png"
+                    className="w-full px-4 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-300 block mb-1">Promotional Badge Label</label>
+                    <input
+                      type="text"
+                      value={bannerConfig.cardBadgeText || ""}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, cardBadgeText: e.target.value })}
+                      placeholder="e.g. FEATURED PROMO"
+                      className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-purple-300 block mb-1">Promotional Website Name *</label>
+                    <input
+                      type="text"
+                      value={bannerConfig.promoSiteName || ""}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, promoSiteName: e.target.value })}
+                      placeholder="e.g. Flixtor 4K Ultra"
+                      className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-purple-500/50 rounded-xl text-white text-xs font-bold focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-purple-300 block mb-1">Click Redirection Target URL *</label>
+                  <input
+                    type="url"
+                    value={bannerConfig.promoTargetUrl || ""}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, promoTargetUrl: e.target.value })}
+                    placeholder="https://flixtor.to"
+                    className="w-full px-4 py-2.5 bg-[#120e2b] border border-purple-500/50 rounded-xl text-white text-xs font-bold focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">
+                    Feature Hashtags (comma-separated, contain #)
+                  </label>
+                  <input
+                    type="text"
+                    value={bannerConfig.promoHashtagsString !== undefined ? bannerConfig.promoHashtagsString : (bannerConfig.promoHashtags ? bannerConfig.promoHashtags.join(", ") : "#4KHDR, #NoAds, #FastServer, #FreeStreaming")}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, promoHashtagsString: e.target.value })}
+                    placeholder="#4KHDR, #NoAds, #FastServer, #FreeStreaming"
+                    className="w-full px-4 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                  />
+                </div>
               </div>
 
               <button

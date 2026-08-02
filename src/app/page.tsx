@@ -889,43 +889,66 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Right Column Character Card */}
+          {/* Right Column Promotional Banner Area (Clean, no 3D tilt effect) */}
           <div className="lg:col-span-5 relative flex justify-center items-center mt-2 lg:mt-0 z-10">
             {/* Ambient Lighting Aura */}
             <div className={`absolute inset-0 ${activeTheme.aura1} rounded-3xl blur-3xl -z-10`} />
 
-            <div
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              style={{
-                transform: `rotateX(${tiltStyle.rotateX}deg) rotateY(${tiltStyle.rotateY}deg)`,
-                transition: "transform 0.15s ease-out",
-              }}
-              className={`relative w-full max-w-md xl:max-w-lg aspect-[4/3] rounded-3xl overflow-hidden border ${activeTheme.cardBorder} shadow-xl ${activeTheme.cardBg} cursor-pointer`}
+            <a
+              href={bannerConfig.promoTargetUrl || "https://flixtor.to"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group relative w-full max-w-md xl:max-w-lg aspect-[4/3] rounded-3xl overflow-hidden border ${activeTheme.cardBorder} shadow-2xl ${activeTheme.cardBg} cursor-pointer block transition-all duration-300 hover:scale-[1.02] hover:border-purple-400`}
             >
+              {/* Poster Banner Image */}
               <Image
                 src={bannerConfig.heroImageUrl || "/hero_banner.png"}
-                alt="Allsitehub Visual"
+                alt={bannerConfig.promoSiteName || "Promotional Banner"}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-cover object-center scale-105 transition-all duration-300"
+                className="object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-500"
                 priority
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60" />
-
-              <div className={`absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-3.5 sm:p-4 rounded-2xl ${activeTheme.headerBg} border ${activeTheme.cardBorder} flex items-center justify-between shadow-2xl`}>
-                <div className="flex items-center gap-2 sm:gap-2.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-                  <span className={`text-xs sm:text-sm font-extrabold ${activeTheme.headingColor} tracking-wide`}>
-                    {bannerConfig.cardBadgeText || "Live Stream Hub"}
-                  </span>
-                </div>
-                <span className={`text-xs sm:text-sm font-mono font-bold ${activeTheme.accentBadge} px-3 py-1 rounded-full border`}>
-                  ⚡ {siteCount} Sites
+              {/* Top Right Promotional Badge */}
+              <div className="absolute top-3.5 right-3.5 z-20">
+                <span className="px-3 py-1 rounded-full bg-purple-950/90 text-purple-300 border border-purple-400/50 text-[10px] sm:text-xs font-black uppercase tracking-wider shadow-lg flex items-center gap-1.5 backdrop-blur-md">
+                  <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
+                  {bannerConfig.cardBadgeText || "FEATURED PROMO"}
                 </span>
               </div>
-            </div>
+
+              {/* Dark Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+
+              {/* Bottom Promotional Info & Feature Hashtags (#) */}
+              <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-3.5 sm:p-4 rounded-2xl bg-black/75 backdrop-blur-md border border-white/10 flex flex-col gap-2 shadow-2xl transition-all group-hover:border-purple-400/60">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base sm:text-lg">🔥</span>
+                    <h3 className="text-sm sm:text-base font-black text-white tracking-wide truncate">
+                      {bannerConfig.promoSiteName || "Flixtor 4K Ultra"}
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-extrabold text-purple-300 bg-purple-950/80 px-2.5 py-1 rounded-full border border-purple-500/40 shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-all flex items-center gap-1">
+                    <span>Visit</span>
+                    <span className="text-xs">↗</span>
+                  </span>
+                </div>
+
+                {/* Feature Hashtags containing # */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                  {(bannerConfig.promoHashtags || ["#4KHDR", "#NoAds", "#FastServer", "#FreeStreaming"]).map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="text-[9px] sm:text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-purple-950/80 text-purple-200 border border-purple-500/30 uppercase tracking-wider"
+                    >
+                      {tag.startsWith("#") ? tag : `#${tag}`}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </a>
           </div>
 
         </section>

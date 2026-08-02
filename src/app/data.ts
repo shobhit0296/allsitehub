@@ -38,6 +38,11 @@ export interface BannerConfig {
   secondaryBtnUrl: string;
   heroImageUrl: string;
   cardBadgeText: string;
+  // PROMOTIONAL BANNER AREA FIELDS
+  promoSiteName?: string;
+  promoTargetUrl?: string;
+  promoHashtags?: string[];
+  promoHashtagsString?: string;
 }
 
 export const DEFAULT_BANNER_CONFIG: BannerConfig = {
@@ -53,7 +58,11 @@ export const DEFAULT_BANNER_CONFIG: BannerConfig = {
   secondaryBtnText: "REQUEST A SITE",
   secondaryBtnUrl: "request-modal",
   heroImageUrl: "/hero_banner.png",
-  cardBadgeText: "Live Stream Hub",
+  cardBadgeText: "FEATURED PROMO",
+  promoSiteName: "Flixtor 4K Ultra",
+  promoTargetUrl: "https://flixtor.to",
+  promoHashtags: ["#4KHDR", "#NoAds", "#FastServer", "#FreeStreaming"],
+  promoHashtagsString: "#4KHDR, #NoAds, #FastServer, #FreeStreaming",
 };
 
 export const BANNER_STORAGE_KEY = "allsitehub_banner_config";
