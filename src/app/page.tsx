@@ -853,15 +853,15 @@ export default function Home() {
         )}
       </header>
 
-      <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 xl:px-12 py-6 sm:py-12 flex flex-col gap-8 sm:gap-14">
+      <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 xl:px-12 py-4 sm:py-8 flex flex-col gap-4 sm:gap-6">
         {/* HERO SECTION WITH DYNAMIC BANNER & CLEAN CRISP VISUAL */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-center relative">
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 xl:gap-12 items-center relative">
 
           {/* Left Column Text Content */}
-          <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-7 relative z-20 text-center lg:text-left items-center lg:items-start">
+          <div className="lg:col-span-7 flex flex-col gap-4 sm:gap-5 relative z-20 text-center lg:text-left items-center lg:items-start">
             
             {/* Top Glowing Badge */}
-            <div className={`w-fit flex items-center gap-2 px-4 py-1.5 rounded-full ${activeTheme.accentBadge} text-xs sm:text-sm font-bold tracking-wider uppercase backdrop-blur-md shadow-md`}>
+            <div className={`w-fit flex items-center gap-2 px-3.5 py-1 rounded-full ${activeTheme.accentBadge} text-xs sm:text-sm font-bold tracking-wider uppercase backdrop-blur-md shadow-sm`}>
               <span className="text-sm sm:text-base">{bannerConfig.badgeIcon || "⚡"}</span>
               {bannerConfig.badgeText || "THE ULTIMATE STREAMING HUB"}
             </div>
@@ -889,7 +889,7 @@ export default function Home() {
           </div>
 
           {/* Right Column Character Card */}
-          <div className="lg:col-span-5 relative flex justify-center items-center mt-4 lg:mt-0 z-10">
+          <div className="lg:col-span-5 relative flex justify-center items-center mt-2 lg:mt-0 z-10">
             {/* Ambient Lighting Aura */}
             <div className={`absolute inset-0 ${activeTheme.aura1} rounded-3xl blur-3xl -z-10`} />
 
@@ -900,7 +900,7 @@ export default function Home() {
                 transform: `rotateX(${tiltStyle.rotateX}deg) rotateY(${tiltStyle.rotateY}deg)`,
                 transition: "transform 0.15s ease-out",
               }}
-              className={`relative w-full max-w-md xl:max-w-lg aspect-[4/3] rounded-3xl overflow-hidden border ${activeTheme.cardBorder} shadow-2xl ${activeTheme.cardBg} cursor-pointer`}
+              className={`relative w-full max-w-md xl:max-w-lg aspect-[4/3] rounded-3xl overflow-hidden border ${activeTheme.cardBorder} shadow-xl ${activeTheme.cardBg} cursor-pointer`}
             >
               <Image
                 src={bannerConfig.heroImageUrl || "/hero_banner.png"}
@@ -929,10 +929,10 @@ export default function Home() {
 
         </section>
 
-        {/* 4 STATS CARDS ROW WITH ULTRA-WIDE FIT - COMPACT SLEEK ROW */}
-        <section className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 perspective-1000">
-          <div className={`tilt-card-3d rounded-2xl p-3.5 sm:p-4.5 flex items-center gap-3 sm:gap-3.5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-xs`}>
+        {/* 4 STATS CARDS ROW WITH ULTRA-WIDE FIT - TIGHT SLEEK ROW */}
+        <section className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 perspective-1000">
+          <div className={`tilt-card-3d rounded-2xl p-2.5 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs`}>
               🪐
             </div>
             <div>
@@ -944,8 +944,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className={`tilt-card-3d rounded-2xl p-3.5 sm:p-4.5 flex items-center gap-3 sm:gap-3.5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-xs`}>
+          <div className={`tilt-card-3d rounded-2xl p-2.5 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs`}>
               🎬
             </div>
             <div>
@@ -955,8 +955,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className={`tilt-card-3d rounded-2xl p-3.5 sm:p-4.5 flex items-center gap-3 sm:gap-3.5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-xs`}>
+          <div className={`tilt-card-3d rounded-2xl p-2.5 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs`}>
               🌐
             </div>
             <div>
@@ -966,8 +966,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className={`tilt-card-3d rounded-2xl p-3.5 sm:p-4.5 flex items-center gap-3 sm:gap-3.5 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-xs`}>
+          <div className={`tilt-card-3d rounded-2xl p-2.5 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs`}>
               ⚡
             </div>
             <div>
@@ -978,10 +978,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* BOTTOM FEATURE HIGHLIGHTS STRIP - COMPACT SLEEK ROW */}
-        <section className={`rounded-xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} p-2.5 sm:p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 shadow-sm`}>
+        {/* BOTTOM FEATURE HIGHLIGHTS STRIP - TIGHT SLEEK ROW */}
+        <section className={`rounded-xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} p-2 sm:p-2.5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2 shadow-xs`}>
           <div className="flex items-center gap-2">
-            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs sm:text-sm shrink-0`}>
+            <div className={`w-6.5 h-6.5 sm:w-7.5 sm:h-7.5 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs shrink-0`}>
               ⚡
             </div>
             <div>
@@ -991,7 +991,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs sm:text-sm shrink-0`}>
+            <div className={`w-6.5 h-6.5 sm:w-7.5 sm:h-7.5 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs shrink-0`}>
               🌐
             </div>
             <div>
@@ -1001,7 +1001,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs sm:text-sm shrink-0`}>
+            <div className={`w-6.5 h-6.5 sm:w-7.5 sm:h-7.5 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs shrink-0`}>
               🛡️
             </div>
             <div>
@@ -1011,7 +1011,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs sm:text-sm shrink-0`}>
+            <div className={`w-6.5 h-6.5 sm:w-7.5 sm:h-7.5 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs shrink-0`}>
               🔄
             </div>
             <div>
@@ -1022,7 +1022,7 @@ export default function Home() {
         </section>
 
         {/* INTERACTIVE DIRECTORY SECTION - LEFT SIDEBAR CATEGORY LAYOUT */}
-        <section id="browse-directory" className="flex flex-col gap-6 pt-4 sm:pt-6">
+        <section id="browse-directory" className="flex flex-col gap-4 pt-2 sm:pt-3">
           {/* Top Section Header */}
           <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2 border-b ${activeTheme.headerBorder}`}>
             <div>
