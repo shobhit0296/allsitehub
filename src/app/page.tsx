@@ -16,13 +16,71 @@ import {
   getSavedSites,
 } from "./data";
 
+const THEME_STYLES: Record<string, { aura1: string; aura2: string; brandText: string; activeNavBg: string }> = {
+  midnight: {
+    aura1: "bg-purple-700/25",
+    aura2: "bg-indigo-600/20",
+    brandText: "text-purple-400",
+    activeNavBg: "bg-purple-600/30 border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.3)]",
+  },
+  cyber: {
+    aura1: "bg-pink-600/30",
+    aura2: "bg-cyan-500/25",
+    brandText: "text-pink-400",
+    activeNavBg: "bg-pink-600/30 border-pink-500/40 shadow-[0_0_15px_rgba(236,72,153,0.3)]",
+  },
+  emerald: {
+    aura1: "bg-emerald-600/30",
+    aura2: "bg-teal-500/25",
+    brandText: "text-emerald-400",
+    activeNavBg: "bg-emerald-600/30 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
+  },
+  ocean: {
+    aura1: "bg-cyan-600/30",
+    aura2: "bg-blue-600/25",
+    brandText: "text-cyan-400",
+    activeNavBg: "bg-cyan-600/30 border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.3)]",
+  },
+  sunset: {
+    aura1: "bg-amber-600/30",
+    aura2: "bg-orange-600/25",
+    brandText: "text-amber-400",
+    activeNavBg: "bg-amber-600/30 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.3)]",
+  },
+  crimson: {
+    aura1: "bg-rose-600/30",
+    aura2: "bg-red-600/25",
+    brandText: "text-rose-400",
+    activeNavBg: "bg-rose-600/30 border-rose-500/40 shadow-[0_0_15px_rgba(244,63,94,0.3)]",
+  },
+};
+
 export default function Home() {
   const [activeNav, setActiveNav] = useState("Home");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>("MOVIES & TV SHOWS");
   const [selectedRegion, setSelectedRegion] = useState("US");
   const [showModal, setShowModal] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  // Theme State
+  const [currentTheme, setCurrentTheme] = useState<string>("midnight");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("allsitehub_theme");
+      if (savedTheme && THEME_STYLES[savedTheme]) {
+        setCurrentTheme(savedTheme);
+      }
+    }
+  }, []);
+
+  const handleThemeChange = (themeKey: string) => {
+    setCurrentTheme(themeKey);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("allsitehub_theme", themeKey);
+    }
+  };
 
   // Dynamic Sites List State
   const [sitesList, setSitesList] = useState<SiteItem[]>(STREAMING_SITES);
@@ -178,8 +236,8 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-[#05050c] text-slate-100 font-sans selection:bg-purple-600 selection:text-white relative overflow-x-hidden">
       {/* Background Ambient Lighting Aura */}
-      <div className="absolute top-0 left-1/4 -mt-20 w-[400px] sm:w-[900px] h-[300px] sm:h-[600px] bg-purple-700/20 rounded-full blur-[100px] sm:blur-[180px] pointer-events-none" />
-      <div className="absolute top-1/3 right-0 w-[350px] sm:w-[800px] h-[350px] sm:h-[700px] bg-indigo-600/15 rounded-full blur-[100px] sm:blur-[190px] pointer-events-none" />
+      <div className={`absolute top-0 left-1/4 -mt-20 w-[400px] sm:w-[900px] h-[300px] sm:h-[600px] ${THEME_STYLES[currentTheme]?.aura1 || "bg-purple-700/20"} rounded-full blur-[100px] sm:blur-[180px] pointer-events-none transition-all duration-500`} />
+      <div className={`absolute top-1/3 right-0 w-[350px] sm:w-[800px] h-[350px] sm:h-[700px] ${THEME_STYLES[currentTheme]?.aura2 || "bg-indigo-600/15"} rounded-full blur-[100px] sm:blur-[190px] pointer-events-none transition-all duration-500`} />
 
       {/* HEADER NAVBAR - ULTRA WIDE MAX WIDTH */}
       <header className="sticky top-0 z-50 glass-nav-dark px-4 sm:px-8 xl:px-12 py-3.5 transition-all">
@@ -192,7 +250,7 @@ export default function Home() {
               </div>
             </div>
             <span className="font-extrabold text-xl sm:text-2xl tracking-tight text-white flex items-center">
-              Allsite<span className="text-purple-400 group-hover:text-purple-300 transition-colors">hub</span>
+              Allsite<span className={`${THEME_STYLES[currentTheme]?.brandText || "text-purple-400"} group-hover:text-purple-300 transition-colors`}>hub</span>
             </span>
           </div>
 
@@ -291,6 +349,26 @@ export default function Home() {
               </span>
             </div>
 
+            {/* Theme Selector Dropdown */}
+            <div className="relative hidden sm:block">
+              <select
+                value={currentTheme}
+                onChange={(e) => handleThemeChange(e.target.value)}
+                className="appearance-none bg-[#0c0919] border border-slate-800 hover:border-purple-500/40 text-slate-200 text-xs font-semibold px-3 py-2 pr-7 rounded-full cursor-pointer focus:outline-none transition-colors"
+                title="Select Theme"
+              >
+                <option value="midnight">🎨 Midnight Purple</option>
+                <option value="cyber">⚡ Cyberpunk Neon</option>
+                <option value="emerald">🟢 Emerald Matrix</option>
+                <option value="ocean">🌊 Ocean Deep</option>
+                <option value="sunset">🌅 Sunset Amber</option>
+                <option value="crimson">🔥 Crimson Red</option>
+              </select>
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] text-slate-400 pointer-events-none">
+                ▼
+              </span>
+            </div>
+
             {/* Mobile Hamburger Toggle Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -315,6 +393,23 @@ export default function Home() {
                 placeholder="Search sites, anime, movies..."
                 className="w-full pl-8 pr-3 py-2 bg-[#120e29] border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none"
               />
+            </div>
+
+            {/* Mobile Theme Selector */}
+            <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#120e29] border border-slate-700/80 my-1">
+              <span className="text-xs font-bold text-slate-300">Theme:</span>
+              <select
+                value={currentTheme}
+                onChange={(e) => handleThemeChange(e.target.value)}
+                className="bg-[#0c0919] border border-slate-700 text-slate-200 text-xs font-bold px-2 py-1 rounded-lg focus:outline-none"
+              >
+                <option value="midnight">🎨 Midnight Purple</option>
+                <option value="cyber">⚡ Cyberpunk Neon</option>
+                <option value="emerald">🟢 Emerald Matrix</option>
+                <option value="ocean">🌊 Ocean Deep</option>
+                <option value="sunset">🌅 Sunset Amber</option>
+                <option value="crimson">🔥 Crimson Red</option>
+              </select>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -595,7 +690,6 @@ export default function Home() {
               {/* Desktop Category Buttons List */}
               <div className="hidden lg:flex flex-col gap-2">
                 {[
-                  { name: "All", label: "All Categories", icon: "🌐" },
                   { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
                   { name: "ANIME", label: "ANIME", icon: "⚡" },
                   { name: "MANGA", label: "MANGA", icon: "📖" },
@@ -697,19 +791,6 @@ export default function Home() {
 
               {/* MOBILE CATEGORY SCROLLBAR (PHONE OPTIMIZED) */}
               <div className="lg:hidden flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 mb-1 snap-x">
-                <button
-                  onClick={() => setSelectedCategory("All")}
-                  className={`snap-start shrink-0 px-3.5 py-2.5 rounded-2xl text-xs font-black transition-all border flex items-center gap-1.5 whitespace-nowrap active:scale-95 cursor-pointer ${
-                    selectedCategory === "All"
-                      ? "bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)] scale-[1.02]"
-                      : "bg-[#0c091f]/90 text-slate-300 border-slate-800 hover:border-purple-500/40"
-                  }`}
-                >
-                  <span>🌐 ALL</span>
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-500/30">
-                    {sitesList.length}
-                  </span>
-                </button>
                 {CATEGORIES.map((cat) => {
                   const isSelected = selectedCategory === cat;
                   const count = getCategoryCount(cat);
