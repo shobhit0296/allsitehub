@@ -551,13 +551,12 @@ export default function Home() {
 
                     {/* Desktop Center Navigation Links */}
                     <nav className="hidden md:flex items-center gap-1 bg-[#0d0b1a]/90 p-1.5 rounded-full border border-slate-800/80 shadow-inner">
-                        {["Home", "About", "Request Site", "DMCA", "Contact"].map((item) => (
+                        {["Home", "About", "DMCA", "Contact"].map((item) => (
                             <button
                                 key={item}
                                 onClick={() => {
                                     setActiveNav(item);
-                                    if (item === "Request Site") setShowModal("request");
-                                    else if (item === "DMCA") setShowModal("dmca");
+                                    if (item === "DMCA") setShowModal("dmca");
                                     else if (item === "Contact") setShowModal("contact");
                                     else if (item === "About") setShowModal("about");
                                 }}
@@ -676,14 +675,13 @@ export default function Home() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-2">
-                            {["Home", "About", "Request Site", "DMCA", "Contact"].map((item) => (
+                            {["Home", "About", "DMCA", "Contact"].map((item) => (
                                 <button
                                     key={item}
                                     onClick={() => {
                                         setActiveNav(item);
                                         setIsMobileMenuOpen(false);
-                                        if (item === "Request Site") setShowModal("request");
-                                        else if (item === "DMCA") setShowModal("dmca");
+                                        if (item === "DMCA") setShowModal("dmca");
                                         else if (item === "Contact") setShowModal("contact");
                                         else if (item === "About") setShowModal("about");
                                     }}
@@ -735,29 +733,6 @@ export default function Home() {
                             One search. Infinite entertainment. Explore the best movies, anime, series, sports and more — all in one place. No sign-up. No nonsense.{" "}
                             <span className="text-purple-400 font-bold text-shadow-purple">Just endless vibes.</span>
                         </p>
-
-                        {/* Action Buttons */}
-                        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 w-full sm:w-auto pt-2">
-                            <button
-                                onClick={() => {
-                                    const el = document.getElementById("browse-directory");
-                                    if (el) el.scrollIntoView({ behavior: "smooth" });
-                                }}
-                                className="purple-btn-primary w-full sm:w-auto px-9 py-4 rounded-full text-white font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_0_25px_rgba(168,85,247,0.4)]"
-                            >
-                                <span>🚀</span>
-                                <span>EXPLORE NOW</span>
-                                <span className="text-lg">→</span>
-                            </button>
-
-                            <button
-                                onClick={() => setShowModal("request")}
-                                className="w-full sm:w-auto px-7 py-4 rounded-full bg-[#0d091e]/90 hover:bg-[#15102e] border border-slate-800 hover:border-purple-500/40 text-slate-300 hover:text-white font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-lg hover:scale-105"
-                            >
-                                <span>💬</span>
-                                <span>REQUEST A SITE</span>
-                            </button>
-                        </div>
                     </div>
 
                     {/* Right Column Character 3D Dynamic Parallax Picture Card */}
@@ -862,44 +837,44 @@ export default function Home() {
                 </section>
 
                 {/* BOTTOM FEATURE HIGHLIGHTS STRIP */}
-                <section className="rounded-2xl bg-[#090717]/90 border border-purple-500/20 p-5 sm:p-7 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                    <div className="flex items-center gap-3.5">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-lg sm:text-xl shrink-0">
+                <section className="rounded-2xl bg-[#090717]/90 border border-purple-500/20 p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-sm sm:text-base shrink-0">
                             ⚡
                         </div>
                         <div>
-                            <h4 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">Blazing Fast Search</h4>
-                            <p className="text-[11px] sm:text-xs text-slate-400">Find any site in seconds</p>
+                            <h4 className="text-[11px] sm:text-xs font-bold text-white uppercase tracking-wider">Blazing Fast Search</h4>
+                            <p className="text-[10px] sm:text-[11px] text-slate-400">Find any site in seconds</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3.5">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-lg sm:text-xl shrink-0">
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm sm:text-base shrink-0">
                             🌐
                         </div>
                         <div>
-                            <h4 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">Multi-Region Access</h4>
-                            <p className="text-[11px] sm:text-xs text-slate-400">Unblock. Discover. Enjoy.</p>
+                            <h4 className="text-[11px] sm:text-xs font-bold text-white uppercase tracking-wider">Multi-Region Access</h4>
+                            <p className="text-[10px] sm:text-[11px] text-slate-400">Unblock. Discover. Enjoy.</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3.5">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg sm:text-xl shrink-0">
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-sm sm:text-base shrink-0">
                             🛡️
                         </div>
                         <div>
-                            <h4 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">No Registration</h4>
-                            <p className="text-[11px] sm:text-xs text-slate-400">Jump right in. No sign-up.</p>
+                            <h4 className="text-[11px] sm:text-xs font-bold text-white uppercase tracking-wider">No Registration</h4>
+                            <p className="text-[10px] sm:text-[11px] text-slate-400">Jump right in. No sign-up.</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3.5">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg sm:text-xl shrink-0">
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-sm sm:text-base shrink-0">
                             🔄
                         </div>
                         <div>
-                            <h4 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">Always Updated</h4>
-                            <p className="text-[11px] sm:text-xs text-slate-400">We add new sites daily</p>
+                            <h4 className="text-[11px] sm:text-xs font-bold text-white uppercase tracking-wider">Always Updated</h4>
+                            <p className="text-[10px] sm:text-[11px] text-slate-400">We add new sites daily</p>
                         </div>
                     </div>
                 </section>
