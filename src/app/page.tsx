@@ -696,22 +696,23 @@ export default function Home() {
 
           {/* Desktop Center Navigation Links */}
           <nav className={`hidden md:flex items-center gap-1 ${activeTheme.inputBg} p-1.5 rounded-full border ${activeTheme.inputBorder} shadow-inner`}>
-            {["Home", "About", "DMCA", "Contact"].map((item) => (
+            {["Home", "Request Site", "About", "DMCA", "Contact"].map((item) => (
               <button
                 key={item}
                 onClick={() => {
                   setActiveNav(item);
-                  if (item === "DMCA") setShowModal("dmca");
+                  if (item === "Request Site") setShowModal("request");
+                  else if (item === "DMCA") setShowModal("dmca");
                   else if (item === "Contact") setShowModal("contact");
                   else if (item === "About") setShowModal("about");
                 }}
-                className={`px-3 lg:px-5 py-2 rounded-full text-xs lg:text-sm font-semibold transition-all relative cursor-pointer ${
+                className={`px-3 lg:px-4.5 py-2 rounded-full text-xs lg:text-sm font-bold transition-all relative cursor-pointer ${
                   activeNav === item
                     ? activeTheme.activeNavBg
                     : activeTheme.inactiveNavText
                 }`}
               >
-                {item}
+                {item === "Request Site" ? "➕ Request Site" : item}
                 {activeNav === item && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-[2px] bg-purple-400 rounded-full" />
                 )}
