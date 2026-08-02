@@ -1073,10 +1073,11 @@ export default function Home() {
               <div className="hidden lg:flex flex-col gap-2">
                 {[
                   { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
+                  { name: "ONLY 4K", label: "ONLY 4K", icon: "💎" },
                   { name: "ANIME", label: "ANIME", icon: "⚡" },
                   { name: "MANGA", label: "MANGA", icon: "📖" },
                   { name: "LIVE TV & SPORTS", label: "LIVE TV & SPORTS", icon: "📺" },
-                  { name: "PAID", label: "PAID", icon: "💎" },
+                  { name: "PAID", label: "PAID", icon: "⭐" },
                   { name: "AI TOOLS", label: "AI TOOLS", icon: "🤖" },
                   { name: "DOWNLOADS", label: "DOWNLOADS", icon: "⬇️" },
                   { name: "AD BLOCKERS", label: "AD BLOCKERS", icon: "🛡️" },
@@ -1088,7 +1089,7 @@ export default function Home() {
                     <button
                       key={cat.name}
                       onClick={() => setSelectedCategory(cat.name)}
-                      className={`group relative flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
+                      className={`group relative flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
                           : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder} hover:scale-[1.01]`
@@ -1098,13 +1099,13 @@ export default function Home() {
                         <span className="absolute left-0 top-1/2 -translate-x-1/2 w-1.5 h-6 bg-purple-400 rounded-r-full shadow-sm" />
                       )}
 
-                      <span className="flex items-center gap-2 text-xs font-extrabold tracking-wide truncate">
-                        <span>{cat.icon}</span>
+                      <span className="flex items-center gap-2.5 text-sm sm:text-base font-black tracking-wide truncate">
+                        <span className="text-base sm:text-lg">{cat.icon}</span>
                         <span className="truncate">{cat.label}</span>
                       </span>
 
                       <span
-                        className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                        className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border shrink-0 ${
                           isSelected
                             ? "bg-purple-400 text-black border-purple-300 font-extrabold"
                             : `${activeTheme.inputBg} ${activeTheme.mutedText} border-slate-700`
@@ -1180,14 +1181,14 @@ export default function Home() {
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}
-                      className={`snap-start shrink-0 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all border flex items-center gap-1.5 whitespace-nowrap active:scale-95 cursor-pointer ${
+                      className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm md:text-base font-black transition-all border flex items-center gap-2 whitespace-nowrap active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
                           : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder}`
                       }`}
                     >
                       <span>{cat}</span>
-                      <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${activeTheme.accentBadge} border`}>
+                      <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full ${activeTheme.accentBadge} border`}>
                         {count}
                       </span>
                     </button>
@@ -1200,7 +1201,7 @@ export default function Home() {
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-3">
                     <span className={`w-1.5 h-6 sm:h-7 rounded-full ${activeTheme.categoryBar}`} />
-                    <h2 className={`text-xl sm:text-2xl md:text-3xl font-black ${activeTheme.headingColor} tracking-tight flex items-center gap-2.5`}>
+                    <h2 className={`text-2xl sm:text-3xl md:text-4xl font-black ${activeTheme.headingColor} tracking-tight flex items-center gap-2.5`}>
                       <span>{selectedCategory === "All" ? "All Categories" : selectedCategory}</span>
                     </h2>
                     <span className={`text-xs sm:text-sm font-mono font-bold px-2.5 py-0.5 rounded-full border ${activeTheme.accentBadge}`}>
