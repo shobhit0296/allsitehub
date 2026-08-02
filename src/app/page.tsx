@@ -747,28 +747,15 @@ export default function Home() {
               <span className="hidden xl:inline font-bold">Reddit</span>
             </a>
 
-            {/* Bright / Dark Mode Quick Toggle Button */}
-            <button
-              onClick={toggleLightDarkMode}
-              className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold transition-all border cursor-pointer hover:scale-105 ${
-                activeTheme.mode === "light"
-                  ? "bg-amber-100/90 text-amber-900 border-amber-300 shadow-sm"
-                  : "bg-purple-950/80 text-purple-300 border-purple-500/40 shadow-sm"
-              }`}
-              title="Toggle Bright / Dark Mode"
-            >
-              <span>{activeTheme.mode === "light" ? "☀️ Bright" : "🌙 Dark"}</span>
-            </button>
-
-            {/* Visual Theme Palette Picker Button */}
+            {/* Unified Themes Button */}
             <button
               onClick={() => setShowModal("themes")}
-              className={`hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all border cursor-pointer hover:scale-105 ${activeTheme.inputBg} ${activeTheme.inputBorder} ${activeTheme.textColor}`}
-              title="Customize Theme Palette"
+              className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all border cursor-pointer hover:scale-105 ${activeTheme.inputBg} ${activeTheme.inputBorder} ${activeTheme.textColor}`}
+              title="Explore Website Themes"
             >
-              <span>{activeTheme.icon}</span>
-              <span className="capitalize">{activeTheme.name}</span>
-              <span className="text-[10px] font-mono opacity-60">({activeTheme.badge})</span>
+              <span>🎨</span>
+              <span>Themes</span>
+              <span className="text-[10px] font-mono font-bold opacity-75">({activeTheme.name})</span>
             </button>
 
             {/* Region Selector */}
@@ -1457,34 +1444,25 @@ export default function Home() {
               </button>
             </div>
 
-            {/* THEME PALETTE CUSTOMIZER MODAL */}
+            {/* UNIFIED THEMES MODAL */}
             {showModal === "themes" && (
-              <div className="flex flex-col gap-6">
-                {/* Mode Toggle Header Bar */}
-                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-purple-600/10 border border-purple-500/30">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-2xl">{activeTheme.mode === "light" ? "☀️" : "🌙"}</span>
-                    <div>
-                      <span className={`text-[10px] font-extrabold uppercase tracking-wider block ${activeTheme.brandText}`}>Current Theme Mode</span>
-                      <span className={`text-sm font-black ${activeTheme.headingColor}`}>{activeTheme.mode === "light" ? "Bright / Light Mode" : "Dark Mode"}</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={toggleLightDarkMode}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-black shadow-md transition-all active:scale-95 cursor-pointer"
-                  >
-                    Switch to {activeTheme.mode === "light" ? "🌙 Dark Mode" : "☀️ Bright Mode"}
-                  </button>
+              <div className="flex flex-col gap-5">
+                <div className="flex items-center justify-between">
+                  <p className={`text-xs font-medium ${activeTheme.subtextColor}`}>
+                    Select from 10 dynamic color themes (Bright & Dark modes included)
+                  </p>
+                  <span className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full ${activeTheme.accentBadge}`}>
+                    {activeTheme.name} ({activeTheme.mode === "light" ? "Bright" : "Dark"})
+                  </span>
                 </div>
 
-                {/* Bright Themes Grid */}
-                <div className="flex flex-col gap-3">
-                  <h4 className="text-xs font-black uppercase tracking-wider flex items-center gap-1.5 text-amber-500">
-                    <span>☀️</span> Bright / Light Themes ({Object.values(THEME_STYLES).filter(t => t.mode === "light").length})
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {Object.entries(THEME_STYLES).filter(([_, t]) => t.mode === "light").map(([key, t]) => (
+                {/* All 10 Themes Merged In One Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {Object.entries(THEME_STYLES).map(([key, t]) => {
+                    const isSelected = currentTheme === key;
+                    const isLight = t.mode === "light";
+
+                    return (
                       <button
                         key={key}
                         onClick={() => {
@@ -1492,64 +1470,38 @@ export default function Home() {
                           setShowModal(null);
                         }}
                         className={`p-3.5 rounded-2xl border text-left flex flex-col gap-2 transition-all cursor-pointer relative ${
-                          currentTheme === key
-                            ? "border-amber-500 ring-2 ring-amber-500/40 bg-amber-500/15 scale-[1.02]"
-                            : "border-slate-300/40 hover:border-amber-400 bg-white/60 hover:bg-white/90"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
-                            <span>{t.icon}</span>
-                            <span>{t.name}</span>
-                          </span>
-                          {currentTheme === key && <span className="text-[10px] font-black text-amber-600">✓ Active</span>}
-                        </div>
-                        <div className="flex items-center gap-1.5 mt-1">
-                          <span className="w-3.5 h-3.5 rounded-full bg-slate-100 border border-slate-300 shadow-xs" title="Light Background" />
-                          <span className="w-3.5 h-3.5 rounded-full bg-amber-500 shadow-xs" title="Accent Color" />
-                          <span className="w-3.5 h-3.5 rounded-full bg-slate-800 shadow-xs" title="Text Color" />
-                          <span className="text-[10px] text-slate-500 font-mono ml-auto">Bright</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Dark Themes Grid */}
-                <div className="flex flex-col gap-3">
-                  <h4 className="text-xs font-black uppercase tracking-wider flex items-center gap-1.5 text-purple-400">
-                    <span>🌙</span> Dark Themes ({Object.values(THEME_STYLES).filter(t => t.mode === "dark").length})
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {Object.entries(THEME_STYLES).filter(([_, t]) => t.mode === "dark").map(([key, t]) => (
-                      <button
-                        key={key}
-                        onClick={() => {
-                          handleThemeChange(key);
-                          setShowModal(null);
-                        }}
-                        className={`p-3.5 rounded-2xl border text-left flex flex-col gap-2 transition-all cursor-pointer relative ${
-                          currentTheme === key
-                            ? "border-purple-500 ring-2 ring-purple-500/40 bg-purple-600/20 scale-[1.02]"
+                          isSelected
+                            ? isLight
+                              ? "border-amber-500 ring-2 ring-amber-500/40 bg-amber-500/15 scale-[1.02]"
+                              : "border-purple-500 ring-2 ring-purple-500/40 bg-purple-600/20 scale-[1.02]"
+                            : isLight
+                            ? "border-slate-300/60 hover:border-amber-400 bg-white/70 hover:bg-white"
                             : "border-slate-700/50 hover:border-purple-400 bg-slate-900/60 hover:bg-slate-900/90"
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-xs sm:text-sm font-extrabold text-white flex items-center gap-1.5">
+                          <span className={`text-xs sm:text-sm font-extrabold flex items-center gap-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>
                             <span>{t.icon}</span>
                             <span>{t.name}</span>
                           </span>
-                          {currentTheme === key && <span className="text-[10px] font-black text-purple-400">✓ Active</span>}
+                          {isSelected && (
+                            <span className={`text-[10px] font-black ${isLight ? "text-amber-600" : "text-purple-400"}`}>
+                              ✓ Active
+                            </span>
+                          )}
                         </div>
+
                         <div className="flex items-center gap-1.5 mt-1">
-                          <span className="w-3.5 h-3.5 rounded-full bg-[#05050c] border border-slate-700 shadow-xs" title="Dark Background" />
-                          <span className="w-3.5 h-3.5 rounded-full bg-purple-500 shadow-xs" title="Accent Color" />
-                          <span className="w-3.5 h-3.5 rounded-full bg-white shadow-xs" title="Text Color" />
-                          <span className="text-[10px] text-slate-400 font-mono ml-auto">Dark</span>
+                          <span className={`w-3.5 h-3.5 rounded-full border shadow-xs ${isLight ? "bg-slate-100 border-slate-300" : "bg-[#05050c] border-slate-700"}`} title="Background" />
+                          <span className={`w-3.5 h-3.5 rounded-full shadow-xs ${isLight ? "bg-amber-500" : "bg-purple-500"}`} title="Accent" />
+                          <span className={`w-3.5 h-3.5 rounded-full shadow-xs ${isLight ? "bg-slate-800" : "bg-white"}`} title="Text" />
+                          <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded ml-auto ${isLight ? "bg-amber-100 text-amber-900 border border-amber-300" : "bg-purple-950 text-purple-300 border border-purple-800"}`}>
+                            {isLight ? "☀️ Bright" : "🌙 Dark"}
+                          </span>
                         </div>
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
