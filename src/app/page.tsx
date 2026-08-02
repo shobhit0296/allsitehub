@@ -712,7 +712,7 @@ export default function Home() {
                     : activeTheme.inactiveNavText
                 }`}
               >
-                {item === "Request Site" ? "➕ Request Site" : item}
+                {item}
                 {activeNav === item && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-[2px] bg-purple-400 rounded-full" />
                 )}
@@ -1433,6 +1433,7 @@ export default function Home() {
           <div className={`${activeTheme.modalBg} border ${activeTheme.modalBorder} ${activeTheme.modalText} rounded-2xl sm:rounded-3xl p-5 sm:p-8 ${showModal === "themes" ? "max-w-2xl" : "max-w-md"} w-full flex flex-col gap-5 relative shadow-2xl my-auto max-h-[90vh] overflow-y-auto`}>
             <div className="flex items-center justify-between">
               <h3 className={`text-lg sm:text-xl font-extrabold ${activeTheme.headingColor} flex items-center gap-2`}>
+                {showModal === "request" && <span>📝 Request a New Site</span>}
                 {showModal === "themes" && <span>🎨 Themes & Appearance</span>}
                 {showModal === "about" && <span>ℹ️ About Allsitehub</span>}
                 {showModal === "dmca" && <span>🛡️ DMCA Disclaimer</span>}
@@ -1505,6 +1506,124 @@ export default function Home() {
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* REQUEST A SITE MODAL WITH DIRECT DM LINKS */}
+            {showModal === "request" && (
+              <div className="flex flex-col gap-4">
+                <div className={`p-4 rounded-2xl ${activeTheme.inputBg} border ${activeTheme.inputBorder} flex flex-col gap-3 shadow-md`}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">💬</span>
+                    <h4 className={`text-sm font-black ${activeTheme.headingColor}`}>
+                      To add your website, DM us now on Discord, Reddit or Telegram!
+                    </h4>
+                  </div>
+
+                  {/* Direct DM Links Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1">
+                    {/* DISCORD LINK */}
+                    <a
+                      href="https://discord.gg/QnTrWqwcJ"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/50 text-white text-xs font-extrabold transition-all shadow-sm hover:scale-105"
+                    >
+                      <span className="text-sm">💬</span>
+                      <span>Discord DM</span>
+                    </a>
+
+                    {/* REDDIT LINK */}
+                    <a
+                      href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/50 text-white text-xs font-extrabold transition-all shadow-sm hover:scale-105"
+                    >
+                      <span className="text-sm">🔴</span>
+                      <span>Reddit DM</span>
+                    </a>
+
+                    {/* TELEGRAM LINK */}
+                    <a
+                      href="https://t.me/allsitehub"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#0088cc]/20 hover:bg-[#0088cc] border border-[#0088cc]/50 text-white text-xs font-extrabold transition-all shadow-sm hover:scale-105"
+                    >
+                      <span className="text-sm">✈️</span>
+                      <span>Telegram DM</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Interactive Site Submission Form */}
+                <form onSubmit={handleRequestSubmit} className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className={`text-xs font-bold ${activeTheme.headingColor}`}>
+                      Website Name <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={reqSiteName}
+                      onChange={(e) => setReqSiteName(e.target.value)}
+                      placeholder="e.g. MyAnimeStream"
+                      className={`w-full px-3.5 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs focus:outline-none transition-all`}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className={`text-xs font-bold ${activeTheme.headingColor}`}>
+                      Website URL <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="url"
+                      required
+                      value={reqSiteUrl}
+                      onChange={(e) => setReqSiteUrl(e.target.value)}
+                      placeholder="https://example.com"
+                      className={`w-full px-3.5 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs focus:outline-none transition-all`}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className={`text-xs font-bold ${activeTheme.headingColor}`}>Category</label>
+                    <select
+                      value={reqRegion}
+                      onChange={(e) => setReqRegion(e.target.value)}
+                      className={`w-full px-3.5 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs focus:outline-none transition-all`}
+                    >
+                      {CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className={`text-xs font-bold ${activeTheme.headingColor}`}>Features / Description</label>
+                    <textarea
+                      rows={2}
+                      value={reqFeatures}
+                      onChange={(e) => setReqFeatures(e.target.value)}
+                      placeholder="Add any additional details or server features..."
+                      className={`w-full px-3.5 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs focus:outline-none transition-all resize-none`}
+                    />
+                  </div>
+
+                  {reqSuccess && (
+                    <div className="p-3 rounded-xl bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-xs font-bold text-center animate-bounce">
+                      ✓ Request Submitted Successfully!
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    className={`mt-1 py-2.5 rounded-xl ${activeTheme.activeNavBg} text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md active:scale-95`}
+                  >
+                    Submit Request
+                  </button>
+                </form>
               </div>
             )}
 
