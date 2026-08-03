@@ -549,6 +549,39 @@ export default function Home() {
     };
   }, []);
 
+  
+  // Scroll Spy: Automatically update active category highlight as user scrolls down page
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "-15% 0px -65% 0px",
+      threshold: 0,
+    };
+
+    const handleIntersect: IntersectionObserverCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const categoryName = entry.target.getAttribute("data-category");
+          if (categoryName) {
+            setSelectedCategory(categoryName);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+
+    CATEGORIES.forEach((catName) => {
+      const slug = catName.toLowerCase().replace(/[^a-z0-9]/g, "-");
+      const el = document.getElementById(`cat-${slug}`);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [searchQuery, sitesList]);
+
   // Dynamic Home Banner State
   const [bannerConfig, setBannerConfig] = useState<BannerConfig>(DEFAULT_BANNER_CONFIG);
 
@@ -1096,7 +1129,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
             {/* LEFT SIDEBAR CATEGORIES */}
-            <aside className={`lg:col-span-3 flex flex-col gap-3 sticky top-20 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-5 shadow-lg`}>
+            <aside className={`lg:col-span-3 flex flex-col gap-3 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto no-scrollbar ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-5 shadow-lg`}>
               <div className={`flex items-center justify-between px-2 pb-3 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText}`}>
                   Categories ({CATEGORIES.length})
@@ -1337,6 +1370,7 @@ export default function Home() {
                   <section
                     key={catName}
                     id={`cat-${catSlug}`}
+                    data-category={catName}
                     className="flex flex-col gap-3 scroll-mt-24 mb-6"
                   >
                     {/* Category Header */}
