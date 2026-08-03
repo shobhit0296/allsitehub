@@ -1080,7 +1080,7 @@ export default function Home() {
 
             {/* LEFT SIDEBAR CATEGORIES - CLEAN STICKY COLUMN */}
             <aside
-              className={`hidden lg:flex lg:col-span-3 sticky top-[80px] self-start z-20 flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-2xl transition-all`}
+              className={`lg:col-span-3 sticky top-[80px] self-start z-20 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-2xl transition-all`}
             >
               <div className={`flex items-center justify-between px-1 pb-3 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs sm:text-sm font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-2`}>
@@ -1092,7 +1092,7 @@ export default function Home() {
                 </span>
               </div>
 
-              {/* Desktop Category Buttons List */}
+              {/* Category Buttons List */}
               <div className="flex flex-col gap-2">
                 {[
                   { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
@@ -1196,35 +1196,6 @@ export default function Home() {
 
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
             <div className="lg:col-span-9 flex flex-col gap-6">
-
-              {/* MOBILE STICKY CATEGORY BAR (FOR SMALLER SCREENS) */}
-              <div
-                className={`lg:hidden sticky top-[60px] z-30 flex items-center gap-2 overflow-x-auto no-scrollbar py-3 px-3 mb-2 snap-x ${activeTheme.sidebarBg} border-b ${activeTheme.sidebarBorder} shadow-lg backdrop-blur-2xl -mx-4 sm:-mx-8 px-4 sm:px-8`}
-              >
-                {CATEGORIES.map((cat) => {
-                  const isSelected = selectedCategory === cat;
-                  const count = getCategoryCount(cat);
-                  const icon = CATEGORY_ICONS[cat] || "🎬";
-                  return (
-                    <button
-                      key={cat}
-                      data-active={isSelected}
-                      onClick={() => handleCategoryClick(cat)}
-                      className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all border flex items-center gap-2 whitespace-nowrap active:scale-95 cursor-pointer ${
-                        isSelected
-                          ? activeTheme.activeNavBg
-                          : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder}`
-                      }`}
-                    >
-                      <span>{icon}</span>
-                      <span>{cat}</span>
-                      <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full ${activeTheme.accentBadge} border`}>
-                        {count}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
 
               {/* DIRECTORY SEARCH & VIEW TOGGLE ROW */}
               <div className="flex items-center justify-between gap-4 px-2 pb-4 mb-2 border-b border-white/10">
