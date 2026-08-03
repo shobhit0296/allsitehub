@@ -1115,8 +1115,8 @@ export default function Home() {
           {/* MAIN DIRECTORY LAYOUT: LEFT SIDEBAR + RIGHT CARDS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-            {/* LEFT SIDEBAR CATEGORIES - STICKY CATEGORY COLUMN */}
-            <aside className={`lg:col-span-3 sticky top-[80px] self-start z-20 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg max-h-[calc(100vh-95px)] overflow-y-auto no-scrollbar`}>
+            {/* LEFT SIDEBAR CATEGORIES - CLEAN UN-SCROLLED STICKY CATEGORY COLUMN */}
+            <aside className={`lg:col-span-3 sticky top-[80px] self-start z-20 flex flex-col gap-2 sm:gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-3.5 sm:p-4 shadow-lg transition-all`}>
               <div className={`flex items-center justify-between px-2 pb-2.5 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText}`}>
                   Categories ({CATEGORIES.length})
