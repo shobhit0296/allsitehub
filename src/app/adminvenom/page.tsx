@@ -30,6 +30,37 @@ export default function AdminDashboard() {
   const [promoTagInput, setPromoTagInput] = useState("");
   const [promoUploadError, setPromoUploadError] = useState("");
 
+  // Drag & Reorder State
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const handleReorderDrop = (dropIndex: number) => {
+    if (draggedIndex === null || draggedIndex === dropIndex) return;
+    const updated = [...sitesList];
+    const [movedItem] = updated.splice(draggedIndex, 1);
+    updated.splice(dropIndex, 0, movedItem);
+    updateSites(updated);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleMoveSite = (index: number, direction: "up" | "down" | "top") => {
+    const updated = [...sitesList];
+    if (direction === "up" && index > 0) {
+      const temp = updated[index];
+      updated[index] = updated[index - 1];
+      updated[index - 1] = temp;
+    } else if (direction === "down" && index < updated.length - 1) {
+      const temp = updated[index];
+      updated[index] = updated[index + 1];
+      updated[index + 1] = temp;
+    } else if (direction === "top" && index > 0) {
+      const [movedItem] = updated.splice(index, 1);
+      updated.unshift(movedItem);
+    }
+    updateSites(updated);
+  };
+
   // Load saved sites on mount
   useEffect(() => {
     setSitesList(getSavedSites());
@@ -479,7 +510,7 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* TAB 1: SITES MANAGER */}
+        {/* TAB 1: SITES MANAGER WITH DRAG & DROP REORDERING */}
         {activeTab === "sites" && (
           <div className="flex flex-col gap-5">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
@@ -491,12 +522,17 @@ export default function AdminDashboard() {
                 className="px-4 py-3 bg-[#090717] border border-slate-800 focus:border-purple-500 rounded-2xl text-xs sm:text-sm text-white focus:outline-none w-full sm:w-80"
               />
 
-              <button
-                onClick={() => setActiveTab("add")}
-                className="purple-btn-primary px-5 py-3 rounded-2xl text-white text-xs font-black uppercase tracking-wider cursor-pointer shadow-lg shrink-0"
-              >
-                + Add Portal
-              </button>
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold text-slate-400 hidden sm:inline">
+                  💡 Drag cards or use position buttons to reorder
+                </span>
+                <button
+                  onClick={() => setActiveTab("add")}
+                  className="purple-btn-primary px-5 py-3 rounded-2xl text-white text-xs font-black uppercase tracking-wider cursor-pointer shadow-lg shrink-0"
+                >
+                  + Add Portal
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -510,88 +546,159 @@ export default function AdminDashboard() {
                     s.category.toLowerCase().includes(q)
                   );
                 })
-                .map((site) => (
-                  <div
-                    key={site.id}
-                    className="p-5 rounded-2xl bg-[#090717]/95 border border-slate-800 flex flex-col justify-between gap-4 shadow-lg hover:border-purple-500/50 transition-all"
-                  >
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-3 overflow-hidden">
-                          <div className="sq-icon-btn w-11 h-11 p-2 flex items-center justify-center shrink-0">
-                            <img
-                              src={getFaviconUrl(site.domain || site.url)}
-                              alt={site.name}
-                              className="w-full h-full object-contain drop-shadow-sm"
-                            />
-                          </div>
-                          <div className="flex flex-col truncate">
-                            <h3 className="font-black text-base sm:text-lg text-white truncate">{site.name}</h3>
-                            <span className="text-xs font-mono font-bold text-purple-300 truncate">
-                              {site.domain}
-                            </span>
+                .map((site) => {
+                  const realIndex = sitesList.findIndex((s) => s.id === site.id);
+                  const isDragging = draggedIndex === realIndex;
+                  const isDragOver = dragOverIndex === realIndex;
+
+                  return (
+                    <div
+                      key={site.id}
+                      draggable
+                      onDragStart={(e) => {
+                        setDraggedIndex(realIndex);
+                        e.dataTransfer.setData("text/plain", realIndex.toString());
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        if (dragOverIndex !== realIndex) {
+                          setDragOverIndex(realIndex);
+                        }
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        handleReorderDrop(realIndex);
+                      }}
+                      onDragEnd={() => {
+                        setDraggedIndex(null);
+                        setDragOverIndex(null);
+                      }}
+                      className={`p-5 rounded-2xl bg-[#090717]/95 border flex flex-col justify-between gap-4 shadow-lg transition-all cursor-grab active:cursor-grabbing ${
+                        isDragging
+                          ? "opacity-30 border-purple-500 scale-95"
+                          : isDragOver
+                          ? "border-purple-400 bg-purple-950/40 shadow-[0_0_30px_rgba(168,85,247,0.35)] scale-[1.02]"
+                          : "border-slate-800 hover:border-purple-500/50"
+                      }`}
+                    >
+                      <div className="flex flex-col gap-2">
+                        {/* Drag Handle & Quick Position Control Bar */}
+                        <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5 text-xs">
+                          <span className="text-slate-400 font-mono text-[11px] flex items-center gap-1.5 cursor-grab">
+                            <span className="text-purple-400 font-black text-sm">⋮⋮</span> Position #{realIndex + 1}
+                          </span>
+
+                          <div className="flex items-center gap-1">
+                            {realIndex > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => handleMoveSite(realIndex, "top")}
+                                className="px-2 py-0.5 rounded-lg bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-300 text-[10px] font-bold cursor-pointer transition-all"
+                                title="Move to Top (#1)"
+                              >
+                                🔝 Top
+                              </button>
+                            )}
+                            {realIndex > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => handleMoveSite(realIndex, "up")}
+                                className="px-2 py-0.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[10px] font-bold cursor-pointer transition-all"
+                                title="Move Up"
+                              >
+                                ▲ Up
+                              </button>
+                            )}
+                            {realIndex < sitesList.length - 1 && (
+                              <button
+                                type="button"
+                                onClick={() => handleMoveSite(realIndex, "down")}
+                                className="px-2 py-0.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[10px] font-bold cursor-pointer transition-all"
+                                title="Move Down"
+                              >
+                                ▼ Down
+                              </button>
+                            )}
                           </div>
                         </div>
 
-                        <span className="text-xs font-bold text-slate-400 px-2.5 py-1 rounded-lg bg-[#140f36] border border-purple-500/20 shrink-0">
-                          {site.category}
-                        </span>
+                        <div className="flex items-start justify-between gap-2 pt-1">
+                          <div className="flex items-center gap-3 overflow-hidden">
+                            <div className="sq-icon-btn w-11 h-11 p-2 flex items-center justify-center shrink-0">
+                              <img
+                                src={getFaviconUrl(site.domain || site.url)}
+                                alt={site.name}
+                                className="w-full h-full object-contain drop-shadow-sm"
+                              />
+                            </div>
+                            <div className="flex flex-col truncate">
+                              <h3 className="font-black text-base sm:text-lg text-white truncate">{site.name}</h3>
+                              <span className="text-xs font-mono font-bold text-purple-300 truncate">
+                                {site.domain}
+                              </span>
+                            </div>
+                          </div>
+
+                          <span className="text-xs font-bold text-slate-400 px-2.5 py-1 rounded-lg bg-[#140f36] border border-purple-500/20 shrink-0">
+                            {site.category}
+                          </span>
+                        </div>
+
+                        {/* Marks Badges */}
+                        <div className="flex flex-wrap gap-1.5 mt-1">
+                          {site.isTrusted && (
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">
+                              🛡️ Trusted
+                            </span>
+                          )}
+                          {site.isFeatured && (
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40">
+                              ⭐ Featured
+                            </span>
+                          )}
+                          {site.isNew && (
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40">
+                              🔥 New
+                            </span>
+                          )}
+                          {site.badge && (
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-purple-950 text-purple-200 border border-purple-500/40">
+                              {site.badge}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      {/* Marks Badges */}
-                      <div className="flex flex-wrap gap-1.5 mt-1">
-                        {site.isTrusted && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">
-                            🛡️ Trusted
-                          </span>
-                        )}
-                        {site.isFeatured && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40">
-                            ⭐ Featured
-                          </span>
-                        )}
-                        {site.isNew && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40">
-                            🔥 New
-                          </span>
-                        )}
-                        {site.badge && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded bg-purple-950 text-purple-200 border border-purple-500/40">
-                            {site.badge}
-                          </span>
-                        )}
+                      {/* Action Buttons */}
+                      <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                        <a
+                          href={site.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold border border-slate-800"
+                          title="Visit Site"
+                        >
+                          Open ↗
+                        </a>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleStartEdit(site)}
+                            className="px-3.5 py-2 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-300 text-xs font-black cursor-pointer shadow-md"
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSite(site.id)}
+                            className="px-3.5 py-2 rounded-xl bg-rose-950/70 hover:bg-rose-900 border border-rose-500/30 text-rose-300 text-xs font-bold cursor-pointer"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    {/* Action Buttons */}
-                    <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
-                      <a
-                        href={site.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold border border-slate-800"
-                        title="Visit Site"
-                      >
-                        Open ↗
-                      </a>
-
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleStartEdit(site)}
-                          className="px-3.5 py-2 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-300 text-xs font-black cursor-pointer shadow-md"
-                        >
-                          ✏️ Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteSite(site.id)}
-                          className="px-3.5 py-2 rounded-xl bg-rose-950/70 hover:bg-rose-900 border border-rose-500/30 text-rose-300 text-xs font-bold cursor-pointer"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
             </div>
           </div>
         )}
