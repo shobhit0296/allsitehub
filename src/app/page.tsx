@@ -1129,8 +1129,8 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
             {/* LEFT SIDEBAR CATEGORIES */}
-            <aside className={`lg:col-span-3 flex flex-col gap-3 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto no-scrollbar ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-5 shadow-lg`}>
-              <div className={`flex items-center justify-between px-2 pb-3 border-b ${activeTheme.headerBorder}`}>
+            <aside className={`lg:col-span-3 flex flex-col gap-2.5 sticky top-20 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg`}>
+              <div className={`flex items-center justify-between px-2 pb-2.5 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText}`}>
                   Categories ({CATEGORIES.length})
                 </span>
@@ -1140,7 +1140,7 @@ export default function Home() {
               </div>
 
               {/* Desktop Category Buttons List */}
-              <div className="hidden lg:flex flex-col gap-2">
+              <div className="hidden lg:flex flex-col gap-1.5">
                 {[
                   { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
                   { name: "ONLY 4K", label: "ONLY 4K", icon: "💎" },
@@ -1164,7 +1164,7 @@ export default function Home() {
                         const el = document.getElementById(`cat-${cat.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`);
                         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                       }}
-                      className={`group relative flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
+                      className={`group relative flex items-center justify-between gap-2.5 px-3.5 py-2 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
                           : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder} hover:scale-[1.01]`
