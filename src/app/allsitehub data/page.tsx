@@ -917,7 +917,7 @@ export default function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
                         {/* LEFT SIDEBAR CATEGORIES WITH HIGHLIGHTED ICONS */}
-                        <aside className="lg:col-span-3 flex flex-col gap-3 sticky top-20 bg-[#090717]/95 border border-purple-500/30 rounded-3xl p-4 sm:p-5 shadow-[0_0_30px_rgba(168,85,247,0.15)]">
+                        <aside className="lg:col-span-3 flex flex-col gap-3 sticky top-20 self-start bg-[#090717]/95 border border-purple-500/30 rounded-3xl p-4 sm:p-5 shadow-[0_0_30px_rgba(168,85,247,0.15)] max-h-[calc(100vh-95px)] overflow-y-auto no-scrollbar">
                             <div className="flex items-center justify-between px-2 pb-3 border-b border-slate-800/80">
                                 <span className="text-xs font-black uppercase tracking-wider text-purple-300 flex items-center gap-2">
                                     <span>📁</span> Categories

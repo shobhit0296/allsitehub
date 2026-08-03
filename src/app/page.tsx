@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -550,17 +550,36 @@ export default function Home() {
   }, []);
 
   
+  const isManualClickRef = useRef(false);
+  const manualClickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleCategoryClick = (catName: string) => {
+    setSelectedCategory(catName);
+    isManualClickRef.current = true;
+    if (manualClickTimeoutRef.current) clearTimeout(manualClickTimeoutRef.current);
+    manualClickTimeoutRef.current = setTimeout(() => {
+      isManualClickRef.current = false;
+    }, 800);
+
+    const slug = catName.toLowerCase().replace(/[^a-z0-9]/g, "-");
+    const el = document.getElementById(`cat-${slug}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   // Scroll Spy: Automatically update active category highlight as user scrolls down page
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const observerOptions = {
       root: null,
-      rootMargin: "-15% 0px -65% 0px",
+      rootMargin: "-20% 0px -60% 0px",
       threshold: 0,
     };
 
     const handleIntersect: IntersectionObserverCallback = (entries) => {
+      if (isManualClickRef.current) return;
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const categoryName = entry.target.getAttribute("data-category");
@@ -720,7 +739,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${activeTheme.pageBg} ${activeTheme.textureClass} ${activeTheme.textColor} font-sans selection:bg-purple-600 selection:text-white relative overflow-x-hidden transition-colors duration-400`}>
+    <div className={`min-h-screen flex flex-col ${activeTheme.pageBg} ${activeTheme.textureClass} ${activeTheme.textColor} font-sans selection:bg-purple-600 selection:text-white relative transition-colors duration-400`}>
       {/* Background Ambient Lighting Aura */}
       <div className={`absolute top-0 left-1/4 -mt-20 w-[400px] sm:w-[900px] h-[300px] sm:h-[600px] ${activeTheme.aura1} rounded-full blur-[100px] sm:blur-[180px] pointer-events-none transition-all duration-500`} />
       <div className={`absolute top-1/3 right-0 w-[350px] sm:w-[800px] h-[350px] sm:h-[700px] ${activeTheme.aura2} rounded-full blur-[100px] sm:blur-[190px] pointer-events-none transition-all duration-500`} />
@@ -1096,8 +1115,8 @@ export default function Home() {
           {/* MAIN DIRECTORY LAYOUT: LEFT SIDEBAR + RIGHT CARDS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-            {/* LEFT SIDEBAR CATEGORIES */}
-            <aside className={`lg:col-span-3 md:sticky md:top-24 md:max-h-[calc(100vh-6.5rem)] md:overflow-y-auto no-scrollbar z-20 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg`}>
+            {/* LEFT SIDEBAR CATEGORIES - STICKY CATEGORY COLUMN */}
+            <aside className={`lg:col-span-3 sticky top-[80px] self-start z-20 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg max-h-[calc(100vh-95px)] overflow-y-auto no-scrollbar`}>
               <div className={`flex items-center justify-between px-2 pb-2.5 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText}`}>
                   Categories ({CATEGORIES.length})
@@ -1127,11 +1146,7 @@ export default function Home() {
                   return (
                     <button
                       key={cat.name}
-                      onClick={() => {
-                        setSelectedCategory(cat.name);
-                        const el = document.getElementById(`cat-${cat.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`);
-                        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-                      }}
+                      onClick={() => handleCategoryClick(cat.name)}
                       className={`group relative flex items-center justify-between gap-2.5 px-3.5 py-2 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
@@ -1215,19 +1230,15 @@ export default function Home() {
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
             <div className="lg:col-span-9 flex flex-col gap-5">
 
-              {/* MOBILE CATEGORY SCROLLBAR */}
-              <div className="lg:hidden flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 mb-1 snap-x">
+              {/* MOBILE CATEGORY SCROLLBAR - STICKY ON MOBILE */}
+              <div className={`lg:hidden sticky top-[62px] z-30 flex items-center gap-2 overflow-x-auto no-scrollbar py-2.5 px-3 mb-2 snap-x ${activeTheme.sidebarBg} border-b ${activeTheme.sidebarBorder} shadow-md backdrop-blur-xl -mx-4 sm:-mx-8 px-4 sm:px-8`}>
                 {CATEGORIES.map((cat) => {
                   const isSelected = selectedCategory === cat;
                   const count = getCategoryCount(cat);
                   return (
                     <button
                       key={cat}
-                      onClick={() => {
-                        setSelectedCategory(cat);
-                        const el = document.getElementById(`cat-${cat.toLowerCase().replace(/[^a-z0-9]/g, "-")}`);
-                        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-                      }}
+                      onClick={() => handleCategoryClick(cat)}
                       className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm md:text-base font-black transition-all border flex items-center gap-2 whitespace-nowrap active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
@@ -1330,7 +1341,7 @@ export default function Home() {
                     key={catName}
                     id={`cat-${catSlug}`}
                     data-category={catName}
-                    className="flex flex-col gap-3 scroll-mt-24 mb-6"
+                    className="flex flex-col gap-3 scroll-mt-28 lg:scroll-mt-24 mb-6"
                   >
                     {/* Category Header */}
                     <div className="flex items-center justify-between px-1 pb-2 border-b border-white/10">
