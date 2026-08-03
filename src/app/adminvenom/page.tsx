@@ -44,6 +44,14 @@ export default function AdminDashboard() {
     setDragOverIndex(null);
   };
 
+  const handleMoveToSpecificPosition = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex || toIndex < 0 || toIndex >= sitesList.length) return;
+    const updated = [...sitesList];
+    const [movedItem] = updated.splice(fromIndex, 1);
+    updated.splice(toIndex, 0, movedItem);
+    updateSites(updated);
+  };
+
   const handleMoveSite = (index: number, direction: "up" | "down" | "top") => {
     const updated = [...sitesList];
     if (direction === "up" && index > 0) {
@@ -582,11 +590,28 @@ export default function AdminDashboard() {
                       }`}
                     >
                       <div className="flex flex-col gap-2">
-                        {/* Drag Handle & Quick Position Control Bar */}
+                        {/* Drag Handle & Quick Position Jump Selector */}
                         <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5 text-xs">
-                          <span className="text-slate-400 font-mono text-[11px] flex items-center gap-1.5 cursor-grab">
-                            <span className="text-purple-400 font-black text-sm">⋮⋮</span> Position #{realIndex + 1}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-purple-400 font-black text-base cursor-grab" title="Drag card to reorder">
+                              ⋮⋮
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <span className="text-slate-400 font-mono text-[11px] font-bold">Pos:</span>
+                              <select
+                                value={realIndex}
+                                onChange={(e) => handleMoveToSpecificPosition(realIndex, parseInt(e.target.value))}
+                                className="bg-[#120e2b] border border-purple-500/40 text-purple-300 font-mono font-black text-[11px] px-1.5 py-0.5 rounded-md focus:outline-none cursor-pointer hover:border-purple-400"
+                                title="Jump to specific position"
+                              >
+                                {sitesList.map((_, idx) => (
+                                  <option key={idx} value={idx}>
+                                    #{idx + 1}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
 
                           <div className="flex items-center gap-1">
                             {realIndex > 0 && (
