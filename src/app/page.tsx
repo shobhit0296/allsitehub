@@ -1097,7 +1097,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
             {/* LEFT SIDEBAR CATEGORIES */}
-            <aside className={`lg:col-span-3 flex flex-col gap-2.5 sticky top-20 z-20 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg`}>
+            <aside className={`lg:col-span-3 md:sticky md:top-24 md:max-h-[calc(100vh-6.5rem)] md:overflow-y-auto no-scrollbar z-20 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg`}>
               <div className={`flex items-center justify-between px-2 pb-2.5 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText}`}>
                   Categories ({CATEGORIES.length})
