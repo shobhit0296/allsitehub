@@ -23,8 +23,12 @@ export default function AdminDashboard() {
 
   // Directory & Requests State
   const [sitesList, setSitesList] = useState<SiteItem[]>(STREAMING_SITES);
-  const [activeTab, setActiveTab] = useState<"sites" | "add" | "requests" | "banner">("sites");
+  const [activeTab, setActiveTab] = useState<"sites" | "add" | "requests" | "promo" | "banner">("promo");
   const [adminSearch, setAdminSearch] = useState("");
+
+  // Featured Promo Specific Form & Tag State
+  const [promoTagInput, setPromoTagInput] = useState("");
+  const [promoUploadError, setPromoUploadError] = useState("");
 
   // Load saved sites on mount
   useEffect(() => {
@@ -227,6 +231,104 @@ export default function AdminDashboard() {
     }
   };
 
+  // Poster Image Upload & Automatic WebP/JPEG Canvas Optimization Handler
+  const handlePosterFileUpload = (file: File) => {
+    setPromoUploadError("");
+    if (!["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file.type.toLowerCase())) {
+      setPromoUploadError("Unsupported image format. Please select a JPG, PNG, or WebP file.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const optimizedDataUrl = canvas.toDataURL("image/webp", 0.85);
+          setBannerConfigState((prev) => ({ ...prev, heroImageUrl: optimizedDataUrl }));
+        }
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Feature Tag Handlers: Add, Remove, Reorder
+  const handleAddPromoTag = () => {
+    if (!promoTagInput.trim()) return;
+    const formatted = promoTagInput.trim().startsWith("#") ? promoTagInput.trim() : `#${promoTagInput.trim()}`;
+    const currentTags = bannerConfig.promoHashtags || [];
+    if (!currentTags.includes(formatted)) {
+      const updated = [...currentTags, formatted];
+      setBannerConfigState((prev) => ({
+        ...prev,
+        promoHashtags: updated,
+        promoHashtagsString: updated.join(", "),
+      }));
+    }
+    setPromoTagInput("");
+  };
+
+  const handleRemovePromoTag = (indexToRemove: number) => {
+    const currentTags = bannerConfig.promoHashtags || [];
+    const updated = currentTags.filter((_, idx) => idx !== indexToRemove);
+    setBannerConfigState((prev) => ({
+      ...prev,
+      promoHashtags: updated,
+      promoHashtagsString: updated.join(", "),
+    }));
+  };
+
+  const handleMovePromoTag = (index: number, direction: "up" | "down") => {
+    const currentTags = [...(bannerConfig.promoHashtags || [])];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= currentTags.length) return;
+    const temp = currentTags[index];
+    currentTags[index] = currentTags[targetIndex];
+    currentTags[targetIndex] = temp;
+    setBannerConfigState((prev) => ({
+      ...prev,
+      promoHashtags: currentTags,
+      promoHashtagsString: currentTags.join(", "),
+    }));
+  };
+
+  // Save Promo Settings
+  const handleSavePromoSystem = (e: React.FormEvent) => {
+    e.preventDefault();
+    const updatedConfig: BannerConfig = {
+      ...bannerConfig,
+      promoEnabled: bannerConfig.promoEnabled !== false,
+      promoHashtagsString: (bannerConfig.promoHashtags || []).join(", "),
+    };
+    setBannerConfigState(updatedConfig);
+    saveBannerConfig(updatedConfig);
+    setBannerSuccess(true);
+    setTimeout(() => setBannerSuccess(false), 2500);
+  };
+
   // 1. Passcode Screen
   if (!isAuthenticated) {
     return (
@@ -352,6 +454,20 @@ export default function AdminDashboard() {
           </button>
 
           <button
+            onClick={() => setActiveTab("promo")}
+            className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+              activeTab === "promo"
+                ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                : "bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800"
+            }`}
+          >
+            <span>🔥 Featured Promo System</span>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono border ${bannerConfig.promoEnabled !== false ? "bg-emerald-950 text-emerald-300 border-emerald-500/40" : "bg-rose-950 text-rose-300 border-rose-500/40"}`}>
+              {bannerConfig.promoEnabled !== false ? "ACTIVE" : "OFF"}
+            </span>
+          </button>
+
+          <button
             onClick={() => setActiveTab("banner")}
             className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
               activeTab === "banner"
@@ -359,7 +475,7 @@ export default function AdminDashboard() {
                 : "bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800"
             }`}
           >
-            <span>✨ Edit Home Banner</span>
+            <span>✨ Edit Hero Text</span>
           </button>
         </div>
 
@@ -853,6 +969,360 @@ export default function AdminDashboard() {
                 Save Banner Settings 💾
               </button>
             </form>
+          </div>
+        )}
+
+        {/* TAB 5: FEATURED PROMO SYSTEM MANAGER */}
+        {activeTab === "promo" && (
+          <div className="flex flex-col gap-6">
+            
+            {/* Header Title & Enable/Disable Toggle Banner */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-3xl bg-[#090717]/95 border border-purple-500/30 shadow-lg">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🔥</span>
+                  <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                    Featured Promo Manager
+                  </h2>
+                </div>
+                <p className="text-xs text-slate-400 font-medium">
+                  Fully customizable promotional card displayed on the live home page hero section.
+                </p>
+              </div>
+
+              {/* Enable / Disable Toggle Switch */}
+              <div className="flex items-center gap-3 bg-[#120e2b] p-2.5 px-4 rounded-2xl border border-purple-500/30">
+                <span className="text-xs font-black uppercase text-slate-300">
+                  Card Visibility:
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setBannerConfigState((prev) => ({
+                      ...prev,
+                      promoEnabled: prev.promoEnabled === false ? true : false,
+                    }))
+                  }
+                  className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 cursor-pointer ${
+                    bannerConfig.promoEnabled !== false
+                      ? "bg-emerald-500 text-black shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                      : "bg-rose-950 text-rose-300 border border-rose-500/40"
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${bannerConfig.promoEnabled !== false ? "bg-black animate-ping" : "bg-rose-400"}`} />
+                  {bannerConfig.promoEnabled !== false ? "ENABLED (VISIBLE)" : "DISABLED (HIDDEN)"}
+                </button>
+              </div>
+            </div>
+
+            {/* Notification Alert */}
+            {bannerSuccess && (
+              <div className="p-4 rounded-2xl bg-emerald-950/90 border border-emerald-500/50 text-emerald-300 text-xs sm:text-sm font-bold flex items-center gap-2 shadow-lg animate-in fade-in">
+                <span>✅</span> Featured Promo settings saved successfully! Live site updated in real-time.
+              </div>
+            )}
+
+            {/* Grid Layout: Form Controls (Left 7 Cols) + Live Interactive Preview (Right 5 Cols) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+              
+              {/* Form Controls Column */}
+              <form onSubmit={handleSavePromoSystem} className="lg:col-span-7 flex flex-col gap-5 p-6 rounded-3xl bg-[#090717]/95 border border-purple-500/30 shadow-lg">
+                
+                {/* 1. Poster Image Upload & URL */}
+                <div className="flex flex-col gap-3 pb-4 border-b border-slate-800">
+                  <label className="text-xs font-black text-purple-300 uppercase tracking-wider flex items-center gap-2">
+                    <span>🖼️</span> Poster Image (JPG, PNG, WebP Supported)
+                  </label>
+
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-3">
+                      <label className="flex-1 px-4 py-3 bg-[#120e2b] border border-purple-500/40 hover:border-purple-400 rounded-2xl text-xs text-purple-200 font-bold cursor-pointer transition-all flex items-center justify-center gap-2 hover:scale-[1.01]">
+                        <span>📤 Upload Poster Image File</span>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          className="hidden"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              handlePosterFileUpload(e.target.files[0]);
+                            }
+                          }}
+                        />
+                      </label>
+
+                      {bannerConfig.heroImageUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setBannerConfigState((prev) => ({ ...prev, heroImageUrl: "" }))}
+                          className="px-3.5 py-3 rounded-2xl bg-rose-950/60 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-bold transition-all"
+                          title="Remove Poster Image"
+                        >
+                          Remove ✕
+                        </button>
+                      )}
+                    </div>
+
+                    {promoUploadError && (
+                      <p className="text-xs font-bold text-rose-400">{promoUploadError}</p>
+                    )}
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="text-xs font-bold text-slate-500">OR</span>
+                      <input
+                        type="text"
+                        value={bannerConfig.heroImageUrl || ""}
+                        onChange={(e) => setBannerConfigState({ ...bannerConfig, heroImageUrl: e.target.value })}
+                        placeholder="Paste Image URL (e.g. /hero_banner.png or https://...)"
+                        className="w-full px-4 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs font-mono focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Website Name & Short Tagline */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-extrabold text-slate-300 block mb-1">
+                      Website Title Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={bannerConfig.promoSiteName || ""}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, promoSiteName: e.target.value })}
+                      placeholder="e.g. Flixtor 4K Ultra"
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-purple-500/50 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-purple-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-extrabold text-slate-300 block mb-1">
+                      Short Tagline (Subtitle)
+                    </label>
+                    <input
+                      type="text"
+                      value={bannerConfig.promoTagline || ""}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, promoTagline: e.target.value })}
+                      placeholder="e.g. Stream thousands of 4K movies free"
+                      className="w-full px-4 py-3 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* 3. Redirect Destination Target URL */}
+                <div>
+                  <label className="text-xs font-extrabold text-purple-300 block mb-1">
+                    Click Destination Target URL *
+                  </label>
+                  <input
+                    type="url"
+                    required
+                    value={bannerConfig.promoTargetUrl || ""}
+                    onChange={(e) => setBannerConfigState({ ...bannerConfig, promoTargetUrl: e.target.value })}
+                    placeholder="https://flixtor.to"
+                    className="w-full px-4 py-3 bg-[#120e2b] border border-purple-500/50 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-purple-400"
+                  />
+                </div>
+
+                {/* 4. Badge, Button Text & Button Icon Selector */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-300 block mb-1">Badge Label</label>
+                    <input
+                      type="text"
+                      value={bannerConfig.cardBadgeText || ""}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, cardBadgeText: e.target.value })}
+                      placeholder="FEATURED PROMO"
+                      className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-300 block mb-1">Button Text</label>
+                    <input
+                      type="text"
+                      value={bannerConfig.promoButtonText || "Visit"}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, promoButtonText: e.target.value })}
+                      placeholder="Visit"
+                      className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-300 block mb-1">Button Icon</label>
+                    <select
+                      value={bannerConfig.promoButtonIcon || "↗"}
+                      onChange={(e) => setBannerConfigState({ ...bannerConfig, promoButtonIcon: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                    >
+                      <option value="↗">↗ Arrow</option>
+                      <option value="⚡">⚡ Lightning</option>
+                      <option value="🔥">🔥 Fire</option>
+                      <option value="🍿">🍿 Popcorn</option>
+                      <option value="⭐">⭐ Star</option>
+                      <option value="🚀">🚀 Rocket</option>
+                      <option value="🎬">🎬 Cinema</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* 5. Feature Tags Manager */}
+                <div className="flex flex-col gap-3 pt-3 border-t border-slate-800">
+                  <label className="text-xs font-black text-purple-300 uppercase tracking-wider flex items-center justify-between">
+                    <span>🏷️ Feature Badges Management</span>
+                    <span className="text-[10px] font-mono text-slate-400 font-normal">
+                      ({bannerConfig.promoHashtags?.length || 0} badges)
+                    </span>
+                  </label>
+
+                  {/* Add Tag Input Bar */}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={promoTagInput}
+                      onChange={(e) => setPromoTagInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddPromoTag();
+                        }
+                      }}
+                      placeholder="Type hashtag (e.g. 4KHDR, NoAds, Anime)..."
+                      className="flex-1 px-4 py-2.5 bg-[#120e2b] border border-slate-700 focus:border-purple-500 rounded-xl text-white text-xs focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddPromoTag}
+                      className="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-md shrink-0 cursor-pointer"
+                    >
+                      + Add Tag
+                    </button>
+                  </div>
+
+                  {/* Interactive Tags List with Reorder & Delete */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    {(bannerConfig.promoHashtags || []).map((tag, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-950/80 border border-purple-500/40 text-purple-200 text-xs font-mono font-bold shadow-sm"
+                      >
+                        <span>{tag.startsWith("#") ? tag : `#${tag}`}</span>
+
+                        {/* Reorder Buttons */}
+                        <div className="flex items-center gap-0.5 ml-1 border-l border-purple-500/30 pl-1.5">
+                          {idx > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => handleMovePromoTag(idx, "up")}
+                              className="text-[10px] text-purple-400 hover:text-white px-0.5 cursor-pointer"
+                              title="Move left"
+                            >
+                              ◀
+                            </button>
+                          )}
+                          {idx < (bannerConfig.promoHashtags?.length || 0) - 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleMovePromoTag(idx, "down")}
+                              className="text-[10px] text-purple-400 hover:text-white px-0.5 cursor-pointer"
+                              title="Move right"
+                            >
+                              ▶
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleRemovePromoTag(idx)}
+                            className="text-[11px] text-rose-400 hover:text-rose-200 font-black ml-1 cursor-pointer"
+                            title="Remove tag"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="purple-btn-primary py-4 rounded-2xl text-white font-black text-xs uppercase tracking-wider cursor-pointer shadow-xl mt-2"
+                >
+                  Save & Apply Featured Promo Live 🚀
+                </button>
+              </form>
+
+              {/* Right Column Live Interactive Preview */}
+              <div className="lg:col-span-5 flex flex-col gap-4 sticky top-24">
+                <div className="flex items-center justify-between px-2">
+                  <h3 className="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                    <span>👁️</span> Live Card Preview
+                  </h3>
+                  <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border ${bannerConfig.promoEnabled !== false ? "bg-emerald-950 text-emerald-300 border-emerald-500/40" : "bg-rose-950 text-rose-300 border-rose-500/40"}`}>
+                    {bannerConfig.promoEnabled !== false ? "● Visible on Homepage" : "○ Hidden"}
+                  </span>
+                </div>
+
+                {/* Promo Card Replica */}
+                <div className={`relative w-full aspect-[4/3] rounded-3xl overflow-hidden border border-purple-500/40 shadow-2xl bg-[#090717] transition-all ${bannerConfig.promoEnabled === false ? "opacity-40 grayscale" : ""}`}>
+                  <img
+                    src={bannerConfig.heroImageUrl || "/hero_banner.png"}
+                    alt={bannerConfig.promoSiteName || "Preview"}
+                    className="w-full h-full object-cover object-center"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/hero_banner.png";
+                    }}
+                  />
+
+                  <div className="absolute top-3.5 right-3.5 z-20">
+                    <span className="px-3 py-1 rounded-full bg-purple-950/90 text-purple-300 border border-purple-400/50 text-[10px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1.5 backdrop-blur-md">
+                      <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
+                      {bannerConfig.cardBadgeText || "FEATURED PROMO"}
+                    </span>
+                  </div>
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+
+                  <div className="absolute bottom-3 left-3 right-3 p-3.5 rounded-2xl bg-black/75 backdrop-blur-md border border-white/10 flex flex-col gap-2 shadow-2xl">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex flex-col min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base shrink-0">🔥</span>
+                          <h3 className="text-sm font-black text-white tracking-wide truncate">
+                            {bannerConfig.promoSiteName || "Flixtor 4K Ultra"}
+                          </h3>
+                        </div>
+                        {bannerConfig.promoTagline && (
+                          <p className="text-[10px] font-medium text-slate-300 truncate pl-6">
+                            {bannerConfig.promoTagline}
+                          </p>
+                        )}
+                      </div>
+
+                      <span className="text-[10px] font-extrabold text-purple-300 bg-purple-950/80 px-2.5 py-1.5 rounded-full border border-purple-500/40 shrink-0 flex items-center gap-1">
+                        <span>{bannerConfig.promoButtonText || "Visit"}</span>
+                        <span className="text-xs">{bannerConfig.promoButtonIcon || "↗"}</span>
+                      </span>
+                    </div>
+
+                    {(bannerConfig.promoHashtags && bannerConfig.promoHashtags.length > 0) && (
+                      <div className="flex flex-wrap items-wrap gap-1.5 pt-0.5">
+                        {bannerConfig.promoHashtags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[9px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-purple-950/80 text-purple-200 border border-purple-500/30 uppercase tracking-wider"
+                          >
+                            {tag.startsWith("#") ? tag : `#${tag}`}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
           </div>
         )}
 

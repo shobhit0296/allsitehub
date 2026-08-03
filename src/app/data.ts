@@ -25,6 +25,20 @@ export const CATEGORIES = [
   "AD BLOCKERS",
 ] as const;
 
+export interface FeaturedPromo {
+  id: string;
+  enabled: boolean;
+  siteName: string;
+  tagline?: string;
+  targetUrl: string;
+  heroImageUrl: string;
+  badgeText: string;
+  buttonText: string;
+  buttonIcon?: string;
+  hashtags: string[];
+  createdAt?: number;
+}
+
 export interface BannerConfig {
   badgeIcon: string;
   badgeText: string;
@@ -40,10 +54,17 @@ export interface BannerConfig {
   heroImageUrl: string;
   cardBadgeText: string;
   // PROMOTIONAL BANNER AREA FIELDS
+  promoEnabled?: boolean;
   promoSiteName?: string;
+  promoTagline?: string;
   promoTargetUrl?: string;
   promoHashtags?: string[];
   promoHashtagsString?: string;
+  promoButtonText?: string;
+  promoButtonIcon?: string;
+  // Scalable future-proofing multi-promo storage
+  promosList?: FeaturedPromo[];
+  activePromoId?: string;
 }
 
 export const DEFAULT_BANNER_CONFIG: BannerConfig = {
@@ -60,10 +81,30 @@ export const DEFAULT_BANNER_CONFIG: BannerConfig = {
   secondaryBtnUrl: "request-modal",
   heroImageUrl: "/hero_banner.png",
   cardBadgeText: "FEATURED PROMO",
+  promoEnabled: true,
   promoSiteName: "Flixtor 4K Ultra",
+  promoTagline: "Stream thousands of 4K & HD movies instantly with zero ads.",
   promoTargetUrl: "https://flixtor.to",
   promoHashtags: ["#4KHDR", "#NoAds", "#FastServer", "#FreeStreaming"],
   promoHashtagsString: "#4KHDR, #NoAds, #FastServer, #FreeStreaming",
+  promoButtonText: "Visit",
+  promoButtonIcon: "↗",
+  promosList: [
+    {
+      id: "promo-default-1",
+      enabled: true,
+      siteName: "Flixtor 4K Ultra",
+      tagline: "Stream thousands of 4K & HD movies instantly with zero ads.",
+      targetUrl: "https://flixtor.to",
+      heroImageUrl: "/hero_banner.png",
+      badgeText: "FEATURED PROMO",
+      buttonText: "Visit",
+      buttonIcon: "↗",
+      hashtags: ["#4KHDR", "#NoAds", "#FastServer", "#FreeStreaming"],
+      createdAt: 1700000000000,
+    },
+  ],
+  activePromoId: "promo-default-1",
 };
 
 export const BANNER_STORAGE_KEY = "allsitehub_banner_config_v3";
