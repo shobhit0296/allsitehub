@@ -1102,6 +1102,7 @@ export default function Home() {
                   { name: "MANGA", label: "MANGA", icon: "📖" },
                   { name: "LIVE TV & SPORTS", label: "LIVE TV & SPORTS", icon: "📺" },
                   { name: "PAID", label: "PAID", icon: "⭐" },
+                  { name: "APPS", label: "APPS", icon: "📱" },
                   { name: "AI TOOLS", label: "AI TOOLS", icon: "🤖" },
                   { name: "DOWNLOADS", label: "DOWNLOADS", icon: "⬇️" },
                   { name: "AD BLOCKERS", label: "AD BLOCKERS", icon: "🛡️" },
