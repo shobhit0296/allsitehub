@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import GalaxyBackground, { GalaxyThemeConfig } from "./GalaxyBackground";
 
 import {
   STREAMING_SITES,
@@ -18,7 +19,7 @@ import {
 
 interface ThemeConfig {
   name: string;
-  mode: "dark" | "light";
+  mode: "dark";
   icon: string;
   badge: string;
   pageBg: string;
@@ -57,431 +58,528 @@ interface ThemeConfig {
   aura2: string;
   accentBadge: string;
   categoryBar: string;
+  galaxyConfig: GalaxyThemeConfig;
 }
 
 const THEME_STYLES: Record<string, ThemeConfig> = {
-  // DARK THEMES
+  // 1. MIDNIGHT PURPLE GALAXY
   midnight: {
     name: "Midnight Purple",
     mode: "dark",
     icon: "🌌",
-    badge: "Dark",
+    badge: "Dark Galaxy",
     pageBg: "bg-[#05050c]",
     textureClass: "theme-texture-grid-dark",
     textColor: "text-slate-100",
     subtextColor: "text-slate-300",
     headingColor: "text-white",
-    mutedText: "text-slate-400",
-    headerBg: "bg-[#09061c]/95 backdrop-blur-2xl shadow-[0_4px_30px_rgba(168,85,247,0.25)]",
-    headerBorder: "border-b-2 border-purple-500/60",
+    mutedText: "text-purple-200/60",
+    headerBg: "bg-[#09061c]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(168,85,247,0.25)] border-b border-purple-500/40",
+    headerBorder: "border-b border-purple-500/50",
     brandText: "text-purple-400",
-    activeNavBg: "bg-purple-600/30 border border-purple-500/60 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.3)]",
+    activeNavBg: "bg-purple-600/35 border border-purple-400/70 text-white font-bold shadow-[0_0_20px_rgba(168,85,247,0.4)] backdrop-blur-md",
     inactiveNavText: "text-slate-300 hover:text-white hover:bg-white/10",
-    cardBg: "bg-[#090717]/90 shadow-md",
-    cardBorder: "border-purple-500/20",
-    cardBorderHover: "hover:border-purple-400/80",
-    cardGlow: "hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]",
-    sidebarBg: "bg-[#090717]/95 shadow-lg",
+    cardBg: "bg-[#090717]/70 backdrop-blur-xl shadow-lg border border-purple-500/25",
+    cardBorder: "border-purple-500/25",
+    cardBorderHover: "hover:border-purple-400/90",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(168,85,247,0.45)]",
+    sidebarBg: "bg-[#090717]/75 backdrop-blur-2xl shadow-xl border border-purple-500/30",
     sidebarBorder: "border-purple-500/30",
-    catBtnBg: "bg-[#0c091f]/80",
-    catBtnText: "text-slate-300 hover:text-white",
-    catBtnBorder: "border-slate-800/80",
-    inputBg: "bg-[#090718]",
-    inputBorder: "border-purple-500/30",
+    catBtnBg: "bg-[#0c091f]/60 backdrop-blur-md",
+    catBtnText: "text-slate-200 hover:text-white",
+    catBtnBorder: "border-purple-500/20",
+    inputBg: "bg-[#090718]/70 backdrop-blur-md",
+    inputBorder: "border-purple-500/40",
     inputText: "text-white",
-    siteCardBg: "bg-gradient-to-b from-[#0e0b24]/90 to-[#080616]/95",
-    siteCardBorder: "border-slate-800/80",
-    sqIconBg: "bg-[#140e33]",
-    sqIconBorder: "border-purple-500/30",
-    footerBg: "bg-[#040409]",
-    footerBorder: "border-slate-800/80",
-    modalBg: "bg-[#0b081b]",
-    modalBorder: "border-purple-500/40",
+    siteCardBg: "bg-gradient-to-b from-[#0e0b24]/85 to-[#080616]/95 backdrop-blur-xl",
+    siteCardBorder: "border-purple-500/30",
+    sqIconBg: "bg-[#140e33]/90 border border-purple-400/40",
+    sqIconBorder: "border-purple-400/40",
+    footerBg: "bg-[#040409]/90 backdrop-blur-xl",
+    footerBorder: "border-purple-900/40",
+    modalBg: "bg-[#0b081b]/90 backdrop-blur-2xl",
+    modalBorder: "border-purple-500/50 shadow-[0_0_50px_rgba(168,85,247,0.3)]",
     modalText: "text-slate-200",
     aura1: "bg-purple-700/20",
     aura2: "bg-indigo-600/15",
-    accentBadge: "bg-purple-950/80 text-purple-300 border-purple-500/30",
-    categoryBar: "bg-purple-500 shadow-[0_0_12px_#a855f7]",
+    accentBadge: "bg-purple-950/80 text-purple-300 border-purple-500/40 backdrop-blur-md",
+    categoryBar: "bg-purple-500 shadow-[0_0_15px_#a855f7]",
+    galaxyConfig: {
+      spaceBg: "#05050c",
+      nebula1: "rgba(168, 85, 247, 0.25)",
+      nebula2: "rgba(99, 102, 241, 0.22)",
+      nebula3: "rgba(236, 72, 153, 0.15)",
+      starColor: "#ffffff",
+      accentGlow: "#a855f7",
+    },
   },
+
+  // 2. CYBERPUNK NEON GALAXY
   cyber: {
     name: "Cyberpunk Neon",
     mode: "dark",
     icon: "⚡",
-    badge: "Dark",
+    badge: "Dark Cyber",
     pageBg: "bg-[#030a16]",
     textureClass: "theme-texture-dots-dark",
     textColor: "text-cyan-100",
     subtextColor: "text-cyan-200/80",
     headingColor: "text-white",
-    mutedText: "text-slate-400",
-    headerBg: "bg-[#041224]/95 backdrop-blur-2xl shadow-[0_4px_30px_rgba(6,182,212,0.3)]",
-    headerBorder: "border-b-2 border-cyan-400/60",
+    mutedText: "text-cyan-300/60",
+    headerBg: "bg-[#041224]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(6,182,212,0.3)] border-b border-cyan-400/50",
+    headerBorder: "border-b border-cyan-400/50",
     brandText: "text-cyan-400",
-    activeNavBg: "bg-cyan-500/30 border border-cyan-400/60 text-white font-bold shadow-[0_0_15px_rgba(6,182,212,0.4)]",
+    activeNavBg: "bg-cyan-500/35 border border-cyan-400/70 text-white font-bold shadow-[0_0_20px_rgba(6,182,212,0.45)] backdrop-blur-md",
     inactiveNavText: "text-slate-300 hover:text-cyan-300 hover:bg-cyan-950/40",
-    cardBg: "bg-[#05152a]/90 shadow-md",
+    cardBg: "bg-[#05152a]/70 backdrop-blur-xl shadow-lg border border-cyan-500/30",
     cardBorder: "border-cyan-500/30",
     cardBorderHover: "hover:border-cyan-400/90",
-    cardGlow: "hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]",
-    sidebarBg: "bg-[#05152a]/95 shadow-lg",
-    sidebarBorder: "border-cyan-500/30",
-    catBtnBg: "bg-[#071d38]/80",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(6,182,212,0.45)]",
+    sidebarBg: "bg-[#05152a]/75 backdrop-blur-2xl shadow-xl border border-cyan-500/35",
+    sidebarBorder: "border-cyan-500/35",
+    catBtnBg: "bg-[#071d38]/60 backdrop-blur-md",
     catBtnText: "text-cyan-200/90 hover:text-white",
-    catBtnBorder: "border-cyan-900/80",
-    inputBg: "bg-[#041124]",
+    catBtnBorder: "border-cyan-500/25",
+    inputBg: "bg-[#041124]/70 backdrop-blur-md",
     inputBorder: "border-cyan-500/40",
     inputText: "text-cyan-100",
-    siteCardBg: "bg-gradient-to-b from-[#071c38]/90 to-[#030f21]/95",
-    siteCardBorder: "border-cyan-900/80",
-    sqIconBg: "bg-[#0a274c]",
-    sqIconBorder: "border-cyan-500/40",
-    footerBg: "bg-[#020710]",
+    siteCardBg: "bg-gradient-to-b from-[#071c38]/85 to-[#030f21]/95 backdrop-blur-xl",
+    siteCardBorder: "border-cyan-500/30",
+    sqIconBg: "bg-[#0a274c]/90 border border-cyan-400/40",
+    sqIconBorder: "border-cyan-400/40",
+    footerBg: "bg-[#020710]/90 backdrop-blur-xl",
     footerBorder: "border-cyan-950",
-    modalBg: "bg-[#041226]",
-    modalBorder: "border-cyan-500/50",
+    modalBg: "bg-[#041226]/90 backdrop-blur-2xl",
+    modalBorder: "border-cyan-500/50 shadow-[0_0_50px_rgba(6,182,212,0.3)]",
     modalText: "text-cyan-100",
     aura1: "bg-cyan-600/20",
     aura2: "bg-pink-600/15",
-    accentBadge: "bg-cyan-950/90 text-cyan-300 border-cyan-500/40",
-    categoryBar: "bg-cyan-400 shadow-[0_0_12px_#22d3ee]",
+    accentBadge: "bg-cyan-950/90 text-cyan-300 border-cyan-500/40 backdrop-blur-md",
+    categoryBar: "bg-cyan-400 shadow-[0_0_15px_#22d3ee]",
+    galaxyConfig: {
+      spaceBg: "#030a16",
+      nebula1: "rgba(6, 182, 212, 0.25)",
+      nebula2: "rgba(236, 72, 153, 0.20)",
+      nebula3: "rgba(59, 130, 246, 0.18)",
+      starColor: "#cffafe",
+      accentGlow: "#22d3ee",
+    },
   },
+
+  // 3. EMERALD MATRIX GALAXY
   emerald: {
     name: "Emerald Matrix",
     mode: "dark",
     icon: "🟢",
-    badge: "Dark",
+    badge: "Dark Emerald",
     pageBg: "bg-[#02120b]",
     textureClass: "theme-texture-mesh-dark",
     textColor: "text-emerald-100",
     subtextColor: "text-emerald-200/80",
     headingColor: "text-white",
-    mutedText: "text-emerald-400/60",
-    headerBg: "bg-[#031c12]/95 backdrop-blur-2xl shadow-[0_4px_30px_rgba(16,185,129,0.3)]",
-    headerBorder: "border-b-2 border-emerald-400/60",
+    mutedText: "text-emerald-300/60",
+    headerBg: "bg-[#031c12]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(16,185,129,0.3)] border-b border-emerald-400/50",
+    headerBorder: "border-b border-emerald-400/50",
     brandText: "text-emerald-400",
-    activeNavBg: "bg-emerald-500/30 border border-emerald-400/60 text-white font-bold shadow-[0_0_15px_rgba(16,185,129,0.4)]",
+    activeNavBg: "bg-emerald-500/35 border border-emerald-400/70 text-white font-bold shadow-[0_0_20px_rgba(16,185,129,0.45)] backdrop-blur-md",
     inactiveNavText: "text-slate-300 hover:text-emerald-300 hover:bg-emerald-950/40",
-    cardBg: "bg-[#031d13]/90 shadow-md",
+    cardBg: "bg-[#031d13]/70 backdrop-blur-xl shadow-lg border border-emerald-500/30",
     cardBorder: "border-emerald-500/30",
     cardBorderHover: "hover:border-emerald-400/90",
-    cardGlow: "hover:shadow-[0_0_30px_rgba(16,185,129,0.45)]",
-    sidebarBg: "bg-[#031d13]/95 shadow-lg",
-    sidebarBorder: "border-emerald-500/30",
-    catBtnBg: "bg-[#05291b]/80",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(16,185,129,0.45)]",
+    sidebarBg: "bg-[#031d13]/75 backdrop-blur-2xl shadow-xl border border-emerald-500/35",
+    sidebarBorder: "border-emerald-500/35",
+    catBtnBg: "bg-[#05291b]/60 backdrop-blur-md",
     catBtnText: "text-emerald-200/90 hover:text-white",
-    catBtnBorder: "border-emerald-900/80",
-    inputBg: "bg-[#031a10]",
+    catBtnBorder: "border-emerald-500/25",
+    inputBg: "bg-[#031a10]/70 backdrop-blur-md",
     inputBorder: "border-emerald-500/40",
     inputText: "text-emerald-100",
-    siteCardBg: "bg-gradient-to-b from-[#052b1d]/90 to-[#02150e]/95",
-    siteCardBorder: "border-emerald-900/80",
-    sqIconBg: "bg-[#083a27]",
-    sqIconBorder: "border-emerald-500/40",
-    footerBg: "bg-[#010a06]",
+    siteCardBg: "bg-gradient-to-b from-[#052b1d]/85 to-[#02150e]/95 backdrop-blur-xl",
+    siteCardBorder: "border-emerald-500/30",
+    sqIconBg: "bg-[#083a27]/90 border border-emerald-400/40",
+    sqIconBorder: "border-emerald-400/40",
+    footerBg: "bg-[#010a06]/90 backdrop-blur-xl",
     footerBorder: "border-emerald-950",
-    modalBg: "bg-[#031d13]",
-    modalBorder: "border-emerald-500/50",
+    modalBg: "bg-[#031d13]/90 backdrop-blur-2xl",
+    modalBorder: "border-emerald-500/50 shadow-[0_0_50px_rgba(16,185,129,0.3)]",
     modalText: "text-emerald-100",
     aura1: "bg-emerald-600/20",
     aura2: "bg-teal-600/15",
-    accentBadge: "bg-emerald-950/90 text-emerald-300 border-emerald-500/40",
-    categoryBar: "bg-emerald-400 shadow-[0_0_12px_#34d399]",
+    accentBadge: "bg-emerald-950/90 text-emerald-300 border-emerald-500/40 backdrop-blur-md",
+    categoryBar: "bg-emerald-400 shadow-[0_0_15px_#34d399]",
+    galaxyConfig: {
+      spaceBg: "#02120b",
+      nebula1: "rgba(16, 185, 129, 0.25)",
+      nebula2: "rgba(20, 184, 166, 0.20)",
+      nebula3: "rgba(59, 130, 246, 0.15)",
+      starColor: "#d1fae5",
+      accentGlow: "#34d399",
+    },
   },
+
+  // 4. OCEAN DEEP GALAXY
   ocean: {
     name: "Ocean Deep",
     mode: "dark",
     icon: "🌊",
-    badge: "Dark",
+    badge: "Dark Abyss",
     pageBg: "bg-[#030914]",
     textureClass: "theme-texture-grid-dark",
     textColor: "text-blue-100",
     subtextColor: "text-blue-200/80",
     headingColor: "text-white",
-    mutedText: "text-slate-400",
-    headerBg: "bg-[#06142a]/95 backdrop-blur-2xl shadow-[0_4px_30px_rgba(59,130,246,0.3)]",
-    headerBorder: "border-b-2 border-blue-400/60",
+    mutedText: "text-blue-300/60",
+    headerBg: "bg-[#06142a]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(59,130,246,0.3)] border-b border-blue-400/50",
+    headerBorder: "border-b border-blue-400/50",
     brandText: "text-blue-400",
-    activeNavBg: "bg-blue-500/30 border border-blue-400/60 text-white font-bold shadow-[0_0_15px_rgba(59,130,246,0.4)]",
+    activeNavBg: "bg-blue-500/35 border border-blue-400/70 text-white font-bold shadow-[0_0_20px_rgba(59,130,246,0.45)] backdrop-blur-md",
     inactiveNavText: "text-slate-300 hover:text-blue-300 hover:bg-blue-950/40",
-    cardBg: "bg-[#061730]/90 shadow-md",
+    cardBg: "bg-[#061730]/70 backdrop-blur-xl shadow-lg border border-blue-500/30",
     cardBorder: "border-blue-500/30",
     cardBorderHover: "hover:border-blue-400/90",
-    cardGlow: "hover:shadow-[0_0_30px_rgba(59,130,246,0.45)]",
-    sidebarBg: "bg-[#061730]/95 shadow-lg",
-    sidebarBorder: "border-blue-500/30",
-    catBtnBg: "bg-[#082247]/80",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(59,130,246,0.45)]",
+    sidebarBg: "bg-[#061730]/75 backdrop-blur-2xl shadow-xl border border-blue-500/35",
+    sidebarBorder: "border-blue-500/35",
+    catBtnBg: "bg-[#082247]/60 backdrop-blur-md",
     catBtnText: "text-blue-200/90 hover:text-white",
-    catBtnBorder: "border-blue-900/80",
-    inputBg: "bg-[#041328]",
+    catBtnBorder: "border-blue-500/25",
+    inputBg: "bg-[#041328]/70 backdrop-blur-md",
     inputBorder: "border-blue-500/40",
     inputText: "text-blue-100",
-    siteCardBg: "bg-gradient-to-b from-[#08244b]/90 to-[#031124]/95",
-    siteCardBorder: "border-blue-900/80",
-    sqIconBg: "bg-[#0b3368]",
-    sqIconBorder: "border-blue-500/40",
-    footerBg: "bg-[#01050d]",
+    siteCardBg: "bg-gradient-to-b from-[#08244b]/85 to-[#031124]/95 backdrop-blur-xl",
+    siteCardBorder: "border-blue-500/30",
+    sqIconBg: "bg-[#0b3368]/90 border border-blue-400/40",
+    sqIconBorder: "border-blue-400/40",
+    footerBg: "bg-[#01050d]/90 backdrop-blur-xl",
     footerBorder: "border-blue-950",
-    modalBg: "bg-[#061730]",
-    modalBorder: "border-blue-500/50",
+    modalBg: "bg-[#061730]/90 backdrop-blur-2xl",
+    modalBorder: "border-blue-500/50 shadow-[0_0_50px_rgba(59,130,246,0.3)]",
     modalText: "text-blue-100",
     aura1: "bg-blue-600/20",
     aura2: "bg-sky-600/15",
-    accentBadge: "bg-blue-950/90 text-blue-300 border-blue-500/40",
-    categoryBar: "bg-blue-400 shadow-[0_0_12px_#60a5fa]",
+    accentBadge: "bg-blue-950/90 text-blue-300 border-blue-500/40 backdrop-blur-md",
+    categoryBar: "bg-blue-400 shadow-[0_0_15px_#60a5fa]",
+    galaxyConfig: {
+      spaceBg: "#030914",
+      nebula1: "rgba(59, 130, 246, 0.25)",
+      nebula2: "rgba(14, 165, 233, 0.20)",
+      nebula3: "rgba(99, 102, 241, 0.18)",
+      starColor: "#dbeafe",
+      accentGlow: "#60a5fa",
+    },
   },
+
+  // 5. CRIMSON SUPERNOVA GALAXY
   crimson: {
-    name: "Crimson Red",
+    name: "Crimson Supernova",
     mode: "dark",
     icon: "🔥",
-    badge: "Dark",
+    badge: "Dark Supernova",
     pageBg: "bg-[#0d0306]",
     textureClass: "theme-texture-dots-dark",
     textColor: "text-rose-100",
     subtextColor: "text-rose-200/80",
     headingColor: "text-white",
-    mutedText: "text-slate-400",
-    headerBg: "bg-[#1c050a]/95 backdrop-blur-2xl shadow-[0_4px_30px_rgba(244,63,94,0.3)]",
-    headerBorder: "border-b-2 border-rose-500/60",
+    mutedText: "text-rose-300/60",
+    headerBg: "bg-[#1c050a]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(244,63,94,0.3)] border-b border-rose-500/50",
+    headerBorder: "border-b border-rose-500/50",
     brandText: "text-rose-400",
-    activeNavBg: "bg-rose-500/30 border border-rose-400/60 text-white font-bold shadow-[0_0_15px_rgba(244,63,94,0.4)]",
+    activeNavBg: "bg-rose-500/35 border border-rose-400/70 text-white font-bold shadow-[0_0_20px_rgba(244,63,94,0.45)] backdrop-blur-md",
     inactiveNavText: "text-slate-300 hover:text-rose-300 hover:bg-rose-950/40",
-    cardBg: "bg-[#190509]/90 shadow-md",
+    cardBg: "bg-[#190509]/70 backdrop-blur-xl shadow-lg border border-rose-500/30",
     cardBorder: "border-rose-500/30",
     cardBorderHover: "hover:border-rose-400/90",
-    cardGlow: "hover:shadow-[0_0_30px_rgba(244,63,94,0.45)]",
-    sidebarBg: "bg-[#190509]/95 shadow-lg",
-    sidebarBorder: "border-rose-500/30",
-    catBtnBg: "bg-[#28080f]/80",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(244,63,94,0.45)]",
+    sidebarBg: "bg-[#190509]/75 backdrop-blur-2xl shadow-xl border border-rose-500/35",
+    sidebarBorder: "border-rose-500/35",
+    catBtnBg: "bg-[#28080f]/60 backdrop-blur-md",
     catBtnText: "text-rose-200/90 hover:text-white",
-    catBtnBorder: "border-rose-900/80",
-    inputBg: "bg-[#150407]",
+    catBtnBorder: "border-rose-500/25",
+    inputBg: "bg-[#150407]/70 backdrop-blur-md",
     inputBorder: "border-rose-500/40",
     inputText: "text-rose-100",
-    siteCardBg: "bg-gradient-to-b from-[#28080f]/90 to-[#120306]/95",
-    siteCardBorder: "border-rose-900/80",
-    sqIconBg: "bg-[#3d0b16]",
-    sqIconBorder: "border-rose-500/40",
-    footerBg: "bg-[#080103]",
+    siteCardBg: "bg-gradient-to-b from-[#28080f]/85 to-[#120306]/95 backdrop-blur-xl",
+    siteCardBorder: "border-rose-500/30",
+    sqIconBg: "bg-[#3d0b16]/90 border border-rose-400/40",
+    sqIconBorder: "border-rose-400/40",
+    footerBg: "bg-[#080103]/90 backdrop-blur-xl",
     footerBorder: "border-rose-950",
-    modalBg: "bg-[#180509]",
-    modalBorder: "border-rose-500/50",
+    modalBg: "bg-[#180509]/90 backdrop-blur-2xl",
+    modalBorder: "border-rose-500/50 shadow-[0_0_50px_rgba(244,63,94,0.3)]",
     modalText: "text-rose-100",
     aura1: "bg-rose-600/20",
     aura2: "bg-red-600/15",
-    accentBadge: "bg-rose-950/90 text-rose-300 border-rose-500/40",
-    categoryBar: "bg-rose-400 shadow-[0_0_12px_#fb7185]",
+    accentBadge: "bg-rose-950/90 text-rose-300 border-rose-500/40 backdrop-blur-md",
+    categoryBar: "bg-rose-400 shadow-[0_0_15px_#fb7185]",
+    galaxyConfig: {
+      spaceBg: "#0d0306",
+      nebula1: "rgba(244, 63, 94, 0.25)",
+      nebula2: "rgba(239, 68, 68, 0.20)",
+      nebula3: "rgba(245, 158, 11, 0.16)",
+      starColor: "#ffe4e6",
+      accentGlow: "#fb7185",
+    },
   },
 
-  // BRIGHT / LIGHT THEMES
-  sunburst: {
-    name: "Sunburst Gold",
-    mode: "light",
+  // 6. SOLAR AMBER GALAXY
+  sunset: {
+    name: "Solar Amber",
+    mode: "dark",
     icon: "☀️",
-    badge: "Bright",
-    pageBg: "bg-[#f8fafc]",
-    textureClass: "theme-texture-grid-light",
-    textColor: "text-slate-800",
-    subtextColor: "text-slate-600",
-    headingColor: "text-slate-900",
-    mutedText: "text-slate-500",
-    headerBg: "bg-white/95 backdrop-blur-2xl shadow-[0_4px_25px_rgba(245,158,11,0.18)]",
-    headerBorder: "border-b-2 border-amber-400/80",
-    brandText: "text-amber-600",
-    activeNavBg: "bg-amber-500/20 border border-amber-500/60 text-amber-950 font-bold shadow-[0_2px_10px_rgba(245,158,11,0.25)]",
-    inactiveNavText: "text-slate-700 hover:text-amber-900 hover:bg-amber-100/60",
-    cardBg: "bg-white/90 shadow-sm",
-    cardBorder: "border-amber-200/70",
-    cardBorderHover: "hover:border-amber-400",
-    cardGlow: "hover:shadow-[0_10px_30px_rgba(245,158,11,0.25)]",
-    sidebarBg: "bg-white/95 shadow-sm",
-    sidebarBorder: "border-amber-200/70",
-    catBtnBg: "bg-slate-100/90",
-    catBtnText: "text-slate-700 hover:text-amber-900",
-    catBtnBorder: "border-slate-200",
-    inputBg: "bg-amber-50/60",
-    inputBorder: "border-amber-300",
-    inputText: "text-slate-900",
-    siteCardBg: "bg-gradient-to-b from-white to-amber-50/40",
-    siteCardBorder: "border-amber-200/60",
-    sqIconBg: "bg-amber-100/60",
-    sqIconBorder: "border-amber-300/60",
-    footerBg: "bg-slate-100",
-    footerBorder: "border-slate-200",
-    modalBg: "bg-white",
-    modalBorder: "border-amber-300/60",
-    modalText: "text-slate-800",
-    aura1: "bg-amber-400/20",
-    aura2: "bg-orange-400/15",
-    accentBadge: "bg-amber-100 text-amber-800 border-amber-300/60",
-    categoryBar: "bg-amber-500 shadow-[0_0_12px_#f59e0b]",
+    badge: "Dark Solar",
+    pageBg: "bg-[#0f0a02]",
+    textureClass: "theme-texture-grid-dark",
+    textColor: "text-amber-100",
+    subtextColor: "text-amber-200/80",
+    headingColor: "text-white",
+    mutedText: "text-amber-300/60",
+    headerBg: "bg-[#1c1204]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(245,158,11,0.3)] border-b border-amber-400/50",
+    headerBorder: "border-b border-amber-400/50",
+    brandText: "text-amber-400",
+    activeNavBg: "bg-amber-500/35 border border-amber-400/70 text-white font-bold shadow-[0_0_20px_rgba(245,158,11,0.45)] backdrop-blur-md",
+    inactiveNavText: "text-slate-300 hover:text-amber-300 hover:bg-amber-950/40",
+    cardBg: "bg-[#1f1405]/70 backdrop-blur-xl shadow-lg border border-amber-500/30",
+    cardBorder: "border-amber-500/30",
+    cardBorderHover: "hover:border-amber-400/90",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(245,158,11,0.45)]",
+    sidebarBg: "bg-[#1f1405]/75 backdrop-blur-2xl shadow-xl border border-amber-500/35",
+    sidebarBorder: "border-amber-500/35",
+    catBtnBg: "bg-[#2b1b07]/60 backdrop-blur-md",
+    catBtnText: "text-amber-200/90 hover:text-white",
+    catBtnBorder: "border-amber-500/25",
+    inputBg: "bg-[#180f04]/70 backdrop-blur-md",
+    inputBorder: "border-amber-500/40",
+    inputText: "text-amber-100",
+    siteCardBg: "bg-gradient-to-b from-[#2d1d08]/85 to-[#140c03]/95 backdrop-blur-xl",
+    siteCardBorder: "border-amber-500/30",
+    sqIconBg: "bg-[#422a0b]/90 border border-amber-400/40",
+    sqIconBorder: "border-amber-400/40",
+    footerBg: "bg-[#0a0601]/90 backdrop-blur-xl",
+    footerBorder: "border-amber-950",
+    modalBg: "bg-[#1c1204]/90 backdrop-blur-2xl",
+    modalBorder: "border-amber-500/50 shadow-[0_0_50px_rgba(245,158,11,0.3)]",
+    modalText: "text-amber-100",
+    aura1: "bg-amber-600/20",
+    aura2: "bg-orange-600/15",
+    accentBadge: "bg-amber-950/90 text-amber-300 border-amber-500/40 backdrop-blur-md",
+    categoryBar: "bg-amber-400 shadow-[0_0_15px_#fbbf24]",
+    galaxyConfig: {
+      spaceBg: "#0f0a02",
+      nebula1: "rgba(245, 158, 11, 0.25)",
+      nebula2: "rgba(234, 88, 12, 0.20)",
+      nebula3: "rgba(217, 119, 6, 0.16)",
+      starColor: "#fef3c7",
+      accentGlow: "#fbbf24",
+    },
   },
+
+  // 7. SAKURA VOID GALAXY
   sakura: {
-    name: "Sakura Bloom",
-    mode: "light",
+    name: "Sakura Void",
+    mode: "dark",
     icon: "🌸",
-    badge: "Bright",
-    pageBg: "bg-[#fff5f7]",
-    textureClass: "theme-texture-dots-light",
-    textColor: "text-slate-800",
-    subtextColor: "text-slate-600",
-    headingColor: "text-slate-900",
-    mutedText: "text-slate-500",
-    headerBg: "bg-white/95 backdrop-blur-2xl shadow-[0_4px_25px_rgba(236,72,153,0.18)]",
-    headerBorder: "border-b-2 border-pink-400/80",
-    brandText: "text-pink-600",
-    activeNavBg: "bg-pink-500/20 border border-pink-500/60 text-pink-950 font-bold shadow-[0_2px_10px_rgba(236,72,153,0.25)]",
-    inactiveNavText: "text-slate-700 hover:text-pink-900 hover:bg-pink-100/60",
-    cardBg: "bg-white/90 shadow-sm",
-    cardBorder: "border-pink-200/70",
-    cardBorderHover: "hover:border-pink-400",
-    cardGlow: "hover:shadow-[0_10px_30px_rgba(236,72,153,0.25)]",
-    sidebarBg: "bg-white/95 shadow-sm",
-    sidebarBorder: "border-pink-200/70",
-    catBtnBg: "bg-slate-100/90",
-    catBtnText: "text-slate-700 hover:text-pink-900",
-    catBtnBorder: "border-slate-200",
-    inputBg: "bg-pink-50/60",
-    inputBorder: "border-pink-300",
-    inputText: "text-slate-900",
-    siteCardBg: "bg-gradient-to-b from-white to-pink-50/40",
-    siteCardBorder: "border-pink-200/60",
-    sqIconBg: "bg-pink-100/60",
-    sqIconBorder: "border-pink-300/60",
-    footerBg: "bg-pink-50/80",
-    footerBorder: "border-pink-200",
-    modalBg: "bg-white",
-    modalBorder: "border-pink-300/60",
-    modalText: "text-slate-800",
-    aura1: "bg-pink-400/20",
-    aura2: "bg-rose-400/15",
-    accentBadge: "bg-pink-100 text-pink-800 border-pink-300/60",
-    categoryBar: "bg-pink-500 shadow-[0_0_12px_#ec4899]",
+    badge: "Dark Sakura",
+    pageBg: "bg-[#0e030a]",
+    textureClass: "theme-texture-dots-dark",
+    textColor: "text-pink-100",
+    subtextColor: "text-pink-200/80",
+    headingColor: "text-white",
+    mutedText: "text-pink-300/60",
+    headerBg: "bg-[#1c0615]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(236,72,153,0.3)] border-b border-pink-400/50",
+    headerBorder: "border-b border-pink-400/50",
+    brandText: "text-pink-400",
+    activeNavBg: "bg-pink-500/35 border border-pink-400/70 text-white font-bold shadow-[0_0_20px_rgba(236,72,153,0.45)] backdrop-blur-md",
+    inactiveNavText: "text-slate-300 hover:text-pink-300 hover:bg-pink-950/40",
+    cardBg: "bg-[#1c0616]/70 backdrop-blur-xl shadow-lg border border-pink-500/30",
+    cardBorder: "border-pink-500/30",
+    cardBorderHover: "hover:border-pink-400/90",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(236,72,153,0.45)]",
+    sidebarBg: "bg-[#1c0616]/75 backdrop-blur-2xl shadow-xl border border-pink-500/35",
+    sidebarBorder: "border-pink-500/35",
+    catBtnBg: "bg-[#280920]/60 backdrop-blur-md",
+    catBtnText: "text-pink-200/90 hover:text-white",
+    catBtnBorder: "border-pink-500/25",
+    inputBg: "bg-[#160511]/70 backdrop-blur-md",
+    inputBorder: "border-pink-500/40",
+    inputText: "text-pink-100",
+    siteCardBg: "bg-gradient-to-b from-[#2b0922]/85 to-[#12030e]/95 backdrop-blur-xl",
+    siteCardBorder: "border-pink-500/30",
+    sqIconBg: "bg-[#3e0d32]/90 border border-pink-400/40",
+    sqIconBorder: "border-pink-400/40",
+    footerBg: "bg-[#090107]/90 backdrop-blur-xl",
+    footerBorder: "border-pink-950",
+    modalBg: "bg-[#1c0615]/90 backdrop-blur-2xl",
+    modalBorder: "border-pink-500/50 shadow-[0_0_50px_rgba(236,72,153,0.3)]",
+    modalText: "text-pink-100",
+    aura1: "bg-pink-600/20",
+    aura2: "bg-rose-600/15",
+    accentBadge: "bg-pink-950/90 text-pink-300 border-pink-500/40 backdrop-blur-md",
+    categoryBar: "bg-pink-400 shadow-[0_0_15px_#f472b6]",
+    galaxyConfig: {
+      spaceBg: "#0e030a",
+      nebula1: "rgba(236, 72, 153, 0.25)",
+      nebula2: "rgba(168, 85, 247, 0.20)",
+      nebula3: "rgba(244, 114, 182, 0.16)",
+      starColor: "#fce7f3",
+      accentGlow: "#f472b6",
+    },
   },
+
+  // 8. ARCTIC FROST GALAXY
   arctic: {
     name: "Arctic Frost",
-    mode: "light",
+    mode: "dark",
     icon: "🧊",
-    badge: "Bright",
-    pageBg: "bg-[#f0f9ff]",
-    textureClass: "theme-texture-soft-light",
-    textColor: "text-slate-800",
-    subtextColor: "text-slate-600",
-    headingColor: "text-slate-900",
-    mutedText: "text-slate-500",
-    headerBg: "bg-white/95 backdrop-blur-2xl shadow-[0_4px_25px_rgba(6,182,212,0.18)]",
-    headerBorder: "border-b-2 border-cyan-400/80",
-    brandText: "text-cyan-600",
-    activeNavBg: "bg-cyan-500/20 border border-cyan-500/60 text-cyan-950 font-bold shadow-[0_2px_10px_rgba(6,182,212,0.25)]",
-    inactiveNavText: "text-slate-700 hover:text-cyan-900 hover:bg-cyan-100/60",
-    cardBg: "bg-white/90 shadow-sm",
-    cardBorder: "border-cyan-200/70",
-    cardBorderHover: "hover:border-cyan-400",
-    cardGlow: "hover:shadow-[0_10px_30px_rgba(6,182,212,0.25)]",
-    sidebarBg: "bg-white/95 shadow-sm",
-    sidebarBorder: "border-cyan-200/70",
-    catBtnBg: "bg-slate-100/90",
-    catBtnText: "text-slate-700 hover:text-cyan-900",
-    catBtnBorder: "border-slate-200",
-    inputBg: "bg-cyan-50/60",
-    inputBorder: "border-cyan-300",
-    inputText: "text-slate-900",
-    siteCardBg: "bg-gradient-to-b from-white to-cyan-50/40",
-    siteCardBorder: "border-cyan-200/60",
-    sqIconBg: "bg-cyan-100/60",
-    sqIconBorder: "border-cyan-300/60",
-    footerBg: "bg-cyan-50/80",
-    footerBorder: "border-cyan-200",
-    modalBg: "bg-white",
-    modalBorder: "border-cyan-300/60",
-    modalText: "text-slate-800",
-    aura1: "bg-cyan-400/20",
-    aura2: "bg-sky-400/15",
-    accentBadge: "bg-cyan-100 text-cyan-800 border-cyan-300/60",
-    categoryBar: "bg-cyan-500 shadow-[0_0_12px_#06b6d4]",
+    badge: "Dark Frost",
+    pageBg: "bg-[#020b12]",
+    textureClass: "theme-texture-mesh-dark",
+    textColor: "text-sky-100",
+    subtextColor: "text-sky-200/80",
+    headingColor: "text-white",
+    mutedText: "text-sky-300/60",
+    headerBg: "bg-[#041726]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(56,189,248,0.3)] border-b border-sky-400/50",
+    headerBorder: "border-b border-sky-400/50",
+    brandText: "text-sky-400",
+    activeNavBg: "bg-sky-500/35 border border-sky-400/70 text-white font-bold shadow-[0_0_20px_rgba(56,189,248,0.45)] backdrop-blur-md",
+    inactiveNavText: "text-slate-300 hover:text-sky-300 hover:bg-sky-950/40",
+    cardBg: "bg-[#051c2e]/70 backdrop-blur-xl shadow-lg border border-sky-500/30",
+    cardBorder: "border-sky-500/30",
+    cardBorderHover: "hover:border-sky-400/90",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(56,189,248,0.45)]",
+    sidebarBg: "bg-[#051c2e]/75 backdrop-blur-2xl shadow-xl border border-sky-500/35",
+    sidebarBorder: "border-sky-500/35",
+    catBtnBg: "bg-[#07253d]/60 backdrop-blur-md",
+    catBtnText: "text-sky-200/90 hover:text-white",
+    catBtnBorder: "border-sky-500/25",
+    inputBg: "bg-[#031524]/70 backdrop-blur-md",
+    inputBorder: "border-sky-500/40",
+    inputText: "text-sky-100",
+    siteCardBg: "bg-gradient-to-b from-[#082945]/85 to-[#02111c]/95 backdrop-blur-xl",
+    siteCardBorder: "border-sky-500/30",
+    sqIconBg: "bg-[#0a385e]/90 border border-sky-400/40",
+    sqIconBorder: "border-sky-400/40",
+    footerBg: "bg-[#01070d]/90 backdrop-blur-xl",
+    footerBorder: "border-sky-950",
+    modalBg: "bg-[#041726]/90 backdrop-blur-2xl",
+    modalBorder: "border-sky-500/50 shadow-[0_0_50px_rgba(56,189,248,0.3)]",
+    modalText: "text-sky-100",
+    aura1: "bg-sky-600/20",
+    aura2: "bg-teal-600/15",
+    accentBadge: "bg-sky-950/90 text-sky-300 border-sky-500/40 backdrop-blur-md",
+    categoryBar: "bg-sky-400 shadow-[0_0_15px_#38bdf8]",
+    galaxyConfig: {
+      spaceBg: "#020b12",
+      nebula1: "rgba(56, 189, 248, 0.25)",
+      nebula2: "rgba(45, 212, 191, 0.20)",
+      nebula3: "rgba(99, 102, 241, 0.16)",
+      starColor: "#e0f2fe",
+      accentGlow: "#38bdf8",
+    },
   },
-  mint: {
-    name: "Fresh Mint",
-    mode: "light",
-    icon: "🌿",
-    badge: "Bright",
-    pageBg: "bg-[#f0fdf4]",
-    textureClass: "theme-texture-grid-light",
-    textColor: "text-slate-800",
-    subtextColor: "text-slate-600",
-    headingColor: "text-slate-900",
-    mutedText: "text-slate-500",
-    headerBg: "bg-white/95 backdrop-blur-2xl shadow-[0_4px_25px_rgba(16,185,129,0.18)]",
-    headerBorder: "border-b-2 border-emerald-400/80",
-    brandText: "text-emerald-600",
-    activeNavBg: "bg-emerald-500/20 border border-emerald-500/60 text-emerald-950 font-bold shadow-[0_2px_10px_rgba(16,185,129,0.25)]",
-    inactiveNavText: "text-slate-700 hover:text-emerald-900 hover:bg-emerald-100/60",
-    cardBg: "bg-white/90 shadow-sm",
-    cardBorder: "border-emerald-200/70",
-    cardBorderHover: "hover:border-emerald-400",
-    cardGlow: "hover:shadow-[0_10px_30px_rgba(16,185,129,0.25)]",
-    sidebarBg: "bg-white/95 shadow-sm",
-    sidebarBorder: "border-emerald-200/70",
-    catBtnBg: "bg-slate-100/90",
-    catBtnText: "text-slate-700 hover:text-emerald-900",
-    catBtnBorder: "border-slate-200",
-    inputBg: "bg-emerald-50/60",
-    inputBorder: "border-emerald-300",
-    inputText: "text-slate-900",
-    siteCardBg: "bg-gradient-to-b from-white to-emerald-50/40",
-    siteCardBorder: "border-emerald-200/60",
-    sqIconBg: "bg-emerald-100/60",
-    sqIconBorder: "border-emerald-300/60",
-    footerBg: "bg-emerald-50/80",
-    footerBorder: "border-emerald-200",
-    modalBg: "bg-white",
-    modalBorder: "border-emerald-300/60",
-    modalText: "text-slate-800",
-    aura1: "bg-emerald-400/20",
-    aura2: "bg-teal-400/15",
-    accentBadge: "bg-emerald-100 text-emerald-800 border-emerald-300/60",
-    categoryBar: "bg-emerald-500 shadow-[0_0_12px_#10b981]",
+
+  // 9. STARLIGHT OBSIDIAN GALAXY
+  obsidian: {
+    name: "Starlight Obsidian",
+    mode: "dark",
+    icon: "⭐",
+    badge: "Dark Obsidian",
+    pageBg: "bg-[#040407]",
+    textureClass: "theme-texture-grid-dark",
+    textColor: "text-slate-100",
+    subtextColor: "text-slate-300",
+    headingColor: "text-white",
+    mutedText: "text-slate-400",
+    headerBg: "bg-[#0b0b12]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(255,255,255,0.15)] border-b border-slate-700/50",
+    headerBorder: "border-b border-slate-700/50",
+    brandText: "text-slate-200",
+    activeNavBg: "bg-slate-700/40 border border-slate-400/60 text-white font-bold shadow-[0_0_20px_rgba(255,255,255,0.2)] backdrop-blur-md",
+    inactiveNavText: "text-slate-300 hover:text-white hover:bg-white/10",
+    cardBg: "bg-[#0e0e18]/70 backdrop-blur-xl shadow-lg border border-slate-700/40",
+    cardBorder: "border-slate-700/40",
+    cardBorderHover: "hover:border-slate-400/90",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(255,255,255,0.25)]",
+    sidebarBg: "bg-[#0e0e18]/75 backdrop-blur-2xl shadow-xl border border-slate-700/40",
+    sidebarBorder: "border-slate-700/40",
+    catBtnBg: "bg-[#141421]/60 backdrop-blur-md",
+    catBtnText: "text-slate-200 hover:text-white",
+    catBtnBorder: "border-slate-700/30",
+    inputBg: "bg-[#0a0a12]/70 backdrop-blur-md",
+    inputBorder: "border-slate-700/50",
+    inputText: "text-white",
+    siteCardBg: "bg-gradient-to-b from-[#141424]/85 to-[#08080f]/95 backdrop-blur-xl",
+    siteCardBorder: "border-slate-700/40",
+    sqIconBg: "bg-[#1c1c30]/90 border border-slate-500/40",
+    sqIconBorder: "border-slate-500/40",
+    footerBg: "bg-[#020204]/90 backdrop-blur-xl",
+    footerBorder: "border-slate-800",
+    modalBg: "bg-[#0d0d16]/90 backdrop-blur-2xl",
+    modalBorder: "border-slate-600/50 shadow-[0_0_50px_rgba(255,255,255,0.15)]",
+    modalText: "text-slate-100",
+    aura1: "bg-slate-500/20",
+    aura2: "bg-indigo-500/15",
+    accentBadge: "bg-slate-900/90 text-slate-200 border-slate-700/50 backdrop-blur-md",
+    categoryBar: "bg-slate-300 shadow-[0_0_15px_#cbd5e1]",
+    galaxyConfig: {
+      spaceBg: "#040407",
+      nebula1: "rgba(148, 163, 184, 0.20)",
+      nebula2: "rgba(99, 102, 241, 0.18)",
+      nebula3: "rgba(203, 213, 225, 0.15)",
+      starColor: "#ffffff",
+      accentGlow: "#e2e8f0",
+    },
   },
-  cyberday: {
-    name: "Cyber Daylight",
-    mode: "light",
-    icon: "⚡",
-    badge: "Bright",
-    pageBg: "bg-[#fdf4ff]",
-    textureClass: "theme-texture-dots-light",
-    textColor: "text-slate-800",
-    subtextColor: "text-slate-600",
-    headingColor: "text-slate-900",
-    mutedText: "text-slate-500",
-    headerBg: "bg-white/95 backdrop-blur-2xl shadow-[0_4px_25px_rgba(168,85,247,0.18)]",
-    headerBorder: "border-b-2 border-purple-400/80",
-    brandText: "text-purple-600",
-    activeNavBg: "bg-purple-500/20 border border-purple-500/60 text-purple-950 font-bold shadow-[0_2px_10px_rgba(168,85,247,0.25)]",
-    inactiveNavText: "text-slate-700 hover:text-purple-900 hover:bg-purple-100/60",
-    cardBg: "bg-white/90 shadow-sm",
-    cardBorder: "border-purple-200/70",
-    cardBorderHover: "hover:border-purple-400",
-    cardGlow: "hover:shadow-[0_10px_30px_rgba(168,85,247,0.25)]",
-    sidebarBg: "bg-white/95 shadow-sm",
-    sidebarBorder: "border-purple-200/70",
-    catBtnBg: "bg-slate-100/90",
-    catBtnText: "text-slate-700 hover:text-purple-900",
-    catBtnBorder: "border-slate-200",
-    inputBg: "bg-purple-50/60",
-    inputBorder: "border-purple-300",
-    inputText: "text-slate-900",
-    siteCardBg: "bg-gradient-to-b from-white to-purple-50/40",
-    siteCardBorder: "border-purple-200/60",
-    sqIconBg: "bg-purple-100/60",
-    sqIconBorder: "border-purple-300/60",
-    footerBg: "bg-purple-50/80",
-    footerBorder: "border-purple-200",
-    modalBg: "bg-white",
-    modalBorder: "border-purple-300/60",
-    modalText: "text-slate-800",
-    aura1: "bg-purple-400/20",
-    aura2: "bg-pink-400/15",
-    accentBadge: "bg-purple-100 text-purple-800 border-purple-300/60",
-    categoryBar: "bg-purple-500 shadow-[0_0_12px_#a855f7]",
+
+  // 10. AETHER GOLD GALAXY
+  aether: {
+    name: "Aether Gold",
+    mode: "dark",
+    icon: "👑",
+    badge: "Dark Imperial",
+    pageBg: "bg-[#0b0802]",
+    textureClass: "theme-texture-grid-dark",
+    textColor: "text-amber-100",
+    subtextColor: "text-amber-200/80",
+    headingColor: "text-white",
+    mutedText: "text-amber-300/60",
+    headerBg: "bg-[#171104]/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(251,191,36,0.3)] border-b border-amber-400/50",
+    headerBorder: "border-b border-amber-400/50",
+    brandText: "text-amber-300",
+    activeNavBg: "bg-amber-500/35 border border-amber-300/70 text-white font-bold shadow-[0_0_20px_rgba(251,191,36,0.45)] backdrop-blur-md",
+    inactiveNavText: "text-slate-300 hover:text-amber-200 hover:bg-amber-950/40",
+    cardBg: "bg-[#1c1405]/70 backdrop-blur-xl shadow-lg border border-amber-500/30",
+    cardBorder: "border-amber-500/30",
+    cardBorderHover: "hover:border-amber-300/90",
+    cardGlow: "hover:shadow-[0_0_35px_rgba(251,191,36,0.45)]",
+    sidebarBg: "bg-[#1c1405]/75 backdrop-blur-2xl shadow-xl border border-amber-500/35",
+    sidebarBorder: "border-amber-500/35",
+    catBtnBg: "bg-[#291e07]/60 backdrop-blur-md",
+    catBtnText: "text-amber-200/90 hover:text-white",
+    catBtnBorder: "border-amber-500/25",
+    inputBg: "bg-[#140e03]/70 backdrop-blur-md",
+    inputBorder: "border-amber-500/40",
+    inputText: "text-amber-100",
+    siteCardBg: "bg-gradient-to-b from-[#2b1f07]/85 to-[#120c02]/95 backdrop-blur-xl",
+    siteCardBorder: "border-amber-500/30",
+    sqIconBg: "bg-[#3f2e0b]/90 border border-amber-300/40",
+    sqIconBorder: "border-amber-300/40",
+    footerBg: "bg-[#070501]/90 backdrop-blur-xl",
+    footerBorder: "border-amber-950",
+    modalBg: "bg-[#171104]/90 backdrop-blur-2xl",
+    modalBorder: "border-amber-500/50 shadow-[0_0_50px_rgba(251,191,36,0.3)]",
+    modalText: "text-amber-100",
+    aura1: "bg-amber-500/20",
+    aura2: "bg-yellow-600/15",
+    accentBadge: "bg-amber-950/90 text-amber-200 border-amber-400/40 backdrop-blur-md",
+    categoryBar: "bg-amber-300 shadow-[0_0_15px_#fde047]",
+    galaxyConfig: {
+      spaceBg: "#0b0802",
+      nebula1: "rgba(251, 191, 36, 0.25)",
+      nebula2: "rgba(245, 158, 11, 0.20)",
+      nebula3: "rgba(202, 138, 4, 0.16)",
+      starColor: "#fef08a",
+      accentGlow: "#fde047",
+    },
   },
 };
 
@@ -519,21 +617,15 @@ export default function Home() {
   }, []);
 
   const handleThemeChange = (themeKey: string) => {
-    setCurrentTheme(themeKey);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("allsitehub_theme", themeKey);
+    if (THEME_STYLES[themeKey]) {
+      setCurrentTheme(themeKey);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("allsitehub_theme", themeKey);
+      }
     }
   };
 
   const activeTheme = THEME_STYLES[currentTheme] || THEME_STYLES.midnight;
-
-  const toggleLightDarkMode = () => {
-    if (activeTheme.mode === "light") {
-      handleThemeChange("midnight");
-    } else {
-      handleThemeChange("sunburst");
-    }
-  };
 
   // Dynamic Sites List State
   const [sitesList, setSitesList] = useState<SiteItem[]>(STREAMING_SITES);
@@ -549,7 +641,6 @@ export default function Home() {
     };
   }, []);
 
-  
   const isManualClickRef = useRef(false);
   const manualClickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -621,10 +712,6 @@ export default function Home() {
   // Live Site Counter State - bound to sitesList.length
   const totalSitesCount = sitesList.length;
   const [siteCount, setSiteCount] = useState(0);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  // 3D Parallax Mouse Tilt State (Clean hover without scroll blur)
-  const [tiltStyle, setTiltStyle] = useState({ rotateX: 0, rotateY: 0 });
 
   // Form states for Request Site Modal
   const [reqSiteName, setReqSiteName] = useState("");
@@ -632,7 +719,6 @@ export default function Home() {
   const [reqSiteCategory, setReqSiteCategory] = useState("MOVIES & TV SHOWS");
   const [reqFeatures, setReqFeatures] = useState("");
   const [reqRegion, setReqRegion] = useState("US");
-  const [payMethod, setPayMethod] = useState<"free" | "upi" | "crypto" | "paypal">("free");
   const [reqSuccess, setReqSuccess] = useState(false);
 
   // Smooth count-up animation on mount
@@ -650,83 +736,16 @@ export default function Home() {
     const timer = setInterval(() => {
       start += 1;
       setSiteCount(start);
-      if (start >= end) clearInterval(timer);
-    }, stepTime);
+      if (start >= end) {
+        clearInterval(timer);
+      }
+    }, Math.max(stepTime, 20));
 
     return () => clearInterval(timer);
   }, [totalSitesCount]);
 
-  // 3D Mouse Parallax Tilt Handler for Hero Image Card
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = ((y - centerY) / centerY) * -12;
-    const rotateY = ((x - centerX) / centerX) * 12;
-
-    setTiltStyle({ rotateX, rotateY });
-  };
-
-  const handleMouseLeave = () => {
-    setTiltStyle({ rotateX: 0, rotateY: 0 });
-  };
-
-  // Banner CTA Click Handler
-  const handleBannerCtaClick = (url: string) => {
-    if (!url) return;
-    const targetUrl = url.trim();
-    if (targetUrl === "request-modal") {
-      setShowModal("request");
-      return;
-    }
-    if (targetUrl.startsWith("#")) {
-      const elementId = targetUrl.replace("#", "");
-      const el = document.getElementById(elementId);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-      }
-      return;
-    }
-    if (targetUrl.startsWith("http://") || targetUrl.startsWith("https://") || targetUrl.startsWith("//")) {
-      window.open(targetUrl, "_blank", "noopener,noreferrer");
-      return;
-    }
-    window.location.href = targetUrl;
-  };
-
-  const handleCopyLink = (site: SiteItem) => {
-    navigator.clipboard.writeText(site.url);
-    setCopiedId(site.id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  // Category counts helper
-  const getCategoryCount = (catName: string) => {
-    if (catName === "All") return sitesList.length;
-    return sitesList.filter((s) => s.category === catName).length;
-  };
-
-  // Filtered sites for browsing section
-  const filteredSites = useMemo(() => {
-    return sitesList.filter((site) => {
-      if (selectedCategory !== "All" && site.category !== selectedCategory) return false;
-      if (!searchQuery.trim()) return true;
-      const q = searchQuery.toLowerCase();
-      return (
-        site.name.toLowerCase().includes(q) ||
-        site.domain.toLowerCase().includes(q) ||
-        site.tags.some((t) => t.toLowerCase().includes(q))
-      );
-    });
-  }, [sitesList, selectedCategory, searchQuery]);
-
   const handleRequestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reqSiteName.trim() || !reqSiteUrl.trim()) return;
     setReqSuccess(true);
     setTimeout(() => {
       setReqSuccess(false);
@@ -734,19 +753,27 @@ export default function Home() {
       setReqSiteName("");
       setReqSiteUrl("");
       setReqFeatures("");
-      setReqRegion("US");
     }, 2000);
   };
 
-  return (
-    <div className={`min-h-screen flex flex-col ${activeTheme.pageBg} ${activeTheme.textureClass} ${activeTheme.textColor} font-sans selection:bg-purple-600 selection:text-white relative transition-colors duration-400`}>
-      {/* Background Ambient Lighting Aura */}
-      <div className={`absolute top-0 left-1/4 -mt-20 w-[400px] sm:w-[900px] h-[300px] sm:h-[600px] ${activeTheme.aura1} rounded-full blur-[100px] sm:blur-[180px] pointer-events-none transition-all duration-500`} />
-      <div className={`absolute top-1/3 right-0 w-[350px] sm:w-[800px] h-[350px] sm:h-[700px] ${activeTheme.aura2} rounded-full blur-[100px] sm:blur-[190px] pointer-events-none transition-all duration-500`} />
+  // Utility to calculate real-time category counts
+  const getCategoryCount = (categoryName: string) => {
+    return sitesList.filter((site) => site.category === categoryName).length;
+  };
 
-      {/* HEADER NAVBAR - ULTRA WIDE MAX WIDTH */}
-      <header className={`sticky top-0 z-50 ${activeTheme.headerBg} px-4 sm:px-8 xl:px-12 py-3.5 transition-all border-b ${activeTheme.headerBorder}`}>
-        <div className="max-w-[1700px] w-full mx-auto flex items-center justify-between gap-4">
+  return (
+    <div className={`min-h-screen flex flex-col relative overflow-x-hidden ${activeTheme.pageBg} ${activeTheme.textColor} ${activeTheme.textureClass} selection:bg-purple-500 selection:text-white transition-colors duration-500`}>
+      {/* 1. LIVE GALAXY BACKGROUND EFFECT CANVAS */}
+      <GalaxyBackground themeConfig={activeTheme.galaxyConfig} />
+
+      {/* TOP BACKGROUND AURAS */}
+      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] rounded-full pointer-events-none blur-[140px] opacity-40 z-0 animate-pulse-glow" style={{ background: activeTheme.galaxyConfig.nebula1 }} />
+      <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] rounded-full pointer-events-none blur-[140px] opacity-35 z-0 animate-pulse-glow" style={{ background: activeTheme.galaxyConfig.nebula2 }} />
+
+      {/* GLASS HEADER / NAVBAR */}
+      <header className={`sticky top-0 z-40 w-full ${activeTheme.headerBg} transition-all duration-300`}>
+        <div className="max-w-[1700px] w-full mx-auto px-4 sm:px-8 xl:px-12 py-3 flex items-center justify-between gap-4">
+          
           {/* Left Brand Logo */}
           <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => setActiveNav("Home")}>
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-purple-400 p-[2px] shadow-[0_0_20px_rgba(168,85,247,0.5)] flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -755,7 +782,7 @@ export default function Home() {
               </div>
             </div>
             <span className={`font-extrabold text-xl sm:text-2xl tracking-tight ${activeTheme.headingColor} flex items-center`}>
-              Allsite<span className={`${activeTheme.brandText} group-hover:opacity-90 transition-colors`}>hub</span>
+              Allsite<span className={`${activeTheme.brandText} group-hover:opacity-90 transition-colors ml-0.5`}>hub</span>
             </span>
           </div>
 
@@ -792,7 +819,7 @@ export default function Home() {
               href="https://discord.gg/QnTrWqwcJ"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/50 text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(88,101,242,0.3)] hover:scale-105"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/50 text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(88,101,242,0.3)] hover:scale-105 backdrop-blur-md"
               title="Join Discord Community"
             >
               <span className="text-sm">💬</span>
@@ -804,7 +831,7 @@ export default function Home() {
               href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/50 text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(255,69,0,0.3)] hover:scale-105"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/50 text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(255,69,0,0.3)] hover:scale-105 backdrop-blur-md"
               title="Visit Reddit Profile"
             >
               <svg className="w-3.5 h-3.5 fill-current text-[#FF4500] group-hover:text-white" viewBox="0 0 24 24">
@@ -813,15 +840,15 @@ export default function Home() {
               <span className="hidden xl:inline font-bold">Reddit</span>
             </a>
 
-            {/* Unified Themes Button */}
+            {/* Live Theme Button */}
             <button
               onClick={() => setShowModal("themes")}
-              className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all border cursor-pointer hover:scale-105 ${activeTheme.inputBg} ${activeTheme.inputBorder} ${activeTheme.textColor}`}
-              title="Explore Website Themes"
+              className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all border cursor-pointer hover:scale-105 backdrop-blur-md ${activeTheme.inputBg} ${activeTheme.inputBorder} ${activeTheme.textColor}`}
+              title="Explore Live Galaxy Themes"
             >
-              <span>🎨</span>
+              <span className="text-sm">🎨</span>
               <span>Themes</span>
-              <span className="text-[10px] font-mono font-bold opacity-75">({activeTheme.name})</span>
+              <span className="text-[10px] font-mono font-bold opacity-80">({activeTheme.name})</span>
             </button>
 
             {/* Region Selector */}
@@ -829,7 +856,7 @@ export default function Home() {
               <select
                 value={selectedRegion}
                 onChange={(e) => setSelectedRegion(e.target.value)}
-                className={`appearance-none ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.textColor} text-xs font-semibold px-3 py-1.5 pr-7 rounded-full cursor-pointer focus:outline-none transition-colors`}
+                className={`appearance-none ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.textColor} text-xs font-semibold px-3 py-1.5 pr-7 rounded-full cursor-pointer focus:outline-none transition-colors backdrop-blur-md`}
               >
                 <option value="US">🌐 US</option>
                 <option value="UK">🌐 UK</option>
@@ -843,7 +870,7 @@ export default function Home() {
             </div>
 
             {/* LIVE ANIMATED COUNTER BADGE */}
-            <div className="relative flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-[#081814] border border-emerald-500/40 text-emerald-400 text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+            <div className="relative flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-[#081814]/80 backdrop-blur-md border border-emerald-500/40 text-emerald-400 text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               <span className="font-mono text-xs font-extrabold text-emerald-300">
                 {siteCount}
@@ -854,7 +881,7 @@ export default function Home() {
             {/* Mobile Hamburger Toggle Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl bg-[#0c0919] border border-slate-800 text-slate-300 hover:text-white"
+              className="md:hidden p-2 rounded-xl bg-[#0c0919]/80 border border-slate-800 text-slate-300 hover:text-white backdrop-blur-md"
             >
               {isMobileMenuOpen ? "✕" : "☰"}
             </button>
@@ -863,7 +890,7 @@ export default function Home() {
 
         {/* Mobile Navigation Drawer */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-3 pt-3 border-t border-purple-500/20 flex flex-col gap-2 bg-[#090717]/95 p-4 rounded-2xl border">
+          <div className="md:hidden mt-3 pt-3 border-t border-purple-500/20 flex flex-col gap-2 bg-[#090717]/95 backdrop-blur-2xl p-4 rounded-2xl border border-white/10 shadow-2xl">
             <div className="relative mb-2">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">
                 🔍
@@ -873,24 +900,23 @@ export default function Home() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search sites, anime, movies..."
-                className="w-full pl-8 pr-3 py-2 bg-[#120e29] border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none"
+                className="w-full pl-8 pr-3 py-2 bg-[#120e29]/80 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none backdrop-blur-md"
               />
             </div>
 
             {/* Mobile Theme Selector */}
-            <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#120e29] border border-slate-700/80 my-1">
-              <span className="text-xs font-bold text-slate-300">Theme:</span>
+            <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#120e29]/80 border border-slate-700/80 my-1 backdrop-blur-md">
+              <span className="text-xs font-bold text-slate-300">Live Dark Theme:</span>
               <select
                 value={currentTheme}
                 onChange={(e) => handleThemeChange(e.target.value)}
                 className="bg-[#0c0919] border border-slate-700 text-slate-200 text-xs font-bold px-2 py-1 rounded-lg focus:outline-none"
               >
-                <option value="midnight">🎨 Midnight Purple</option>
-                <option value="cyber">⚡ Cyberpunk Neon</option>
-                <option value="emerald">🟢 Emerald Matrix</option>
-                <option value="ocean">🌊 Ocean Deep</option>
-                <option value="sunset">🌅 Sunset Amber</option>
-                <option value="crimson">🔥 Crimson Red</option>
+                {Object.entries(THEME_STYLES).map(([key, t]) => (
+                  <option key={key} value={key}>
+                    {t.icon} {t.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -908,7 +934,7 @@ export default function Home() {
                   className={`px-3 py-2 rounded-xl text-xs font-bold text-left transition-all ${
                     activeNav === item
                       ? "bg-purple-600 text-white"
-                      : "bg-[#120e29] text-slate-300 hover:text-white"
+                      : "bg-[#120e29]/70 text-slate-300 hover:text-white"
                   }`}
                 >
                   {item}
@@ -919,7 +945,9 @@ export default function Home() {
         )}
       </header>
 
-      <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 xl:px-12 py-4 sm:py-8 flex flex-col gap-4 sm:gap-6">
+      {/* MAIN CONTAINER */}
+      <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 xl:px-12 py-4 sm:py-8 flex flex-col gap-6 sm:gap-8 relative z-10">
+        
         {/* HERO SECTION WITH DYNAMIC BANNER & FEATURED PROMO CARD */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 xl:gap-12 items-center relative">
 
@@ -948,198 +976,144 @@ export default function Home() {
               </h1>
             </div>
 
-            {/* Subtext */}
-            <p className={`text-sm sm:text-base lg:text-xl ${activeTheme.subtextColor} font-medium max-w-2xl leading-relaxed`}>
+            {/* Subtitle */}
+            <p className={`text-sm sm:text-base xl:text-lg ${activeTheme.subtextColor} font-medium max-w-2xl leading-relaxed`}>
               {bannerConfig.description}
             </p>
-          </div>
 
-          {/* Right Column Featured Promotional Card */}
-          {bannerConfig.promoEnabled !== false && (
-            <div className="lg:col-span-5 relative flex justify-center items-center mt-2 lg:mt-0 z-10 animate-in fade-in zoom-in-95 duration-300">
-              {/* Ambient Lighting Aura */}
-              <div className={`absolute inset-0 ${activeTheme.aura1} rounded-3xl blur-3xl -z-10`} />
+            {/* Action Buttons & Community Badges */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+              <button
+                onClick={() => {
+                  const el = document.getElementById("browse-directory");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="px-6 py-3.5 rounded-full purple-btn-primary text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 cursor-pointer"
+              >
+                <span>Browse Directory</span>
+                <span className="text-base font-bold">↓</span>
+              </button>
 
               <a
-                href={bannerConfig.promoTargetUrl || "https://flixtor.to"}
+                href="https://discord.gg/QnTrWqwcJ"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`group relative w-full max-w-md xl:max-w-lg aspect-[4/3] rounded-3xl overflow-hidden border ${activeTheme.cardBorder} shadow-2xl ${activeTheme.cardBg} cursor-pointer block transition-all duration-300 hover:scale-[1.02] hover:border-purple-400`}
+                className="px-5 py-3.5 rounded-full bg-[#5865F2]/25 hover:bg-[#5865F2] border border-[#5865F2]/60 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(88,101,242,0.3)] hover:scale-105 cursor-pointer backdrop-blur-md"
               >
-                {/* Poster Banner Image */}
-                <Image
-                  src={bannerConfig.heroImageUrl || "/hero_banner.png"}
-                  alt={bannerConfig.promoSiteName || "Promotional Banner"}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
+                <span>💬 Join Discord</span>
+              </a>
 
-                {/* Top Right Promotional Badge */}
-                <div className="absolute top-3.5 right-3.5 z-20">
-                  <span className="px-3 py-1 rounded-full bg-purple-950/90 text-purple-300 border border-purple-400/50 text-[10px] sm:text-xs font-black uppercase tracking-wider shadow-lg flex items-center gap-1.5 backdrop-blur-md">
-                    <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
-                    {bannerConfig.cardBadgeText || "FEATURED PROMO"}
+              <a
+                href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-3.5 rounded-full bg-[#FF4500]/25 hover:bg-[#FF4500] border border-[#FF4500]/60 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(255,69,0,0.3)] hover:scale-105 cursor-pointer backdrop-blur-md"
+              >
+                <span>🔴 Reddit Profile</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Right Column Featured Promo Card (Glassmorphism) */}
+          {bannerConfig.promoEnabled !== false && (
+            <div className="lg:col-span-5 flex justify-center lg:justify-end z-20">
+              <div className={`w-full max-w-md ${activeTheme.cardBg} border ${activeTheme.cardBorder} rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden`}>
+                <div className="absolute -right-12 -top-12 w-44 h-44 rounded-full bg-purple-500/20 blur-3xl group-hover:bg-purple-500/30 transition-all" />
+                <div className="flex items-center justify-between mb-4">
+                  <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-1.5`}>
+                    <span>⭐</span>
+                    <span>{bannerConfig.cardBadgeText || "FEATURED SPOTLIGHT"}</span>
+                  </span>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    VERIFIED
                   </span>
                 </div>
 
-                {/* Dark Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+                <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} mb-2 tracking-tight`}>
+                  {bannerConfig.promoSiteName || "Featured Portal"}
+                </h3>
+                <p className={`text-xs sm:text-sm ${activeTheme.subtextColor} mb-5 leading-relaxed`}>
+                  {bannerConfig.promoTagline || "Discover top verified streaming portal."}
+                </p>
 
-                {/* Bottom Promotional Info & Feature Hashtags (#) */}
-                <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-3.5 sm:p-4 rounded-2xl bg-black/75 backdrop-blur-md border border-white/10 flex flex-col gap-2 shadow-2xl transition-all group-hover:border-purple-400/60">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex flex-col min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base sm:text-lg shrink-0">🔥</span>
-                        <h3 className="text-sm sm:text-base font-black text-white tracking-wide truncate">
-                          {bannerConfig.promoSiteName || "Flixtor 4K Ultra"}
-                        </h3>
-                      </div>
-                      {bannerConfig.promoTagline && (
-                        <p className="text-[10px] sm:text-xs font-medium text-slate-300 truncate pl-6">
-                          {bannerConfig.promoTagline}
-                        </p>
-                      )}
-                    </div>
-
-                    <span className="text-[10px] font-extrabold text-purple-300 bg-purple-950/80 px-2.5 py-1.5 rounded-full border border-purple-500/40 shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-all flex items-center gap-1 shadow-sm">
-                      <span>{bannerConfig.promoButtonText || "Visit"}</span>
-                      <span className="text-xs">{bannerConfig.promoButtonIcon || "↗"}</span>
-                    </span>
-                  </div>
-
-                  {/* Feature Hashtags containing # */}
-                  {(bannerConfig.promoHashtags && bannerConfig.promoHashtags.length > 0) && (
-                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                      {bannerConfig.promoHashtags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="text-[9px] sm:text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-purple-950/80 text-purple-200 border border-purple-500/30 uppercase tracking-wider shadow-xs"
-                        >
-                          {tag.startsWith("#") ? tag : `#${tag}`}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </a>
+                <a
+                  href={bannerConfig.promoTargetUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3.5 rounded-2xl purple-btn-primary text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                >
+                  <span>{bannerConfig.promoButtonText}</span>
+                  <span className="text-base">↗</span>
+                </a>
+              </div>
             </div>
           )}
-
         </section>
 
-        {/* 4 STATS CARDS ROW WITH ULTRA-WIDE FIT - TIGHT SLEEK ROW */}
-        <section className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 perspective-1000">
-          <div className={`tilt-card-3d rounded-2xl p-2.5 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs`}>
-              🪐
-            </div>
-            <div>
-              <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight font-mono`}>
-                {siteCount}
-              </h3>
-              <p className={`text-xs font-bold ${activeTheme.brandText}`}>Sites Indexed</p>
-              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>Verified active portals</p>
-            </div>
-          </div>
-
-          <div className={`tilt-card-3d rounded-2xl p-2.5 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs`}>
-              🎬
-            </div>
-            <div>
-              <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight`}>25+</h3>
-              <p className={`text-xs font-bold ${activeTheme.brandText}`}>Categories</p>
-              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>All your favorites</p>
-            </div>
-          </div>
-
-          <div className={`tilt-card-3d rounded-2xl p-2.5 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs`}>
-              🌐
-            </div>
-            <div>
-              <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight`}>190+</h3>
-              <p className={`text-xs font-bold ${activeTheme.brandText}`}>Countries Supported</p>
-              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>Worldwide access</p>
-            </div>
-          </div>
-
-          <div className={`tilt-card-3d rounded-2xl p-2.5 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 cursor-pointer ${activeTheme.cardBg} border ${activeTheme.cardBorder} ${activeTheme.cardBorderHover} ${activeTheme.cardGlow}`}>
-            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs`}>
+        {/* FEATURE STATS STRIP */}
+        <section className={`grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 p-4 sm:p-5 rounded-3xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} shadow-lg backdrop-blur-2xl`}>
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 backdrop-blur-md`}>
               ⚡
             </div>
             <div>
-              <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.brandText} tracking-tight`}>100%</h3>
-              <p className={`text-xs font-bold ${activeTheme.brandText}`}>Free Forever</p>
-              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>Always will be</p>
+              <h4 className={`text-xs sm:text-sm font-black ${activeTheme.headingColor} uppercase tracking-wider`}>Lightning Fast</h4>
+              <p className={`text-[10px] sm:text-xs ${activeTheme.mutedText}`}>Instant zero-lag links</p>
             </div>
           </div>
-        </section>
 
-        {/* BOTTOM FEATURE HIGHLIGHTS STRIP - TIGHT SLEEK ROW */}
-        <section className={`rounded-xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} p-2 sm:p-2.5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2 shadow-xs`}>
-          <div className="flex items-center gap-2">
-            <div className={`w-6.5 h-6.5 sm:w-7.5 sm:h-7.5 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs shrink-0`}>
-              ⚡
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 backdrop-blur-md`}>
+              🎯
             </div>
             <div>
-              <h4 className={`text-[11px] sm:text-xs font-bold ${activeTheme.headingColor} uppercase tracking-wider`}>Blazing Fast Search</h4>
-              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>Find any site in seconds</p>
+              <h4 className={`text-xs sm:text-sm font-black ${activeTheme.headingColor} uppercase tracking-wider`}>Verified Portals</h4>
+              <p className={`text-[10px] sm:text-xs ${activeTheme.mutedText}`}>100% clean & secure</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className={`w-6.5 h-6.5 sm:w-7.5 sm:h-7.5 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs shrink-0`}>
-              🌐
-            </div>
-            <div>
-              <h4 className={`text-[11px] sm:text-xs font-bold ${activeTheme.headingColor} uppercase tracking-wider`}>Multi-Region Access</h4>
-              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>Unblock. Discover. Enjoy.</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className={`w-6.5 h-6.5 sm:w-7.5 sm:h-7.5 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs shrink-0`}>
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 backdrop-blur-md`}>
               🛡️
             </div>
             <div>
-              <h4 className={`text-[11px] sm:text-xs font-bold ${activeTheme.headingColor} uppercase tracking-wider`}>No Registration</h4>
-              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>Jump right in. No sign-up.</p>
+              <h4 className={`text-xs sm:text-sm font-black ${activeTheme.headingColor} uppercase tracking-wider`}>No Sign-up</h4>
+              <p className={`text-[10px] sm:text-xs ${activeTheme.mutedText}`}>Free open directory</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className={`w-6.5 h-6.5 sm:w-7.5 sm:h-7.5 rounded-md ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-xs shrink-0`}>
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center text-lg sm:text-xl shrink-0 backdrop-blur-md`}>
               🔄
             </div>
             <div>
-              <h4 className={`text-[11px] sm:text-xs font-bold ${activeTheme.headingColor} uppercase tracking-wider`}>Always Updated</h4>
-              <p className={`text-[10px] sm:text-[11px] ${activeTheme.mutedText}`}>We add new sites daily</p>
+              <h4 className={`text-xs sm:text-sm font-black ${activeTheme.headingColor} uppercase tracking-wider`}>Daily Updates</h4>
+              <p className={`text-[10px] sm:text-xs ${activeTheme.mutedText}`}>Fresh mirrors added</p>
             </div>
           </div>
         </section>
 
         {/* INTERACTIVE DIRECTORY SECTION - LEFT SIDEBAR CATEGORY LAYOUT */}
-        <section id="browse-directory" className="flex flex-col gap-4 pt-2 sm:pt-3">
+        <section id="browse-directory" className="flex flex-col gap-5 pt-2 sm:pt-4">
+          
           {/* MAIN DIRECTORY LAYOUT: LEFT SIDEBAR + RIGHT CARDS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-            {/* LEFT SIDEBAR CATEGORIES - CLEAN UN-SCROLLED STICKY CATEGORY COLUMN */}
-            <aside className={`lg:col-span-3 sticky top-[80px] self-start z-20 flex flex-col gap-2 sm:gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-3.5 sm:p-4 shadow-lg transition-all`}>
-              <div className={`flex items-center justify-between px-2 pb-2.5 border-b ${activeTheme.headerBorder}`}>
-                <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText}`}>
-                  Categories ({CATEGORIES.length})
+            {/* LEFT SIDEBAR CATEGORIES - STICKY CATEGORY COLUMN */}
+            <aside className={`lg:col-span-3 sticky top-[80px] self-start z-20 flex flex-col gap-3 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all`}>
+              <div className={`flex items-center justify-between px-1 pb-3 border-b ${activeTheme.headerBorder}`}>
+                <span className={`text-xs sm:text-sm font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-2`}>
+                  <span>📂</span>
+                  <span>Categories ({CATEGORIES.length})</span>
                 </span>
-                <span className={`text-[10px] font-mono font-bold ${activeTheme.accentBadge} px-2 py-0.5 rounded-full border`}>
+                <span className={`text-xs font-mono font-extrabold ${activeTheme.accentBadge} px-2.5 py-0.5 rounded-full border`}>
                   {totalSitesCount} Portals
                 </span>
               </div>
 
               {/* Desktop Category Buttons List */}
-              <div className="hidden lg:flex flex-col gap-1.5">
+              <div className="hidden lg:flex flex-col gap-2">
                 {[
                   { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
                   { name: "ONLY 4K", label: "ONLY 4K", icon: "💎" },
@@ -1159,17 +1133,17 @@ export default function Home() {
                     <button
                       key={cat.name}
                       onClick={() => handleCategoryClick(cat.name)}
-                      className={`group relative flex items-center justify-between gap-2.5 px-3.5 py-2 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
+                      className={`group relative flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
-                          : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder} hover:scale-[1.01]`
+                          : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder} hover:scale-[1.02]`
                       }`}
                     >
                       {isSelected && (
-                        <span className="absolute left-0 top-1/2 -translate-x-1/2 w-1.5 h-6 bg-purple-400 rounded-r-full shadow-sm" />
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-7 bg-purple-400 rounded-r-full shadow-md" />
                       )}
 
-                      <span className="flex items-center gap-2.5 text-sm sm:text-base font-black tracking-wide truncate">
+                      <span className="flex items-center gap-3 text-xs sm:text-sm font-black tracking-wide truncate">
                         <span className="text-base sm:text-lg">{cat.icon}</span>
                         <span className="truncate">{cat.label}</span>
                       </span>
@@ -1177,7 +1151,7 @@ export default function Home() {
                       <span
                         className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border shrink-0 ${
                           isSelected
-                            ? "bg-purple-400 text-black border-purple-300 font-extrabold"
+                            ? "bg-purple-400 text-black border-purple-300 font-black"
                             : `${activeTheme.inputBg} ${activeTheme.mutedText} border-slate-700`
                         }`}
                       >
@@ -1193,7 +1167,7 @@ export default function Home() {
                 href="https://discord.gg/QnTrWqwcJ"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#5865F2]/25 via-[#404EED]/20 to-purple-900/30 border border-[#5865F2]/40 hover:border-[#5865F2] hover:shadow-md transition-all cursor-pointer overflow-hidden mt-3"
+                className="group relative flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#5865F2]/30 via-[#404EED]/20 to-purple-900/40 border border-[#5865F2]/50 hover:border-[#5865F2] hover:shadow-lg transition-all cursor-pointer overflow-hidden mt-3 backdrop-blur-md"
               >
                 <div className="flex items-center gap-3 relative z-10">
                   <div className="flex flex-col">
@@ -1218,7 +1192,7 @@ export default function Home() {
                 href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#FF4500]/25 via-[#e03d00]/20 to-amber-900/30 border border-[#FF4500]/40 hover:border-[#FF4500] hover:shadow-md transition-all cursor-pointer overflow-hidden mt-2.5"
+                className="group relative flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#FF4500]/30 via-[#e03d00]/20 to-amber-900/40 border border-[#FF4500]/50 hover:border-[#FF4500] hover:shadow-lg transition-all cursor-pointer overflow-hidden mt-2.5 backdrop-blur-md"
               >
                 <div className="flex items-center gap-3 relative z-10">
                   <div className="flex flex-col">
@@ -1240,10 +1214,10 @@ export default function Home() {
             </aside>
 
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
-            <div className="lg:col-span-9 flex flex-col gap-5">
+            <div className="lg:col-span-9 flex flex-col gap-6">
 
               {/* MOBILE CATEGORY SCROLLBAR - STICKY ON MOBILE */}
-              <div className={`lg:hidden sticky top-[62px] z-30 flex items-center gap-2 overflow-x-auto no-scrollbar py-2.5 px-3 mb-2 snap-x ${activeTheme.sidebarBg} border-b ${activeTheme.sidebarBorder} shadow-md backdrop-blur-xl -mx-4 sm:-mx-8 px-4 sm:px-8`}>
+              <div className={`lg:hidden sticky top-[62px] z-30 flex items-center gap-2 overflow-x-auto no-scrollbar py-3 px-3 mb-2 snap-x ${activeTheme.sidebarBg} border-b ${activeTheme.sidebarBorder} shadow-lg backdrop-blur-2xl -mx-4 sm:-mx-8 px-4 sm:px-8`}>
                 {CATEGORIES.map((cat) => {
                   const isSelected = selectedCategory === cat;
                   const count = getCategoryCount(cat);
@@ -1251,7 +1225,7 @@ export default function Home() {
                     <button
                       key={cat}
                       onClick={() => handleCategoryClick(cat)}
-                      className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm md:text-base font-black transition-all border flex items-center gap-2 whitespace-nowrap active:scale-95 cursor-pointer ${
+                      className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all border flex items-center gap-2 whitespace-nowrap active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
                           : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder}`
@@ -1267,56 +1241,54 @@ export default function Home() {
               </div>
 
               {/* DIRECTORY SEARCH & VIEW TOGGLE ROW */}
-              <div className="flex items-center justify-between gap-3 px-1 pb-3 mb-2 border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-purple-950/80 text-purple-300 border border-purple-500/30">
-                    {totalSitesCount} Portals
+              <div className="flex items-center justify-between gap-4 px-2 pb-4 mb-2 border-b border-white/10">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xs sm:text-sm font-mono font-black px-3.5 py-1.5 rounded-full bg-purple-950/80 text-purple-300 border border-purple-500/40 backdrop-blur-md shadow-sm">
+                    {totalSitesCount} Verified Portals
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   {/* DIRECTORY SEARCH INPUT BAR */}
-                  <div className="relative flex-1 sm:w-60 xl:w-68">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-xs opacity-60">
+                  <div className="relative flex-1 sm:w-64 xl:w-80">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-xs opacity-70">
                       🔍
                     </div>
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search portals..."
-                      className={`w-full pl-8 pr-7 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-full text-xs placeholder-slate-500 focus:outline-none transition-all shadow-inner`}
+                      placeholder="Search portals, streaming, anime..."
+                      className={`w-full pl-9 pr-8 py-2.5 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-full text-xs sm:text-sm placeholder-slate-400 focus:outline-none transition-all shadow-inner backdrop-blur-md`}
                     />
                     {searchQuery && (
                       <button
                         onClick={() => setSearchQuery("")}
-                        className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-xs opacity-60 hover:opacity-100"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-xs opacity-70 hover:opacity-100"
                       >
                         ✕
                       </button>
                     )}
                   </div>
 
-                  {/* Square View Layout Toggle Switch */}
-                  <div className={`flex items-center gap-1 ${activeTheme.inputBg} border ${activeTheme.inputBorder} p-1 rounded-xl shadow-inner shrink-0`}>
+                  {/* View Layout Toggle Switch */}
+                  <div className={`flex items-center gap-1 ${activeTheme.inputBg} border ${activeTheme.inputBorder} p-1 rounded-2xl shadow-inner shrink-0 backdrop-blur-md`}>
                     <button
                       onClick={() => setViewMode("grid")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
                         viewMode === "grid"
                           ? activeTheme.activeNavBg
                           : `${activeTheme.mutedText} hover:bg-white/5`
                       }`}
-                      title="Square Card Grid View"
+                      title="Large Square Card Grid View"
                     >
-                      <span className="w-3.5 h-3.5 border border-current rounded-xs flex items-center justify-center font-mono text-[9px] font-black">
-                        ⊞
-                      </span>
+                      <span className="text-xs font-black">⊞</span>
                       <span className="hidden sm:inline">Grid</span>
                     </button>
 
                     <button
                       onClick={() => setViewMode("list")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
                         viewMode === "list"
                           ? activeTheme.activeNavBg
                           : `${activeTheme.mutedText} hover:bg-white/5`
@@ -1353,62 +1325,65 @@ export default function Home() {
                     key={catName}
                     id={`cat-${catSlug}`}
                     data-category={catName}
-                    className="flex flex-col gap-3 scroll-mt-28 lg:scroll-mt-24 mb-6"
+                    className="flex flex-col gap-4 scroll-mt-28 lg:scroll-mt-24 mb-8"
                   >
                     {/* Category Header */}
-                    <div className="flex items-center justify-between px-1 pb-2 border-b border-white/10">
+                    <div className="flex items-center justify-between px-2 pb-3 border-b border-white/10">
                       <div className="flex items-center gap-3">
-                        <span className={`w-1.5 h-6 rounded-full ${activeTheme.categoryBar}`} />
-                        <span className="text-xl sm:text-2xl">{icon}</span>
-                        <h2 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight flex items-center gap-2.5`}>
+                        <span className={`w-2 h-7 rounded-full ${activeTheme.categoryBar}`} />
+                        <span className="text-2xl sm:text-3xl">{icon}</span>
+                        <h2 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight flex items-center gap-3 uppercase`}>
                           <span>{catName}</span>
                         </h2>
-                        <span className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border ${activeTheme.accentBadge}`}>
+                        <span className={`text-xs font-mono font-bold px-3 py-0.5 rounded-full border ${activeTheme.accentBadge}`}>
                           {catSites.length}
                         </span>
                       </div>
                     </div>
 
-                    {/* Category Sites Grid or List View */}
+                    {/* Category Sites Grid or List View - SLIGHTLY BIGGER CARDS */}
                     {catSites.length === 0 ? (
-                      <div className={`p-6 rounded-2xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} text-center text-xs ${activeTheme.mutedText}`}>
+                      <div className={`p-8 rounded-3xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} text-center text-xs sm:text-sm ${activeTheme.mutedText} backdrop-blur-xl`}>
                         No portals added yet in {catName}.
                       </div>
                     ) : viewMode === "grid" ? (
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-2.5 sm:gap-3">
+                      /* SLIGHTLY BIGGER CARDS GRID - 2 to 6 columns with spacious gaps & padding */
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-5">
                         {catSites.map((site) => (
                           <a
                             key={site.id}
                             href={site.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl sm:rounded-2xl p-2.5 sm:p-3 aspect-square flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] active:scale-[0.98] shadow-sm ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-md`}
+                            className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] shadow-md ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-xl min-h-[170px] sm:min-h-[190px]`}
                           >
-                            <div className="absolute top-2 left-2 z-20">
+                            {/* Top Badge Tag */}
+                            <div className="absolute top-2.5 left-2.5 z-20">
                               {site.isTrusted ? (
-                                <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider shadow-xs">
+                                <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider shadow-sm backdrop-blur-md">
                                   TRUSTED
                                 </span>
                               ) : site.isFeatured ? (
-                                <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-950/90 text-amber-400 border border-amber-500/40 uppercase tracking-wider shadow-xs">
+                                <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-950/90 text-amber-400 border border-amber-500/40 uppercase tracking-wider shadow-sm backdrop-blur-md">
                                   FEATURED
                                 </span>
                               ) : site.isNew ? (
-                                <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-950/90 text-blue-400 border border-blue-500/40 uppercase tracking-wider shadow-xs">
+                                <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-950/90 text-blue-400 border border-blue-500/40 uppercase tracking-wider shadow-sm backdrop-blur-md">
                                   NEW
                                 </span>
                               ) : site.badge ? (
-                                <span className={`text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded ${activeTheme.accentBadge} uppercase tracking-wider shadow-xs`}>
+                                <span className={`text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md ${activeTheme.accentBadge} uppercase tracking-wider shadow-sm backdrop-blur-md`}>
                                   {site.badge}
                                 </span>
                               ) : null}
                             </div>
 
-                            <div className={`sq-icon-btn w-10 h-10 sm:w-12 sm:h-12 p-2 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 shadow-sm my-auto`}>
+                            {/* Slightly Bigger Icon Squircle Box */}
+                            <div className={`sq-icon-btn w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 p-2.5 sm:p-3 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 shadow-md my-auto backdrop-blur-md mt-4 sm:mt-5`}>
                               <img
                                 src={getFaviconUrl(site.domain || site.url)}
                                 alt={site.name}
-                                className="w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300"
+                                className="w-full h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
                                   const domain = getCleanDomain(site.domain || site.url);
@@ -1420,12 +1395,13 @@ export default function Home() {
                               />
                             </div>
 
-                            <div className="w-full flex flex-col items-center gap-0.5 mt-auto z-10">
-                              <h3 className={`font-black ${activeTheme.headingColor} text-[11px] sm:text-xs tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate w-full`}>
+                            {/* Card Details - Enlarged Typography */}
+                            <div className="w-full flex flex-col items-center gap-1 mt-auto pt-3 z-10">
+                              <h3 className={`font-black ${activeTheme.headingColor} text-xs sm:text-sm tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate w-full`}>
                                 {site.name}
                               </h3>
-                              <span className={`text-[9px] sm:text-[10px] font-mono ${activeTheme.mutedText} flex items-center justify-center gap-0.5 truncate w-full`}>
-                                <span className="text-[8px] opacity-70">🌐</span>
+                              <span className={`text-[10px] sm:text-xs font-mono ${activeTheme.mutedText} flex items-center justify-center gap-1 truncate w-full`}>
+                                <span className="text-[9px] opacity-70">🌐</span>
                                 <span className="truncate">{site.domain}</span>
                               </span>
                             </div>
@@ -1433,22 +1409,23 @@ export default function Home() {
                         ))}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
+                      /* LIST VIEW - ENLARGED CARDS */
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
                         {catSites.map((site) => (
                           <a
                             key={site.id}
                             href={site.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2.5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-sm ${activeTheme.cardGlow} cursor-pointer overflow-hidden`}
+                            className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-2xl p-4 sm:p-4.5 flex items-center justify-between gap-3.5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-xl`}
                           >
-                            <div className={`absolute top-0 left-0 right-0 h-1 ${activeTheme.categoryBar} opacity-60 group-hover:opacity-100 transition-opacity`} />
-                            <div className="flex items-center gap-2.5 min-w-0">
-                              <div className={`sq-icon-btn w-9 h-9 sm:w-10 sm:h-10 p-1.5 ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-300`}>
+                            <div className={`absolute top-0 left-0 right-0 h-1.5 ${activeTheme.categoryBar} opacity-70 group-hover:opacity-100 transition-opacity`} />
+                            <div className="flex items-center gap-3.5 min-w-0">
+                              <div className={`sq-icon-btn w-12 h-12 p-2 sm:p-2.5 ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-300 shadow-md backdrop-blur-md`}>
                                 <img
                                   src={getFaviconUrl(site.domain || site.url)}
                                   alt={site.name}
-                                  className="w-full h-full object-contain drop-shadow-xs group-hover:scale-110 transition-transform duration-300"
+                                  className="w-full h-full object-contain drop-shadow-md"
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
                                     const domain = getCleanDomain(site.domain || site.url);
@@ -1459,37 +1436,18 @@ export default function Home() {
                                   }}
                                 />
                               </div>
-                              <div className="flex flex-col min-w-0 gap-0.5">
-                                <h3 className={`font-black ${activeTheme.headingColor} text-xs sm:text-sm group-hover:${activeTheme.brandText} transition-colors truncate`}>
+                              <div className="flex flex-col min-w-0">
+                                <h3 className={`font-black ${activeTheme.headingColor} text-xs sm:text-sm tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate`}>
                                   {site.name}
                                 </h3>
-                                <span className={`text-[10px] sm:text-[11px] font-mono font-bold ${activeTheme.subtextColor} truncate`}>
+                                <span className={`text-[10px] sm:text-xs font-mono ${activeTheme.mutedText} truncate`}>
                                   {site.domain}
                                 </span>
                               </div>
                             </div>
-                            <div className="flex items-center gap-1 shrink-0 flex-wrap justify-end">
-                              {site.isTrusted && (
-                                <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-xs whitespace-nowrap">
-                                  🛡️ Trusted
-                                </span>
-                              )}
-                              {site.isFeatured && (
-                                <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-xs whitespace-nowrap">
-                                  ⭐ Featured
-                                </span>
-                              )}
-                              {site.isNew && (
-                                <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-950/80 text-blue-300 border border-blue-500/40 shadow-xs whitespace-nowrap">
-                                  🔥 New
-                                </span>
-                              )}
-                              {site.badge && !site.isTrusted && !site.isFeatured && !site.isNew && (
-                                <span className={`text-[9px] font-black uppercase px-1.5 py-0.2 rounded ${activeTheme.accentBadge} shadow-xs whitespace-nowrap`}>
-                                  {site.badge}
-                                </span>
-                              )}
-                            </div>
+                            <span className="text-xs font-black opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all shrink-0">
+                              ↗
+                            </span>
                           </a>
                         ))}
                       </div>
@@ -1497,51 +1455,49 @@ export default function Home() {
                   </section>
                 );
               })}
-
             </div>
-
           </div>
         </section>
-
       </main>
 
-      {/* ALL MODALS DIALOGS INCLUDING THEME PALETTE MODAL */}
+      {/* MODALS OVERHAUL - THEMES & DIALOGS */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className={`${activeTheme.modalBg} border ${activeTheme.modalBorder} ${activeTheme.modalText} rounded-2xl sm:rounded-3xl p-5 sm:p-8 ${showModal === "themes" ? "max-w-2xl" : "max-w-md"} w-full flex flex-col gap-5 relative shadow-2xl my-auto max-h-[90vh] overflow-y-auto`}>
-            <div className="flex items-center justify-between">
-              <h3 className={`text-lg sm:text-xl font-extrabold ${activeTheme.headingColor} flex items-center gap-2`}>
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className={`${activeTheme.modalBg} border ${activeTheme.modalBorder} ${activeTheme.modalText} rounded-3xl p-6 sm:p-8 ${showModal === "themes" ? "max-w-3xl" : "max-w-md"} w-full flex flex-col gap-6 relative shadow-2xl my-auto max-h-[90vh] overflow-y-auto backdrop-blur-2xl`}>
+            
+            {/* Modal Title Bar */}
+            <div className="flex items-center justify-between pb-2 border-b border-white/10">
+              <h3 className={`text-lg sm:text-xl font-extrabold ${activeTheme.headingColor} flex items-center gap-2.5`}>
                 {showModal === "request" && <span>📝 Request a New Site</span>}
-                {showModal === "themes" && <span>🎨 Themes & Appearance</span>}
+                {showModal === "themes" && <span>🎨 Live Dark Themes Palette</span>}
                 {showModal === "about" && <span>ℹ️ About Allsitehub</span>}
                 {showModal === "dmca" && <span>🛡️ DMCA Disclaimer</span>}
                 {showModal === "contact" && <span>💬 Contact Support</span>}
               </h3>
               <button
                 onClick={() => setShowModal(null)}
-                className="opacity-70 hover:opacity-100 p-1"
+                className="opacity-70 hover:opacity-100 p-1.5 rounded-full hover:bg-white/10 transition-colors text-base"
               >
                 ✕
               </button>
             </div>
 
-            {/* UNIFIED THEMES MODAL */}
+            {/* UNIFIED LIVE DARK THEMES MODAL */}
             {showModal === "themes" && (
               <div className="flex flex-col gap-5">
                 <div className="flex items-center justify-between">
-                  <p className={`text-xs font-medium ${activeTheme.subtextColor}`}>
-                    Select from 10 dynamic color themes (Bright & Dark modes included)
+                  <p className={`text-xs sm:text-sm font-medium ${activeTheme.subtextColor}`}>
+                    Select from 10 live dark cosmic themes. Each theme features live background particle colors and glass accents.
                   </p>
-                  <span className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full ${activeTheme.accentBadge}`}>
-                    {activeTheme.name} ({activeTheme.mode === "light" ? "Bright" : "Dark"})
+                  <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full ${activeTheme.accentBadge} backdrop-blur-md`}>
+                    Active: {activeTheme.name}
                   </span>
                 </div>
 
-                {/* All 10 Themes Merged In One Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {/* 10 Dark Live Themes Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
                   {Object.entries(THEME_STYLES).map(([key, t]) => {
                     const isSelected = currentTheme === key;
-                    const isLight = t.mode === "light";
 
                     return (
                       <button
@@ -1550,34 +1506,49 @@ export default function Home() {
                           handleThemeChange(key);
                           setShowModal(null);
                         }}
-                        className={`p-3.5 rounded-2xl border text-left flex flex-col gap-2 transition-all cursor-pointer relative ${
+                        className={`p-4 rounded-2xl border text-left flex flex-col gap-3 transition-all cursor-pointer relative overflow-hidden backdrop-blur-xl ${
                           isSelected
-                            ? isLight
-                              ? "border-amber-500 ring-2 ring-amber-500/40 bg-amber-500/15 scale-[1.02]"
-                              : "border-purple-500 ring-2 ring-purple-500/40 bg-purple-600/20 scale-[1.02]"
-                            : isLight
-                            ? "border-slate-300/60 hover:border-amber-400 bg-white/70 hover:bg-white"
-                            : "border-slate-700/50 hover:border-purple-400 bg-slate-900/60 hover:bg-slate-900/90"
+                            ? "border-purple-400 ring-2 ring-purple-400/50 bg-purple-600/30 scale-[1.02] shadow-[0_0_25px_rgba(168,85,247,0.4)]"
+                            : "border-slate-700/60 hover:border-purple-400/70 bg-slate-900/60 hover:bg-slate-900/90"
                         }`}
                       >
-                        <div className="flex items-center justify-between">
-                          <span className={`text-xs sm:text-sm font-extrabold flex items-center gap-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>
-                            <span>{t.icon}</span>
+                        {/* Live Color Accent Backdrop */}
+                        <div
+                          className="absolute -right-8 -bottom-8 w-24 h-24 rounded-full blur-2xl opacity-40 pointer-events-none"
+                          style={{ background: t.galaxyConfig.accentGlow }}
+                        />
+
+                        <div className="flex items-center justify-between relative z-10">
+                          <span className="text-xs sm:text-sm font-extrabold text-white flex items-center gap-2">
+                            <span className="text-base">{t.icon}</span>
                             <span>{t.name}</span>
                           </span>
                           {isSelected && (
-                            <span className={`text-[10px] font-black ${isLight ? "text-amber-600" : "text-purple-400"}`}>
+                            <span className="text-[10px] font-black text-purple-300 bg-purple-950/90 px-2 py-0.5 rounded-full border border-purple-500/40">
                               ✓ Active
                             </span>
                           )}
                         </div>
 
-                        <div className="flex items-center gap-1.5 mt-1">
-                          <span className={`w-3.5 h-3.5 rounded-full border shadow-xs ${isLight ? "bg-slate-100 border-slate-300" : "bg-[#05050c] border-slate-700"}`} title="Background" />
-                          <span className={`w-3.5 h-3.5 rounded-full shadow-xs ${isLight ? "bg-amber-500" : "bg-purple-500"}`} title="Accent" />
-                          <span className={`w-3.5 h-3.5 rounded-full shadow-xs ${isLight ? "bg-slate-800" : "bg-white"}`} title="Text" />
-                          <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded ml-auto ${isLight ? "bg-amber-100 text-amber-900 border border-amber-300" : "bg-purple-950 text-purple-300 border border-purple-800"}`}>
-                            {isLight ? "☀️ Bright" : "🌙 Dark"}
+                        <div className="flex items-center gap-2 mt-1 relative z-10">
+                          <span
+                            className="w-4 h-4 rounded-full border border-white/20 shadow-xs"
+                            style={{ background: t.galaxyConfig.spaceBg }}
+                            title="Space Bg"
+                          />
+                          <span
+                            className="w-4 h-4 rounded-full border border-white/20 shadow-xs"
+                            style={{ background: t.galaxyConfig.accentGlow }}
+                            title="Accent Glow"
+                          />
+                          <span
+                            className="w-4 h-4 rounded-full border border-white/20 shadow-xs"
+                            style={{ background: t.galaxyConfig.starColor }}
+                            title="Star Color"
+                          />
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ml-auto bg-slate-950/80 text-purple-300 border border-slate-700/80 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
+                            Live
                           </span>
                         </div>
                       </button>
@@ -1590,44 +1561,41 @@ export default function Home() {
             {/* REQUEST A SITE MODAL WITH DIRECT DM LINKS */}
             {showModal === "request" && (
               <div className="flex flex-col gap-4">
-                <div className={`p-4 rounded-2xl ${activeTheme.inputBg} border ${activeTheme.inputBorder} flex flex-col gap-3 shadow-md`}>
+                <div className={`p-4 rounded-2xl ${activeTheme.inputBg} border ${activeTheme.inputBorder} flex flex-col gap-3 shadow-md backdrop-blur-md`}>
                   <div className="flex items-center gap-2">
                     <span className="text-lg">💬</span>
-                    <h4 className={`text-sm font-black ${activeTheme.headingColor}`}>
+                    <h4 className={`text-xs sm:text-sm font-black ${activeTheme.headingColor}`}>
                       To add your website fill this, and DM me on anyone of my supports to update
                     </h4>
                   </div>
 
                   {/* Direct DM Links Row */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1">
-                    {/* DISCORD LINK */}
                     <a
                       href="https://discord.gg/QnTrWqwcJ"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/50 text-white text-xs font-extrabold transition-all shadow-sm hover:scale-105"
+                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#5865F2]/30 hover:bg-[#5865F2] border border-[#5865F2]/60 text-white text-xs font-extrabold transition-all shadow-sm hover:scale-105 backdrop-blur-md"
                     >
                       <span className="text-sm">💬</span>
                       <span>Discord DM</span>
                     </a>
 
-                    {/* REDDIT LINK */}
                     <a
                       href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/50 text-white text-xs font-extrabold transition-all shadow-sm hover:scale-105"
+                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#FF4500]/30 hover:bg-[#FF4500] border border-[#FF4500]/60 text-white text-xs font-extrabold transition-all shadow-sm hover:scale-105 backdrop-blur-md"
                     >
                       <span className="text-sm">🔴</span>
                       <span>Reddit DM</span>
                     </a>
 
-                    {/* TELEGRAM LINK */}
                     <a
                       href="https://t.me/allsitehub"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#0088cc]/20 hover:bg-[#0088cc] border border-[#0088cc]/50 text-white text-xs font-extrabold transition-all shadow-sm hover:scale-105"
+                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#0088cc]/30 hover:bg-[#0088cc] border border-[#0088cc]/60 text-white text-xs font-extrabold transition-all shadow-sm hover:scale-105 backdrop-blur-md"
                     >
                       <span className="text-sm">✈️</span>
                       <span>Telegram DM</span>
@@ -1647,7 +1615,7 @@ export default function Home() {
                       value={reqSiteName}
                       onChange={(e) => setReqSiteName(e.target.value)}
                       placeholder="e.g. MyAnimeStream"
-                      className={`w-full px-3.5 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs focus:outline-none transition-all`}
+                      className={`w-full px-3.5 py-2.5 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs sm:text-sm focus:outline-none transition-all backdrop-blur-md`}
                     />
                   </div>
 
@@ -1661,16 +1629,16 @@ export default function Home() {
                       value={reqSiteUrl}
                       onChange={(e) => setReqSiteUrl(e.target.value)}
                       placeholder="https://example.com"
-                      className={`w-full px-3.5 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs focus:outline-none transition-all`}
+                      className={`w-full px-3.5 py-2.5 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs sm:text-sm focus:outline-none transition-all backdrop-blur-md`}
                     />
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <label className={`text-xs font-bold ${activeTheme.headingColor}`}>Category</label>
                     <select
-                      value={reqRegion}
-                      onChange={(e) => setReqRegion(e.target.value)}
-                      className={`w-full px-3.5 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs focus:outline-none transition-all`}
+                      value={reqSiteCategory}
+                      onChange={(e) => setReqSiteCategory(e.target.value)}
+                      className={`w-full px-3.5 py-2.5 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs sm:text-sm focus:outline-none transition-all backdrop-blur-md`}
                     >
                       {CATEGORIES.map((cat) => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -1684,8 +1652,8 @@ export default function Home() {
                       rows={2}
                       value={reqFeatures}
                       onChange={(e) => setReqFeatures(e.target.value)}
-                      placeholder="Add any additional details or server features..."
-                      className={`w-full px-3.5 py-2 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs focus:outline-none transition-all resize-none`}
+                      placeholder="Add any additional details..."
+                      className={`w-full px-3.5 py-2.5 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-xl text-xs sm:text-sm focus:outline-none transition-all resize-none backdrop-blur-md`}
                     />
                   </div>
 
@@ -1697,7 +1665,7 @@ export default function Home() {
 
                   <button
                     type="submit"
-                    className={`mt-1 py-2.5 rounded-xl ${activeTheme.activeNavBg} text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md active:scale-95`}
+                    className={`mt-1 py-3 rounded-xl ${activeTheme.activeNavBg} text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md active:scale-95`}
                   >
                     Submit Request
                   </button>
@@ -1732,7 +1700,7 @@ export default function Home() {
                 <p className="font-medium">
                   Have questions, partnership inquiries, or need support? Reach out to us directly:
                 </p>
-                <div className={`p-4 rounded-2xl ${activeTheme.inputBg} border ${activeTheme.inputBorder} flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg`}>
+                <div className={`p-4 rounded-2xl ${activeTheme.inputBg} border ${activeTheme.inputBorder} flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg backdrop-blur-md`}>
                   <div className="flex items-center gap-2.5 overflow-hidden">
                     <span className="text-lg">✉️</span>
                     <a
@@ -1745,7 +1713,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => navigator.clipboard.writeText("allsitehubsupport@gmail.com")}
-                    className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-all shadow-md active:scale-95 shrink-0 cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-all shadow-md active:scale-95 shrink-0 cursor-pointer"
                   >
                     Copy Email
                   </button>
@@ -1756,12 +1724,12 @@ export default function Home() {
         </div>
       )}
 
-      {/* FOOTER - ULTRA WIDE MAX WIDTH */}
-      <footer className={`mt-auto border-t ${activeTheme.footerBorder} py-6 sm:py-8 ${activeTheme.footerBg}`}>
-        <div className="max-w-[1700px] w-full mx-auto px-4 sm:px-8 xl:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-xs">
+      {/* FOOTER - ULTRA WIDE GLASS BAR */}
+      <footer className={`mt-auto border-t ${activeTheme.footerBorder} py-6 sm:py-8 ${activeTheme.footerBg} relative z-10 backdrop-blur-2xl`}>
+        <div className="max-w-[1700px] w-full mx-auto px-4 sm:px-8 xl:px-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-xs">
           <div className="flex items-center gap-2">
             <span className={`font-bold ${activeTheme.headingColor} text-sm`}>Allsite<span className={activeTheme.brandText}>hub</span></span>
-            <span className={activeTheme.mutedText}>— The Ultimate Streaming Hub.</span>
+            <span className={activeTheme.mutedText}>— The Ultimate Web & Streaming Hub.</span>
           </div>
 
           <div className={`flex items-center gap-3 sm:gap-4 ${activeTheme.mutedText}`}>
@@ -1814,7 +1782,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-
-
