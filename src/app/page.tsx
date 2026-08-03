@@ -992,54 +992,70 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Column Featured Rectangle Promo Banner (Glassmorphism & Admin Panel Driven) */}
+          {/* Right Column Featured Rectangle Promo Banner (Clear Graphic & Small Corner Visit Button) */}
           {bannerConfig.promoEnabled !== false && (
             <div className="lg:col-span-5 flex justify-center lg:justify-end z-20 w-full">
-              <div className={`w-full ${activeTheme.cardBg} border ${activeTheme.cardBorder} hover:${activeTheme.cardBorderHover} rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden flex flex-col justify-between min-h-[220px] sm:min-h-[260px]`}>
-                
-                {/* Background Hero Banner Graphic if present */}
-                {bannerConfig.heroImageUrl && bannerConfig.heroImageUrl !== "/hero_banner.png" && (
-                  <div className="absolute inset-0 z-0 opacity-25 group-hover:opacity-35 transition-opacity pointer-events-none overflow-hidden">
+              <a
+                href={bannerConfig.promoTargetUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`w-full ${activeTheme.cardBg} border ${activeTheme.cardBorder} hover:${activeTheme.cardBorderHover} rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden flex flex-col justify-between min-h-[200px] sm:min-h-[230px] cursor-pointer`}
+              >
+                {/* Background Hero Banner Graphic (Clear & Prominent) */}
+                {bannerConfig.heroImageUrl && bannerConfig.heroImageUrl !== "/hero_banner.png" ? (
+                  <div className="absolute inset-0 z-0 opacity-80 group-hover:opacity-95 transition-opacity pointer-events-none overflow-hidden">
                     <img
                       src={bannerConfig.heroImageUrl}
                       alt={bannerConfig.promoSiteName || "Banner"}
-                      className="w-full h-full object-cover object-center scale-105 group-hover:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#080614] via-[#080614]/80 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
                   </div>
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-tr from-purple-950/40 via-indigo-950/30 to-black/60 pointer-events-none" />
                 )}
 
                 {/* Glowing Aura Accent */}
-                <div className="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-purple-500/20 blur-3xl group-hover:bg-purple-500/35 transition-all pointer-events-none z-0" />
+                <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-purple-500/20 blur-3xl group-hover:bg-purple-500/35 transition-all pointer-events-none z-0" />
 
-                {/* Top Badge & Verified Indicator */}
-                <div className="flex items-center justify-between mb-3 relative z-10">
-                  <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 border border-white/10 backdrop-blur-md`}>
-                    <span>⭐</span>
-                    <span>{bannerConfig.cardBadgeText || "FEATURED PROMO"}</span>
-                  </span>
-                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5 backdrop-blur-md shadow-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    VERIFIED
+                {/* Top Row: Small Badge Tag & Small Corner Visit Button */}
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-purple-300 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/60 border border-white/10 backdrop-blur-md shadow-xs">
+                      <span>⭐</span>
+                      <span>{bannerConfig.cardBadgeText || "FEATURED"}</span>
+                    </span>
+                    <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 backdrop-blur-md">
+                      ● LIVE
+                    </span>
+                  </div>
+
+                  {/* SMALL CORNER VISIT BUTTON */}
+                  <span className="px-3 py-1 rounded-full bg-purple-600/90 group-hover:bg-purple-500 text-white text-[11px] font-black uppercase tracking-wider flex items-center gap-1 shadow-md transition-all group-hover:scale-105 shrink-0 backdrop-blur-md">
+                    <span>{bannerConfig.promoButtonText || "Visit"}</span>
+                    <span className="text-xs font-bold">{bannerConfig.promoButtonIcon || "↗"}</span>
                   </span>
                 </div>
 
-                {/* Title & Description */}
-                <div className="flex flex-col gap-1.5 relative z-10 my-auto">
-                  <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight drop-shadow-sm`}>
+                {/* Bottom Row: Compact Title, Tagline & Small Hashtags */}
+                <div className="flex flex-col gap-1 relative z-10 mt-auto pt-4">
+                  <h3 className="text-base sm:text-lg font-black text-white tracking-tight drop-shadow-md group-hover:text-purple-300 transition-colors">
                     {bannerConfig.promoSiteName || "Featured Portal"}
                   </h3>
-                  <p className={`text-xs sm:text-sm ${activeTheme.subtextColor} leading-relaxed line-clamp-2`}>
-                    {bannerConfig.promoTagline || "Discover top verified streaming link & direct portal."}
-                  </p>
+                  
+                  {bannerConfig.promoTagline && (
+                    <p className="text-xs text-slate-200/90 leading-snug line-clamp-1 drop-shadow-sm font-medium">
+                      {bannerConfig.promoTagline}
+                    </p>
+                  )}
 
-                  {/* Interactive Hashtags Chips */}
+                  {/* Compact Interactive Hashtags Chips */}
                   {bannerConfig.promoHashtags && bannerConfig.promoHashtags.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                    <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                       {bannerConfig.promoHashtags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className={`text-[10px] font-mono font-extrabold px-2.5 py-0.5 rounded-md ${activeTheme.accentBadge} shadow-xs backdrop-blur-md`}
+                          className="text-[9px] sm:text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-black/70 text-purple-300 border border-purple-500/30 backdrop-blur-md shadow-xs"
                         >
                           {tag.startsWith("#") ? tag : `#${tag}`}
                         </span>
@@ -1047,18 +1063,7 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-
-                {/* Direct Link Action Button */}
-                <a
-                  href={bannerConfig.promoTargetUrl || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full mt-4 py-3 sm:py-3.5 rounded-2xl purple-btn-primary text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg relative z-10"
-                >
-                  <span>{bannerConfig.promoButtonText || "Visit Website"}</span>
-                  <span className="text-base font-bold">{bannerConfig.promoButtonIcon || "↗"}</span>
-                </a>
-              </div>
+              </a>
             </div>
           )}
         </section>
