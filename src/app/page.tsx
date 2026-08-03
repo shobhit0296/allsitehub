@@ -766,7 +766,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col relative overflow-x-hidden ${activeTheme.pageBg} ${activeTheme.textColor} ${activeTheme.textureClass} selection:bg-purple-500 selection:text-white transition-colors duration-500`}>
+    <div className={`min-h-screen flex flex-col relative ${activeTheme.pageBg} ${activeTheme.textColor} ${activeTheme.textureClass} selection:bg-purple-500 selection:text-white transition-colors duration-500`}>
       {/* 1. LIVE GALAXY BACKGROUND EFFECT CANVAS */}
       <GalaxyBackground themeConfig={activeTheme.galaxyConfig} />
 
@@ -1078,9 +1078,9 @@ export default function Home() {
           {/* MAIN DIRECTORY LAYOUT: LEFT SIDEBAR + RIGHT CARDS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-            {/* LEFT SIDEBAR CATEGORIES - CLEAN STICKY COLUMN */}
+            {/* LEFT SIDEBAR CATEGORIES - 100% STICKY COLUMN */}
             <aside
-              className={`lg:col-span-3 sticky top-[80px] self-start z-20 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-2xl transition-all`}
+              className={`lg:col-span-3 sticky top-24 self-start z-30 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-2xl transition-all`}
             >
               <div className={`flex items-center justify-between px-1 pb-3 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs sm:text-sm font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-2`}>
