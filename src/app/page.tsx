@@ -812,34 +812,8 @@ export default function Home() {
             ))}
           </nav>
 
-          {/* Right Header Items: Community Badges, Themes, Region, Live Counter */}
+          {/* Right Header Items: Themes, Region, Live Counter */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* DISCORD NAVBAR BADGE */}
-            <a
-              href="https://discord.gg/QnTrWqwcJ"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/50 text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(88,101,242,0.3)] hover:scale-105 backdrop-blur-md"
-              title="Join Discord Community"
-            >
-              <span className="text-sm">💬</span>
-              <span className="hidden xl:inline font-bold">Discord</span>
-            </a>
-
-            {/* REDDIT NAVBAR BADGE */}
-            <a
-              href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/50 text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(255,69,0,0.3)] hover:scale-105 backdrop-blur-md"
-              title="Visit Reddit Profile"
-            >
-              <svg className="w-3.5 h-3.5 fill-current text-[#FF4500] group-hover:text-white" viewBox="0 0 24 24">
-                <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.196-.491.961 0 1.741.78 1.741 1.742a1.737 1.737 0 0 1-1.144 1.637c.014.168.022.337.022.508 0 2.583-3.025 4.675-6.75 4.675-3.725 0-6.75-2.092-6.75-4.675 0-.166.007-.331.019-.496a1.734 1.734 0 0 1-1.127-1.63c0-.962.78-1.742 1.742-1.742.471 0 .897.187 1.206.502 1.187-.847 2.827-1.408 4.636-1.488l.943-4.417a.317.317 0 0 1 .374-.247l3.056.643c.123-.363.468-.627.876-.627zm-7.653 7.828c-.682 0-1.238.556-1.238 1.238 0 .681.556 1.237 1.238 1.237.681 0 1.237-.556 1.237-1.237 0-.682-.556-1.238-1.237-1.238zm5.284 0c-.682 0-1.237.556-1.237 1.238 0 .681.555 1.237 1.237 1.237.681 0 1.238-.556 1.238-1.237 0-.682-.557-1.238-1.238-1.238zm-5.467 3.498a.317.317 0 0 0-.225.541c.697.697 1.84.975 3.05.975 1.21 0 2.352-.278 3.05-.975a.317.317 0 0 0-.448-.448c-.536.536-1.487.77-2.602.77-1.115 0-2.066-.234-2.602-.77a.315.315 0 0 0-.223-.093z" />
-              </svg>
-              <span className="hidden xl:inline font-bold">Reddit</span>
-            </a>
-
             {/* Live Theme Button */}
             <button
               onClick={() => setShowModal("themes")}
@@ -1140,7 +1114,7 @@ export default function Home() {
                       }`}
                     >
                       {isSelected && (
-                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-7 bg-purple-400 rounded-r-full shadow-md" />
+                        <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-7 rounded-r-full shadow-md ${activeTheme.categoryBar}`} />
                       )}
 
                       <span className="flex items-center gap-3 text-xs sm:text-sm font-black tracking-wide truncate">
@@ -1151,7 +1125,7 @@ export default function Home() {
                       <span
                         className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border shrink-0 ${
                           isSelected
-                            ? "bg-purple-400 text-black border-purple-300 font-black"
+                            ? `${activeTheme.accentBadge} font-black`
                             : `${activeTheme.inputBg} ${activeTheme.mutedText} border-slate-700`
                         }`}
                       >
@@ -1161,56 +1135,6 @@ export default function Home() {
                   );
                 })}
               </div>
-
-              {/* DISCORD COMMUNITY SERVER BANNER */}
-              <a
-                href="https://discord.gg/QnTrWqwcJ"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#5865F2]/30 via-[#404EED]/20 to-purple-900/40 border border-[#5865F2]/50 hover:border-[#5865F2] hover:shadow-lg transition-all cursor-pointer overflow-hidden mt-3 backdrop-blur-md"
-              >
-                <div className="flex items-center gap-3 relative z-10">
-                  <div className="flex flex-col">
-                    <span className="text-xs font-black text-white group-hover:text-purple-200 flex items-center gap-1.5">
-                      <span>JOIN DISCORD</span>
-                      <span className="text-[9px] text-emerald-400 font-bold font-mono px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/30">● LIVE</span>
-                    </span>
-                    <span className="text-[10px] font-medium text-slate-300">
-                      Chat, Suggest & Get Updates
-                    </span>
-                  </div>
-                </div>
-
-                <span className="text-[#5865F2] font-black text-xs group-hover:translate-x-1 group-hover:text-white transition-all flex items-center gap-0.5 shrink-0">
-                  <span>Join</span>
-                  <span className="text-sm">↗</span>
-                </span>
-              </a>
-
-              {/* REDDIT COMMUNITY BANNER */}
-              <a
-                href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#FF4500]/30 via-[#e03d00]/20 to-amber-900/40 border border-[#FF4500]/50 hover:border-[#FF4500] hover:shadow-lg transition-all cursor-pointer overflow-hidden mt-2.5 backdrop-blur-md"
-              >
-                <div className="flex items-center gap-3 relative z-10">
-                  <div className="flex flex-col">
-                    <span className="text-xs font-black text-white group-hover:text-orange-200 flex items-center gap-1.5">
-                      <span>REDDIT PROFILE</span>
-                      <span className="text-[9px] text-orange-400 font-bold font-mono px-1.5 py-0.5 rounded bg-orange-950/80 border border-orange-500/30">● ACTIVE</span>
-                    </span>
-                    <span className="text-[10px] font-medium text-slate-300">
-                      Follow & Discuss Updates
-                    </span>
-                  </div>
-                </div>
-
-                <span className="text-[#FF4500] font-black text-xs group-hover:translate-x-1 group-hover:text-white transition-all flex items-center gap-0.5 shrink-0">
-                  <span>Visit</span>
-                  <span className="text-sm">↗</span>
-                </span>
-              </a>
             </aside>
 
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
