@@ -1093,43 +1093,11 @@ export default function Home() {
 
         {/* INTERACTIVE DIRECTORY SECTION - LEFT SIDEBAR CATEGORY LAYOUT */}
         <section id="browse-directory" className="flex flex-col gap-4 pt-2 sm:pt-3">
-          {/* Top Section Header */}
-          <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2 border-b ${activeTheme.headerBorder}`}>
-            <div>
-              <h2 className={`text-xl sm:text-3xl font-black ${activeTheme.headingColor} flex items-center gap-2.5`}>
-                <span>🔥</span> Verified Web & Streaming Directory
-              </h2>
-              <p className={`text-xs sm:text-sm ${activeTheme.mutedText}`}>Direct working portals with verified uptime and multi-server mirrors</p>
-            </div>
-
-            {/* Live Search Input Bar */}
-            <div className="relative w-full sm:w-72 md:w-80">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sm opacity-70">
-                🔍
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search movies, anime, AI tools..."
-                className={`w-full pl-10 pr-4 py-2.5 ${activeTheme.inputBg} border ${activeTheme.inputBorder} ${activeTheme.inputText} rounded-2xl text-xs sm:text-sm focus:outline-none transition-all shadow-inner`}
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-xs opacity-60 hover:opacity-100"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          </div>
-
           {/* MAIN DIRECTORY LAYOUT: LEFT SIDEBAR + RIGHT CARDS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
             {/* LEFT SIDEBAR CATEGORIES */}
-            <aside className={`lg:col-span-3 flex flex-col gap-2.5 sticky top-20 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg`}>
+            <aside className={`lg:col-span-3 flex flex-col gap-2.5 sticky top-20 z-20 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg`}>
               <div className={`flex items-center justify-between px-2 pb-2.5 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText}`}>
                   Categories ({CATEGORIES.length})
@@ -1275,21 +1243,12 @@ export default function Home() {
                 })}
               </div>
 
-              {/* Prominent Category Title Header & Search Row */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-1 pb-1">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-3">
-                    <span className={`w-1.5 h-6 sm:h-7 rounded-full ${activeTheme.categoryBar}`} />
-                    <h2 className={`text-2xl sm:text-3xl md:text-4xl font-black ${activeTheme.headingColor} tracking-tight flex items-center gap-2.5`}>
-                      <span>{selectedCategory === "All" ? "All Categories" : selectedCategory}</span>
-                    </h2>
-                    <span className={`text-xs sm:text-sm font-mono font-bold px-2.5 py-0.5 rounded-full border ${activeTheme.accentBadge}`}>
-                      {filteredSites.length}
-                    </span>
-                  </div>
-                  <p className={`text-xs sm:text-sm ${activeTheme.mutedText} font-medium pl-4.5`}>
-                    Verified streaming and web portals directory.
-                  </p>
+              {/* DIRECTORY SEARCH & VIEW TOGGLE ROW */}
+              <div className="flex items-center justify-between gap-3 px-1 pb-3 mb-2 border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-purple-950/80 text-purple-300 border border-purple-500/30">
+                    {totalSitesCount} Portals
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">
