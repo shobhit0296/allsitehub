@@ -992,37 +992,71 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Column Featured Promo Card (Glassmorphism) */}
+          {/* Right Column Featured Rectangle Promo Banner (Glassmorphism & Admin Panel Driven) */}
           {bannerConfig.promoEnabled !== false && (
-            <div className="lg:col-span-5 flex justify-center lg:justify-end z-20">
-              <div className={`w-full max-w-md ${activeTheme.cardBg} border ${activeTheme.cardBorder} rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden`}>
-                <div className="absolute -right-12 -top-12 w-44 h-44 rounded-full bg-purple-500/20 blur-3xl group-hover:bg-purple-500/30 transition-all" />
-                <div className="flex items-center justify-between mb-4">
-                  <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-1.5`}>
+            <div className="lg:col-span-5 flex justify-center lg:justify-end z-20 w-full">
+              <div className={`w-full ${activeTheme.cardBg} border ${activeTheme.cardBorder} hover:${activeTheme.cardBorderHover} rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden flex flex-col justify-between min-h-[220px] sm:min-h-[260px]`}>
+                
+                {/* Background Hero Banner Graphic if present */}
+                {bannerConfig.heroImageUrl && bannerConfig.heroImageUrl !== "/hero_banner.png" && (
+                  <div className="absolute inset-0 z-0 opacity-25 group-hover:opacity-35 transition-opacity pointer-events-none overflow-hidden">
+                    <img
+                      src={bannerConfig.heroImageUrl}
+                      alt={bannerConfig.promoSiteName || "Banner"}
+                      className="w-full h-full object-cover object-center scale-105 group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#080614] via-[#080614]/80 to-transparent" />
+                  </div>
+                )}
+
+                {/* Glowing Aura Accent */}
+                <div className="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-purple-500/20 blur-3xl group-hover:bg-purple-500/35 transition-all pointer-events-none z-0" />
+
+                {/* Top Badge & Verified Indicator */}
+                <div className="flex items-center justify-between mb-3 relative z-10">
+                  <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 border border-white/10 backdrop-blur-md`}>
                     <span>⭐</span>
-                    <span>{bannerConfig.cardBadgeText || "FEATURED SPOTLIGHT"}</span>
+                    <span>{bannerConfig.cardBadgeText || "FEATURED PROMO"}</span>
                   </span>
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5 backdrop-blur-md shadow-xs">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                     VERIFIED
                   </span>
                 </div>
 
-                <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} mb-2 tracking-tight`}>
-                  {bannerConfig.promoSiteName || "Featured Portal"}
-                </h3>
-                <p className={`text-xs sm:text-sm ${activeTheme.subtextColor} mb-5 leading-relaxed`}>
-                  {bannerConfig.promoTagline || "Discover top verified streaming portal."}
-                </p>
+                {/* Title & Description */}
+                <div className="flex flex-col gap-1.5 relative z-10 my-auto">
+                  <h3 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight drop-shadow-sm`}>
+                    {bannerConfig.promoSiteName || "Featured Portal"}
+                  </h3>
+                  <p className={`text-xs sm:text-sm ${activeTheme.subtextColor} leading-relaxed line-clamp-2`}>
+                    {bannerConfig.promoTagline || "Discover top verified streaming link & direct portal."}
+                  </p>
 
+                  {/* Interactive Hashtags Chips */}
+                  {bannerConfig.promoHashtags && bannerConfig.promoHashtags.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                      {bannerConfig.promoHashtags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className={`text-[10px] font-mono font-extrabold px-2.5 py-0.5 rounded-md ${activeTheme.accentBadge} shadow-xs backdrop-blur-md`}
+                        >
+                          {tag.startsWith("#") ? tag : `#${tag}`}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Direct Link Action Button */}
                 <a
                   href={bannerConfig.promoTargetUrl || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 rounded-2xl purple-btn-primary text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  className="w-full mt-4 py-3 sm:py-3.5 rounded-2xl purple-btn-primary text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg relative z-10"
                 >
-                  <span>{bannerConfig.promoButtonText}</span>
-                  <span className="text-base">↗</span>
+                  <span>{bannerConfig.promoButtonText || "Visit Website"}</span>
+                  <span className="text-base font-bold">{bannerConfig.promoButtonIcon || "↗"}</span>
                 </a>
               </div>
             </div>
