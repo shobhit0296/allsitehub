@@ -643,6 +643,7 @@ export default function Home() {
 
   const isManualClickRef = useRef(false);
   const manualClickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const stickyBarRef = useRef<HTMLDivElement | null>(null);
 
   const handleCategoryClick = (catName: string) => {
     setSelectedCategory(catName);
@@ -650,47 +651,60 @@ export default function Home() {
     if (manualClickTimeoutRef.current) clearTimeout(manualClickTimeoutRef.current);
     manualClickTimeoutRef.current = setTimeout(() => {
       isManualClickRef.current = false;
-    }, 800);
+    }, 1000);
 
     const slug = catName.toLowerCase().replace(/[^a-z0-9]/g, "-");
     const el = document.getElementById(`cat-${slug}`);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      const yOffset = -140; // Header + Sticky Category bar offset
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
 
-  // Scroll Spy: Automatically update active category highlight as user scrolls down page
+  // Scroll Spy: Automatically switch active category as user scrolls down the page
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const observerOptions = {
-      root: null,
-      rootMargin: "-20% 0px -60% 0px",
-      threshold: 0,
-    };
-
-    const handleIntersect: IntersectionObserverCallback = (entries) => {
+    const handleScroll = () => {
       if (isManualClickRef.current) return;
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const categoryName = entry.target.getAttribute("data-category");
-          if (categoryName) {
-            setSelectedCategory(categoryName);
-          }
+
+      const categoryItems = CATEGORIES.map((catName) => {
+        const slug = catName.toLowerCase().replace(/[^a-z0-9]/g, "-");
+        const el = document.getElementById(`cat-${slug}`);
+        return { name: catName, el };
+      }).filter((item) => item.el !== null);
+
+      const scrollPosition = window.scrollY + 180; //Offset for sticky bar
+
+      let currentCat = selectedCategory;
+      for (let i = categoryItems.length - 1; i >= 0; i--) {
+        const item = categoryItems[i];
+        if (item.el && item.el.offsetTop <= scrollPosition) {
+          currentCat = item.name;
+          break;
         }
-      });
+      }
+
+      if (currentCat && currentCat !== selectedCategory) {
+        setSelectedCategory(currentCat);
+      }
     };
 
-    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
-    CATEGORIES.forEach((catName) => {
-      const slug = catName.toLowerCase().replace(/[^a-z0-9]/g, "-");
-      const el = document.getElementById(`cat-${slug}`);
-      if (el) observer.observe(el);
-    });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [searchQuery, sitesList, selectedCategory]);
 
-    return () => observer.disconnect();
-  }, [searchQuery, sitesList]);
+  // Auto-scroll active category pill into view inside sticky category bar
+  useEffect(() => {
+    if (!stickyBarRef.current) return;
+    const activePill = stickyBarRef.current.querySelector<HTMLElement>('[data-active="true"]');
+    if (activePill) {
+      activePill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }, [selectedCategory]);
 
   // Dynamic Home Banner State
   const [bannerConfig, setBannerConfig] = useState<BannerConfig>(DEFAULT_BANNER_CONFIG);
@@ -1140,23 +1154,29 @@ export default function Home() {
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
             <div className="lg:col-span-9 flex flex-col gap-6">
 
-              {/* MOBILE CATEGORY SCROLLBAR - STICKY ON MOBILE */}
-              <div className={`lg:hidden sticky top-[62px] z-30 flex items-center gap-2 overflow-x-auto no-scrollbar py-3 px-3 mb-2 snap-x ${activeTheme.sidebarBg} border-b ${activeTheme.sidebarBorder} shadow-lg backdrop-blur-2xl -mx-4 sm:-mx-8 px-4 sm:px-8`}>
+              {/* PERSISTENT STICKY CATEGORY BAR - AUTO-SWITCHES ON SCROLL DOWN */}
+              <div
+                ref={stickyBarRef}
+                className={`sticky top-[60px] sm:top-[64px] z-30 flex items-center gap-2 overflow-x-auto no-scrollbar py-3 px-3.5 mb-3 snap-x ${activeTheme.sidebarBg} border-y ${activeTheme.sidebarBorder} shadow-xl backdrop-blur-2xl -mx-4 sm:-mx-8 px-4 sm:px-8 rounded-2xl`}
+              >
                 {CATEGORIES.map((cat) => {
                   const isSelected = selectedCategory === cat;
                   const count = getCategoryCount(cat);
+                  const icon = CATEGORY_ICONS[cat] || "🎬";
                   return (
                     <button
                       key={cat}
+                      data-active={isSelected}
                       onClick={() => handleCategoryClick(cat)}
-                      className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all border flex items-center gap-2 whitespace-nowrap active:scale-95 cursor-pointer ${
+                      className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all duration-300 border flex items-center gap-2.5 whitespace-nowrap active:scale-95 cursor-pointer ${
                         isSelected
-                          ? activeTheme.activeNavBg
-                          : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder}`
+                          ? `${activeTheme.activeNavBg} scale-[1.03]`
+                          : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder} hover:scale-[1.01]`
                       }`}
                     >
+                      <span className="text-sm sm:text-base">{icon}</span>
                       <span>{cat}</span>
-                      <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full ${activeTheme.accentBadge} border`}>
+                      <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full border ${isSelected ? `${activeTheme.accentBadge} font-black` : `${activeTheme.inputBg} ${activeTheme.mutedText} border-slate-700`}`}>
                         {count}
                       </span>
                     </button>
