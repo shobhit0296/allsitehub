@@ -1097,7 +1097,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
             {/* LEFT SIDEBAR CATEGORIES */}
-            <aside className={`lg:col-span-3 flex flex-col gap-2.5 sticky top-20 z-20 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg`}>
+            <aside className={`lg:fixed lg:top-20 lg:w-[260px] xl:w-[290px] z-30 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-lg`}>
               <div className={`flex items-center justify-between px-2 pb-2.5 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs font-black uppercase tracking-wider ${activeTheme.brandText}`}>
                   Categories ({CATEGORIES.length})
@@ -1213,7 +1213,7 @@ export default function Home() {
             </aside>
 
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
-            <div className="lg:col-span-9 flex flex-col gap-5">
+            <div className="lg:col-span-9 lg:ml-[280px] xl:ml-[310px] flex flex-col gap-5">
 
               {/* MOBILE CATEGORY SCROLLBAR */}
               <div className="lg:hidden flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 mb-1 snap-x">
