@@ -1101,7 +1101,7 @@ export default function Home() {
               </div>
 
               {/* Desktop Category Buttons List */}
-              <div className="hidden lg:flex flex-col gap-2">
+              <div className="flex flex-col gap-2">
                 {[
                   { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
                   { name: "ONLY 4K", label: "ONLY 4K", icon: "💎" },
@@ -1120,6 +1120,7 @@ export default function Home() {
                   return (
                     <button
                       key={cat.name}
+                      data-active={isSelected}
                       onClick={() => handleCategoryClick(cat.name)}
                       className={`group relative flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
                         isSelected
@@ -1149,40 +1150,60 @@ export default function Home() {
                   );
                 })}
               </div>
+
+              {/* DISCORD COMMUNITY SERVER BANNER */}
+              <a
+                href="https://discord.gg/QnTrWqwcJ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#5865F2]/25 via-[#404EED]/20 to-purple-900/30 border border-[#5865F2]/40 hover:border-[#5865F2] hover:shadow-md transition-all cursor-pointer overflow-hidden mt-3 backdrop-blur-md"
+              >
+                <div className="flex items-center gap-3 relative z-10">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black text-white group-hover:text-purple-200 flex items-center gap-1.5">
+                      <span>JOIN DISCORD</span>
+                      <span className="text-[9px] text-emerald-400 font-bold font-mono px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/30">● LIVE</span>
+                    </span>
+                    <span className="text-[10px] font-medium text-slate-300">
+                      Chat, Suggest & Get Updates
+                    </span>
+                  </div>
+                </div>
+
+                <span className="text-[#5865F2] font-black text-xs group-hover:translate-x-1 group-hover:text-white transition-all flex items-center gap-0.5 shrink-0">
+                  <span>Join</span>
+                  <span className="text-sm">↗</span>
+                </span>
+              </a>
+
+              {/* REDDIT COMMUNITY BANNER */}
+              <a
+                href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#FF4500]/25 via-[#e03d00]/20 to-amber-900/30 border border-[#FF4500]/40 hover:border-[#FF4500] hover:shadow-md transition-all cursor-pointer overflow-hidden mt-2.5 backdrop-blur-md"
+              >
+                <div className="flex items-center gap-3 relative z-10">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black text-white group-hover:text-orange-200 flex items-center gap-1.5">
+                      <span>REDDIT PROFILE</span>
+                      <span className="text-[9px] text-orange-400 font-bold font-mono px-1.5 py-0.5 rounded bg-orange-950/80 border border-orange-500/30">● ACTIVE</span>
+                    </span>
+                    <span className="text-[10px] font-medium text-slate-300">
+                      Follow & Discuss Updates
+                    </span>
+                  </div>
+                </div>
+
+                <span className="text-[#FF4500] font-black text-xs group-hover:translate-x-1 group-hover:text-white transition-all flex items-center gap-0.5 shrink-0">
+                  <span>Visit</span>
+                  <span className="text-sm">↗</span>
+                </span>
+              </a>
             </aside>
 
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
             <div className="lg:col-span-9 flex flex-col gap-6">
-
-              {/* PERSISTENT STICKY CATEGORY BAR - AUTO-SWITCHES ON SCROLL DOWN */}
-              <div
-                ref={stickyBarRef}
-                className={`sticky top-[60px] sm:top-[64px] z-30 flex items-center gap-2 overflow-x-auto no-scrollbar py-3 px-3.5 mb-3 snap-x ${activeTheme.sidebarBg} border-y ${activeTheme.sidebarBorder} shadow-xl backdrop-blur-2xl -mx-4 sm:-mx-8 px-4 sm:px-8 rounded-2xl`}
-              >
-                {CATEGORIES.map((cat) => {
-                  const isSelected = selectedCategory === cat;
-                  const count = getCategoryCount(cat);
-                  const icon = CATEGORY_ICONS[cat] || "🎬";
-                  return (
-                    <button
-                      key={cat}
-                      data-active={isSelected}
-                      onClick={() => handleCategoryClick(cat)}
-                      className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all duration-300 border flex items-center gap-2.5 whitespace-nowrap active:scale-95 cursor-pointer ${
-                        isSelected
-                          ? `${activeTheme.activeNavBg} scale-[1.03]`
-                          : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder} hover:scale-[1.01]`
-                      }`}
-                    >
-                      <span className="text-sm sm:text-base">{icon}</span>
-                      <span>{cat}</span>
-                      <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full border ${isSelected ? `${activeTheme.accentBadge} font-black` : `${activeTheme.inputBg} ${activeTheme.mutedText} border-slate-700`}`}>
-                        {count}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
 
               {/* DIRECTORY SEARCH & VIEW TOGGLE ROW */}
               <div className="flex items-center justify-between gap-4 px-2 pb-4 mb-2 border-b border-white/10">
