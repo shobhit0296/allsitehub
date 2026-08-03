@@ -488,7 +488,7 @@ const THEME_STYLES: Record<string, ThemeConfig> = {
 export default function Home() {
   const [activeNav, setActiveNav] = useState("Home");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("MOVIES & TV SHOWS");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedRegion, setSelectedRegion] = useState("US");
   const [showModal, setShowModal] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -1096,6 +1096,7 @@ export default function Home() {
               {/* Desktop Category Buttons List */}
               <div className="hidden lg:flex flex-col gap-2">
                 {[
+                  { name: "All", label: "ALL SITES", icon: "✦" },
                   { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
                   { name: "ONLY 4K", label: "ONLY 4K", icon: "💎" },
                   { name: "ANIME", label: "ANIME", icon: "⚡" },
@@ -1199,7 +1200,7 @@ export default function Home() {
 
               {/* MOBILE CATEGORY SCROLLBAR */}
               <div className="lg:hidden flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 mb-1 snap-x">
-                {CATEGORIES.map((cat) => {
+                {["All", ...CATEGORIES].map((cat) => {
                   const isSelected = selectedCategory === cat;
                   const count = getCategoryCount(cat);
                   return (

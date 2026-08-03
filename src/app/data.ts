@@ -66,8 +66,8 @@ export const DEFAULT_BANNER_CONFIG: BannerConfig = {
   promoHashtagsString: "#4KHDR, #NoAds, #FastServer, #FreeStreaming",
 };
 
-export const BANNER_STORAGE_KEY = "allsitehub_banner_config";
-export const SITES_STORAGE_KEY = "allsitehub_sites_list";
+export const BANNER_STORAGE_KEY = "allsitehub_banner_config_v3";
+export const SITES_STORAGE_KEY = "allsitehub_sites_list_v3";
 
 export const getBannerConfig = (): BannerConfig => {
   if (typeof window === "undefined") return DEFAULT_BANNER_CONFIG;
@@ -98,7 +98,16 @@ export const getSavedSites = (): SiteItem[] => {
     const saved = localStorage.getItem(SITES_STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const savedDomainMap = new Map(parsed.map((s: SiteItem) => [s.domain ? s.domain.toLowerCase() : '', s]));
+        const merged = [...parsed];
+        for (const defaultSite of STREAMING_SITES) {
+          if (defaultSite.domain && !savedDomainMap.has(defaultSite.domain.toLowerCase())) {
+            merged.push(defaultSite);
+          }
+        }
+        return merged;
+      }
     }
   } catch (e) {
     console.error("Failed to parse saved sites", e);
