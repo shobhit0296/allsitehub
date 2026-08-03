@@ -643,7 +643,7 @@ export default function Home() {
 
   const isManualClickRef = useRef(false);
   const manualClickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const stickyBarRef = useRef<HTMLDivElement | null>(null);
+  const sidebarRef = useRef<HTMLElement | null>(null);
 
   const handleCategoryClick = (catName: string) => {
     setSelectedCategory(catName);
@@ -656,7 +656,7 @@ export default function Home() {
     const slug = catName.toLowerCase().replace(/[^a-z0-9]/g, "-");
     const el = document.getElementById(`cat-${slug}`);
     if (el) {
-      const yOffset = -140; // Header + Sticky Category bar offset
+      const yOffset = -100; // Header offset
       const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
@@ -675,7 +675,7 @@ export default function Home() {
         return { name: catName, el };
       }).filter((item) => item.el !== null);
 
-      const scrollPosition = window.scrollY + 180; //Offset for sticky bar
+      const scrollPosition = window.scrollY + 160; // Offset for sticky navbar
 
       let currentCat = selectedCategory;
       for (let i = categoryItems.length - 1; i >= 0; i--) {
@@ -697,12 +697,12 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [searchQuery, sitesList, selectedCategory]);
 
-  // Auto-scroll active category pill into view inside sticky category bar
+  // Auto-scroll active category button into view inside sticky sidebar
   useEffect(() => {
-    if (!stickyBarRef.current) return;
-    const activePill = stickyBarRef.current.querySelector<HTMLElement>('[data-active="true"]');
+    if (!sidebarRef.current) return;
+    const activePill = sidebarRef.current.querySelector<HTMLElement>('[data-active="true"]');
     if (activePill) {
-      activePill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      activePill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
     }
   }, [selectedCategory]);
 
@@ -1088,8 +1088,11 @@ export default function Home() {
           {/* MAIN DIRECTORY LAYOUT: LEFT SIDEBAR + RIGHT CARDS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-            {/* LEFT SIDEBAR CATEGORIES - STICKY CATEGORY COLUMN */}
-            <aside className={`lg:col-span-3 sticky top-[80px] self-start z-20 flex flex-col gap-3 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all`}>
+            {/* LEFT SIDEBAR CATEGORIES - 100% STICKY CATEGORY COLUMN */}
+            <aside
+              ref={sidebarRef}
+              className={`hidden lg:flex lg:col-span-3 sticky top-[76px] self-start z-30 flex-col gap-3 max-h-[calc(100vh-95px)] overflow-y-auto no-scrollbar ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-2xl backdrop-blur-2xl transition-all`}
+            >
               <div className={`flex items-center justify-between px-1 pb-3 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs sm:text-sm font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-2`}>
                   <span>📂</span>
@@ -1204,6 +1207,35 @@ export default function Home() {
 
             {/* RIGHT MAIN DIRECTORY CARDS GRID */}
             <div className="lg:col-span-9 flex flex-col gap-6">
+
+              {/* MOBILE STICKY CATEGORY BAR (FOR SMALLER SCREENS) */}
+              <div
+                className={`lg:hidden sticky top-[60px] z-30 flex items-center gap-2 overflow-x-auto no-scrollbar py-3 px-3 mb-2 snap-x ${activeTheme.sidebarBg} border-b ${activeTheme.sidebarBorder} shadow-lg backdrop-blur-2xl -mx-4 sm:-mx-8 px-4 sm:px-8`}
+              >
+                {CATEGORIES.map((cat) => {
+                  const isSelected = selectedCategory === cat;
+                  const count = getCategoryCount(cat);
+                  const icon = CATEGORY_ICONS[cat] || "🎬";
+                  return (
+                    <button
+                      key={cat}
+                      data-active={isSelected}
+                      onClick={() => handleCategoryClick(cat)}
+                      className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all border flex items-center gap-2 whitespace-nowrap active:scale-95 cursor-pointer ${
+                        isSelected
+                          ? activeTheme.activeNavBg
+                          : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder}`
+                      }`}
+                    >
+                      <span>{icon}</span>
+                      <span>{cat}</span>
+                      <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full ${activeTheme.accentBadge} border`}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
 
               {/* DIRECTORY SEARCH & VIEW TOGGLE ROW */}
               <div className="flex items-center justify-between gap-4 px-2 pb-4 mb-2 border-b border-white/10">
