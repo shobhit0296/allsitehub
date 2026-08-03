@@ -643,7 +643,6 @@ export default function Home() {
 
   const isManualClickRef = useRef(false);
   const manualClickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const sidebarRef = useRef<HTMLElement | null>(null);
 
   const handleCategoryClick = (catName: string) => {
     setSelectedCategory(catName);
@@ -696,15 +695,6 @@ export default function Home() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [searchQuery, sitesList, selectedCategory]);
-
-  // Auto-scroll active category button into view inside sticky sidebar
-  useEffect(() => {
-    if (!sidebarRef.current) return;
-    const activePill = sidebarRef.current.querySelector<HTMLElement>('[data-active="true"]');
-    if (activePill) {
-      activePill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
-    }
-  }, [selectedCategory]);
 
   // Dynamic Home Banner State
   const [bannerConfig, setBannerConfig] = useState<BannerConfig>(DEFAULT_BANNER_CONFIG);
@@ -1088,10 +1078,9 @@ export default function Home() {
           {/* MAIN DIRECTORY LAYOUT: LEFT SIDEBAR + RIGHT CARDS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-            {/* LEFT SIDEBAR CATEGORIES - 100% STICKY CATEGORY COLUMN */}
+            {/* LEFT SIDEBAR CATEGORIES - CLEAN STICKY COLUMN */}
             <aside
-              ref={sidebarRef}
-              className={`hidden lg:flex lg:col-span-3 sticky top-[76px] self-start z-30 flex-col gap-3 max-h-[calc(100vh-95px)] overflow-y-auto no-scrollbar ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-4 sm:p-4.5 shadow-2xl backdrop-blur-2xl transition-all`}
+              className={`hidden lg:flex lg:col-span-3 sticky top-[80px] self-start z-20 flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-2xl transition-all`}
             >
               <div className={`flex items-center justify-between px-1 pb-3 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs sm:text-sm font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-2`}>
