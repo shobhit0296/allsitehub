@@ -485,10 +485,23 @@ const THEME_STYLES: Record<string, ThemeConfig> = {
   },
 };
 
+const CATEGORY_ICONS: Record<string, string> = {
+  "MOVIES & TV SHOWS": "🎬",
+  "ONLY 4K": "💎",
+  "ANIME": "⚡",
+  "MANGA": "📖",
+  "LIVE TV & SPORTS": "📺",
+  "PAID": "⭐",
+  "APPS": "📱",
+  "AI TOOLS": "🤖",
+  "DOWNLOADS": "⬇️",
+  "AD BLOCKERS": "🛡️",
+};
+
 export default function Home() {
   const [activeNav, setActiveNav] = useState("Home");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>("MOVIES & TV SHOWS");
   const [selectedRegion, setSelectedRegion] = useState("US");
   const [showModal, setShowModal] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -1096,7 +1109,6 @@ export default function Home() {
               {/* Desktop Category Buttons List */}
               <div className="hidden lg:flex flex-col gap-2">
                 {[
-                  { name: "All", label: "ALL SITES", icon: "✦" },
                   { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
                   { name: "ONLY 4K", label: "ONLY 4K", icon: "💎" },
                   { name: "ANIME", label: "ANIME", icon: "⚡" },
@@ -1114,7 +1126,11 @@ export default function Home() {
                   return (
                     <button
                       key={cat.name}
-                      onClick={() => setSelectedCategory(cat.name)}
+                      onClick={() => {
+                        setSelectedCategory(cat.name);
+                        const el = document.getElementById(`cat-${cat.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`);
+                        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }}
                       className={`group relative flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-200 active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
@@ -1200,13 +1216,17 @@ export default function Home() {
 
               {/* MOBILE CATEGORY SCROLLBAR */}
               <div className="lg:hidden flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 mb-1 snap-x">
-                {["All", ...CATEGORIES].map((cat) => {
+                {CATEGORIES.map((cat) => {
                   const isSelected = selectedCategory === cat;
                   const count = getCategoryCount(cat);
                   return (
                     <button
                       key={cat}
-                      onClick={() => setSelectedCategory(cat)}
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        const el = document.getElementById(`cat-${cat.toLowerCase().replace(/[^a-z0-9]/g, "-")}`);
+                        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }}
                       className={`snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm md:text-base font-black transition-all border flex items-center gap-2 whitespace-nowrap active:scale-95 cursor-pointer ${
                         isSelected
                           ? activeTheme.activeNavBg
@@ -1295,155 +1315,172 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Directory Sites Rendering: Compact Square Grid or List View */}
-              {filteredSites.length === 0 ? (
-                <div className={`p-12 sm:p-16 rounded-3xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} text-center flex flex-col items-center justify-center gap-4`}>
-                  <h3 className={`text-lg sm:text-xl font-bold ${activeTheme.headingColor}`}>No portals found</h3>
-                  <p className={`text-sm ${activeTheme.mutedText} max-w-md`}>
-                    No sites match your search query or category filter.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSearchQuery("");
-                      setSelectedCategory("MOVIES & TV SHOWS");
-                    }}
-                    className={`mt-2 px-6 py-3 rounded-2xl ${activeTheme.activeNavBg} text-xs font-bold transition-all cursor-pointer`}
+              {/* Directory Sites Rendering: Grouped by Proper Category Sections */}
+              {CATEGORIES.map((catName) => {
+                const catSites = sitesList.filter((site) => {
+                  if (site.category !== catName) return false;
+                  if (!searchQuery.trim()) return true;
+                  const q = searchQuery.toLowerCase();
+                  return (
+                    site.name.toLowerCase().includes(q) ||
+                    site.domain.toLowerCase().includes(q) ||
+                    site.tags.some((t) => t.toLowerCase().includes(q))
+                  );
+                });
+
+                if (catSites.length === 0 && searchQuery.trim()) return null;
+
+                const catSlug = catName.toLowerCase().replace(/[^a-z0-9]/g, "-");
+                const icon = CATEGORY_ICONS[catName] || "🎬";
+
+                return (
+                  <section
+                    key={catName}
+                    id={`cat-${catSlug}`}
+                    className="flex flex-col gap-3 scroll-mt-24 mb-6"
                   >
-                    Reset Filters
-                  </button>
-                </div>
-              ) : viewMode === "grid" ? (
-                /* COMPACT SITE INDICATOR CARDS GRID (8 CARDS PER ROW ON ULTRA WIDE) */
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-2.5 sm:gap-3">
-                  {filteredSites.map((site) => (
-                    <a
-                      key={site.id}
-                      href={site.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl sm:rounded-2xl p-2.5 sm:p-3 aspect-square flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] active:scale-[0.98] shadow-sm ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-md`}
-                    >
-                      {/* Top-Left Status Badge */}
-                      <div className="absolute top-2 left-2 z-20">
-                        {site.isTrusted ? (
-                          <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider shadow-xs">
-                            TRUSTED
-                          </span>
-                        ) : site.isFeatured ? (
-                          <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-950/90 text-amber-400 border border-amber-500/40 uppercase tracking-wider shadow-xs">
-                            FEATURED
-                          </span>
-                        ) : site.isNew ? (
-                          <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-950/90 text-blue-400 border border-blue-500/40 uppercase tracking-wider shadow-xs">
-                            NEW
-                          </span>
-                        ) : site.badge ? (
-                          <span className={`text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded ${activeTheme.accentBadge} uppercase tracking-wider shadow-xs`}>
-                            {site.badge}
-                          </span>
-                        ) : null}
-                      </div>
-
-                      {/* Center Icon Container */}
-                      <div className={`sq-icon-btn w-9 h-9 sm:w-11 sm:h-11 p-2 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 shadow-sm my-auto`}>
-                        <img
-                          src={getFaviconUrl(site.domain || site.url)}
-                          alt={site.name}
-                          className="w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            const domain = getCleanDomain(site.domain || site.url);
-                            if (!target.dataset.triedFallback) {
-                              target.dataset.triedFallback = "true";
-                              target.src = `https://icon.horse/icon/${domain}`;
-                            }
-                          }}
-                        />
-                      </div>
-
-                      {/* Bottom Site Name & Domain */}
-                      <div className="w-full flex flex-col items-center gap-0.5 mt-auto z-10">
-                        <h3 className={`font-black ${activeTheme.headingColor} text-[11px] sm:text-xs tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate w-full`}>
-                          {site.name}
-                        </h3>
-
-                        <span className={`text-[9px] sm:text-[10px] font-mono ${activeTheme.mutedText} flex items-center justify-center gap-0.5 truncate w-full`}>
-                          <span className="text-[8px] opacity-70">🌐</span>
-                          <span className="truncate">{site.domain}</span>
+                    {/* Category Header */}
+                    <div className="flex items-center justify-between px-1 pb-2 border-b border-white/10">
+                      <div className="flex items-center gap-3">
+                        <span className={`w-1.5 h-6 rounded-full ${activeTheme.categoryBar}`} />
+                        <span className="text-xl sm:text-2xl">{icon}</span>
+                        <h2 className={`text-xl sm:text-2xl font-black ${activeTheme.headingColor} tracking-tight flex items-center gap-2.5`}>
+                          <span>{catName}</span>
+                        </h2>
+                        <span className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border ${activeTheme.accentBadge}`}>
+                          {catSites.length}
                         </span>
                       </div>
-                    </a>
-                  ))}
-                </div>
-              ) : (
-                /* COMPACT LIST VIEW MODE */
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
-                  {filteredSites.map((site) => (
-                    <a
-                      key={site.id}
-                      href={site.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2.5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-sm ${activeTheme.cardGlow} cursor-pointer overflow-hidden`}
-                    >
-                      {/* Top Accent Line */}
-                      <div className={`absolute top-0 left-0 right-0 h-1 ${activeTheme.categoryBar} opacity-60 group-hover:opacity-100 transition-opacity`} />
+                    </div>
 
-                      {/* Left Info */}
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div className={`sq-icon-btn w-9 h-9 sm:w-10 sm:h-10 p-1.5 ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-300`}>
-                          <img
-                            src={getFaviconUrl(site.domain || site.url)}
-                            alt={site.name}
-                            className="w-full h-full object-contain drop-shadow-xs group-hover:scale-110 transition-transform duration-300"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              const domain = getCleanDomain(site.domain || site.url);
-                              if (!target.dataset.triedFallback) {
-                                target.dataset.triedFallback = "true";
-                                target.src = `https://icon.horse/icon/${domain}`;
-                              }
-                            }}
-                          />
-                        </div>
-
-                        <div className="flex flex-col min-w-0 gap-0.5">
-                          <h3 className={`font-black ${activeTheme.headingColor} text-xs sm:text-sm group-hover:${activeTheme.brandText} transition-colors truncate`}>
-                            {site.name}
-                          </h3>
-                          <span className={`text-[10px] sm:text-[11px] font-mono font-bold ${activeTheme.subtextColor} truncate`}>
-                            {site.domain}
-                          </span>
-                        </div>
+                    {/* Category Sites Grid or List View */}
+                    {catSites.length === 0 ? (
+                      <div className={`p-6 rounded-2xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} text-center text-xs ${activeTheme.mutedText}`}>
+                        No portals added yet in {catName}.
                       </div>
+                    ) : viewMode === "grid" ? (
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-2.5 sm:gap-3">
+                        {catSites.map((site) => (
+                          <a
+                            key={site.id}
+                            href={site.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl sm:rounded-2xl p-2.5 sm:p-3 aspect-square flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] active:scale-[0.98] shadow-sm ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-md`}
+                          >
+                            <div className="absolute top-2 left-2 z-20">
+                              {site.isTrusted ? (
+                                <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider shadow-xs">
+                                  TRUSTED
+                                </span>
+                              ) : site.isFeatured ? (
+                                <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-950/90 text-amber-400 border border-amber-500/40 uppercase tracking-wider shadow-xs">
+                                  FEATURED
+                                </span>
+                              ) : site.isNew ? (
+                                <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-950/90 text-blue-400 border border-blue-500/40 uppercase tracking-wider shadow-xs">
+                                  NEW
+                                </span>
+                              ) : site.badge ? (
+                                <span className={`text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded ${activeTheme.accentBadge} uppercase tracking-wider shadow-xs`}>
+                                  {site.badge}
+                                </span>
+                              ) : null}
+                            </div>
 
-                      {/* Right Badges */}
-                      <div className="flex items-center gap-1 shrink-0 flex-wrap justify-end">
-                        {site.isTrusted && (
-                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-xs whitespace-nowrap">
-                            🛡️ Trusted
-                          </span>
-                        )}
-                        {site.isFeatured && (
-                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-xs whitespace-nowrap">
-                            ⭐ Featured
-                          </span>
-                        )}
-                        {site.isNew && (
-                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-950/80 text-blue-300 border border-blue-500/40 shadow-xs whitespace-nowrap">
-                            🔥 New
-                          </span>
-                        )}
-                        {site.badge && !site.isTrusted && !site.isFeatured && !site.isNew && (
-                          <span className={`text-[9px] font-black uppercase px-1.5 py-0.2 rounded ${activeTheme.accentBadge} shadow-xs whitespace-nowrap`}>
-                            {site.badge}
-                          </span>
-                        )}
+                            <div className={`sq-icon-btn w-9 h-9 sm:w-11 sm:h-11 p-2 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 shadow-sm my-auto`}>
+                              <img
+                                src={getFaviconUrl(site.domain || site.url)}
+                                alt={site.name}
+                                className="w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  const domain = getCleanDomain(site.domain || site.url);
+                                  if (!target.dataset.triedFallback) {
+                                    target.dataset.triedFallback = "true";
+                                    target.src = `https://icon.horse/icon/${domain}`;
+                                  }
+                                }}
+                              />
+                            </div>
+
+                            <div className="w-full flex flex-col items-center gap-0.5 mt-auto z-10">
+                              <h3 className={`font-black ${activeTheme.headingColor} text-[11px] sm:text-xs tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate w-full`}>
+                                {site.name}
+                              </h3>
+                              <span className={`text-[9px] sm:text-[10px] font-mono ${activeTheme.mutedText} flex items-center justify-center gap-0.5 truncate w-full`}>
+                                <span className="text-[8px] opacity-70">🌐</span>
+                                <span className="truncate">{site.domain}</span>
+                              </span>
+                            </div>
+                          </a>
+                        ))}
                       </div>
-                    </a>
-                  ))}
-                </div>
-              )}
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
+                        {catSites.map((site) => (
+                          <a
+                            key={site.id}
+                            href={site.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2.5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-sm ${activeTheme.cardGlow} cursor-pointer overflow-hidden`}
+                          >
+                            <div className={`absolute top-0 left-0 right-0 h-1 ${activeTheme.categoryBar} opacity-60 group-hover:opacity-100 transition-opacity`} />
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className={`sq-icon-btn w-9 h-9 sm:w-10 sm:h-10 p-1.5 ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-300`}>
+                                <img
+                                  src={getFaviconUrl(site.domain || site.url)}
+                                  alt={site.name}
+                                  className="w-full h-full object-contain drop-shadow-xs group-hover:scale-110 transition-transform duration-300"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    const domain = getCleanDomain(site.domain || site.url);
+                                    if (!target.dataset.triedFallback) {
+                                      target.dataset.triedFallback = "true";
+                                      target.src = `https://icon.horse/icon/${domain}`;
+                                    }
+                                  }}
+                                />
+                              </div>
+                              <div className="flex flex-col min-w-0 gap-0.5">
+                                <h3 className={`font-black ${activeTheme.headingColor} text-xs sm:text-sm group-hover:${activeTheme.brandText} transition-colors truncate`}>
+                                  {site.name}
+                                </h3>
+                                <span className={`text-[10px] sm:text-[11px] font-mono font-bold ${activeTheme.subtextColor} truncate`}>
+                                  {site.domain}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0 flex-wrap justify-end">
+                              {site.isTrusted && (
+                                <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-xs whitespace-nowrap">
+                                  🛡️ Trusted
+                                </span>
+                              )}
+                              {site.isFeatured && (
+                                <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-xs whitespace-nowrap">
+                                  ⭐ Featured
+                                </span>
+                              )}
+                              {site.isNew && (
+                                <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-950/80 text-blue-300 border border-blue-500/40 shadow-xs whitespace-nowrap">
+                                  🔥 New
+                                </span>
+                              )}
+                              {site.badge && !site.isTrusted && !site.isFeatured && !site.isNew && (
+                                <span className={`text-[9px] font-black uppercase px-1.5 py-0.2 rounded ${activeTheme.accentBadge} shadow-xs whitespace-nowrap`}>
+                                  {site.badge}
+                                </span>
+                              )}
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                );
+              })}
 
             </div>
 
