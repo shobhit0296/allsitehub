@@ -15,6 +15,9 @@ import {
   DEFAULT_BANNER_CONFIG,
   getBannerConfig,
   getSavedSites,
+  getSavedUserRequests,
+  saveUserRequests,
+  UserRequestItem,
 } from "./data";
 
 interface ThemeConfig {
@@ -787,6 +790,21 @@ export default function Home() {
 
   const handleRequestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!reqSiteName.trim() || !reqSiteUrl.trim()) return;
+
+    const newRequest: UserRequestItem = {
+      id: `req-${Date.now()}`,
+      name: reqSiteName.trim(),
+      url: reqSiteUrl.trim(),
+      category: reqSiteCategory,
+      tags: reqFeatures.trim() || "Community",
+      status: "pending",
+      submittedAt: Date.now(),
+    };
+
+    const existingRequests = getSavedUserRequests();
+    saveUserRequests([newRequest, ...existingRequests]);
+
     setReqSuccess(true);
     setTimeout(() => {
       setReqSuccess(false);
@@ -794,7 +812,7 @@ export default function Home() {
       setReqSiteName("");
       setReqSiteUrl("");
       setReqFeatures("");
-    }, 2000);
+    }, 1800);
   };
 
   // Utility to calculate real-time category counts

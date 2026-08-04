@@ -12,6 +12,16 @@ export interface SiteItem {
   isNew?: boolean;
 }
 
+export interface UserRequestItem {
+  id: string;
+  name: string;
+  url: string;
+  category: string;
+  tags: string;
+  status: "pending" | "approved" | "rejected";
+  submittedAt: number;
+}
+
 export const CATEGORIES = [
   "MOVIES & TV SHOWS",
   "ONLY 4K",
@@ -130,6 +140,51 @@ export const saveBannerConfig = (config: BannerConfig): void => {
     window.dispatchEvent(new Event("allsitehub_banner_updated"));
   } catch (e) {
     console.error("Failed to save banner config", e);
+  }
+};
+
+const REQUESTS_STORAGE_KEY = "allsitehub_user_requests_v3";
+
+export const getSavedUserRequests = (): UserRequestItem[] => {
+  if (typeof window === "undefined") return [];
+  try {
+    const saved = localStorage.getItem(REQUESTS_STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error("Failed to parse user requests", e);
+  }
+  return [
+    {
+      id: "req-1",
+      name: "AniStream HD",
+      url: "https://anistream.live",
+      category: "ANIME",
+      tags: "4K, Dubbed",
+      status: "pending",
+      submittedAt: Date.now() - 3600000,
+    },
+    {
+      id: "req-2",
+      name: "SportsLive 24",
+      url: "https://sportslive24.com",
+      category: "LIVE TV & SPORTS",
+      tags: "Football, HD",
+      status: "pending",
+      submittedAt: Date.now() - 7200000,
+    },
+  ];
+};
+
+export const saveUserRequests = (requests: UserRequestItem[]): void => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify(requests));
+    window.dispatchEvent(new Event("allsitehub_requests_updated"));
+  } catch (e) {
+    console.error("Failed to save user requests", e);
   }
 };
 

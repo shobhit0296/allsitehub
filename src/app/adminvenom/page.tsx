@@ -15,6 +15,9 @@ import {
   getSavedSites,
   saveSitesToStorage,
   saveDeletedSiteIds,
+  UserRequestItem,
+  getSavedUserRequests,
+  saveUserRequests,
 } from "../data";
 
 export default function AdminDashboard() {
@@ -111,23 +114,17 @@ export default function AdminDashboard() {
   const [editIsNew, setEditIsNew] = useState(false);
   const [editBadge, setEditBadge] = useState("");
 
-  // User Requests Queue
-  const [userRequests, setUserRequests] = useState([
-    {
-      id: "req-1",
-      name: "AniStream HD",
-      url: "https://anistream.live",
-      category: "ANIME",
-      tags: "4K, Dubbed",
-    },
-    {
-      id: "req-2",
-      name: "SportsLive 24",
-      url: "https://sportslive24.com",
-      category: "LIVE TV & SPORTS",
-      tags: "Football, HD",
-    },
-  ]);
+  // User Requests Queue State & Persistence
+  const [userRequests, setUserRequests] = useState<UserRequestItem[]>([]);
+  const [requestSubTab, setRequestSubTab] = useState<"pending" | "approved" | "rejected">("pending");
+  const [requestMessage, setRequestMessage] = useState("");
+
+  useEffect(() => {
+    setUserRequests(getSavedUserRequests());
+    const handleReqUpdate = () => setUserRequests(getSavedUserRequests());
+    window.addEventListener("allsitehub_requests_updated", handleReqUpdate);
+    return () => window.removeEventListener("allsitehub_requests_updated", handleReqUpdate);
+  }, []);
 
   // Passcode Auth with Secret Password
   const handleLogin = (e: React.FormEvent) => {
@@ -233,8 +230,8 @@ export default function AdminDashboard() {
     }
   };
 
-  // Approve Request
-  const handleApproveRequest = (req: typeof userRequests[0]) => {
+  // Approve Request & Publish Live Instantly
+  const handleApproveRequest = (req: UserRequestItem) => {
     const domain = getCleanDomain(req.url);
     const approvedSite: SiteItem = {
       id: `approved-${Date.now()}`,
@@ -242,13 +239,47 @@ export default function AdminDashboard() {
       domain: domain || req.name.toLowerCase() + ".com",
       url: req.url,
       category: req.category,
-      tags: req.tags.split(",").map((t) => t.trim()),
+      tags: req.tags ? req.tags.split(",").map((t) => t.trim()) : ["Verified"],
       uptime: "99.9%",
       isTrusted: true,
+      isNew: true,
+      badge: "VERIFIED",
     };
 
+    // 1. Instantly publish live to active sites list & trigger live site update broadcast
     updateSites([approvedSite, ...sitesList]);
-    setUserRequests(userRequests.filter((r) => r.id !== req.id));
+
+    // 2. Mark request status as approved in history
+    const updatedReqs = userRequests.map((r) =>
+      r.id === req.id ? { ...r, status: "approved" as const } : r
+    );
+    setUserRequests(updatedReqs);
+    saveUserRequests(updatedReqs);
+
+    // 3. Show instant confirmation banner
+    setRequestMessage(`✓ "${req.name}" was approved and published live on the website instantly!`);
+    setTimeout(() => setRequestMessage(""), 4000);
+  };
+
+  // Reject Request
+  const handleRejectRequest = (req: UserRequestItem) => {
+    const updatedReqs = userRequests.map((r) =>
+      r.id === req.id ? { ...r, status: "rejected" as const } : r
+    );
+    setUserRequests(updatedReqs);
+    saveUserRequests(updatedReqs);
+
+    setRequestMessage(`❌ Request for "${req.name}" was rejected.`);
+    setTimeout(() => setRequestMessage(""), 3000);
+  };
+
+  // Permanently Delete Request Record from History
+  const handleDeleteRequestRecord = (id: string) => {
+    if (confirm("Permanently remove this request from history?")) {
+      const updatedReqs = userRequests.filter((r) => r.id !== id);
+      setUserRequests(updatedReqs);
+      saveUserRequests(updatedReqs);
+    }
   };
 
   // Banner Customization Handlers
@@ -867,45 +898,249 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 3: REQUESTS INBOX */}
+        {/* TAB 3: REQUESTED SITES INBOX WITH ACCEPTED & REJECTED SECTIONS */}
         {activeTab === "requests" && (
-          <div className="max-w-3xl w-full flex flex-col gap-4 mx-auto">
-            {userRequests.length === 0 ? (
-              <div className="p-8 rounded-2xl bg-[#090717] border border-slate-800 text-center text-slate-400 text-sm">
-                ✓ No pending user site requests.
+          <div className="max-w-4xl w-full flex flex-col gap-6 mx-auto">
+            {/* Header & Section Title */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+              <div>
+                <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
+                  <span>📨 Requested Portals</span>
+                  <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-purple-900/60 text-purple-300 border border-purple-500/40">
+                    {userRequests.length} Total
+                  </span>
+                </h2>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Review user-submitted website requests. Accepting a request publishes it live on AllSiteHub instantly!
+                </p>
               </div>
-            ) : (
-              userRequests.map((req) => (
-                <div
-                  key={req.id}
-                  className="p-5 rounded-2xl bg-[#090717]/95 border border-purple-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md"
-                >
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-extrabold text-white text-base">{req.name}</h3>
-                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-500/30">
-                        {req.category}
-                      </span>
-                    </div>
-                    <span className="text-xs font-mono text-slate-400">{req.url}</span>
-                  </div>
+            </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setUserRequests(userRequests.filter((r) => r.id !== req.id))}
-                      className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold"
-                    >
-                      Dismiss
-                    </button>
-                    <button
-                      onClick={() => handleApproveRequest(req)}
-                      className="purple-btn-primary px-4 py-2 rounded-xl text-white text-xs font-black uppercase tracking-wider"
-                    >
-                      Approve & Publish 🚀
-                    </button>
+            {/* Confirmation Banner */}
+            {requestMessage && (
+              <div className="p-3.5 rounded-2xl bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-xs font-extrabold text-center shadow-lg animate-in fade-in duration-200">
+                {requestMessage}
+              </div>
+            )}
+
+            {/* Sub-Tabs Selector: Pending, Accepted, Rejected */}
+            <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-[#090717] border border-slate-800 shadow-inner">
+              <button
+                onClick={() => setRequestSubTab("pending")}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  requestSubTab === "pending"
+                    ? "bg-purple-600 text-white shadow-md"
+                    : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                }`}
+              >
+                <span>⏳ Pending Review</span>
+                <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-full bg-black/40 text-purple-200">
+                  {userRequests.filter((r) => !r.status || r.status === "pending").length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setRequestSubTab("approved")}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  requestSubTab === "approved"
+                    ? "bg-emerald-600 text-white shadow-md"
+                    : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                }`}
+              >
+                <span>✅ Accepted & Live</span>
+                <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-full bg-black/40 text-emerald-200">
+                  {userRequests.filter((r) => r.status === "approved").length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setRequestSubTab("rejected")}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  requestSubTab === "rejected"
+                    ? "bg-rose-600 text-white shadow-md"
+                    : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                }`}
+              >
+                <span>❌ Rejected</span>
+                <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-full bg-black/40 text-rose-200">
+                  {userRequests.filter((r) => r.status === "rejected").length}
+                </span>
+              </button>
+            </div>
+
+            {/* SUB-SECTION 1: PENDING REQUESTS */}
+            {requestSubTab === "pending" && (
+              <div className="flex flex-col gap-3.5">
+                {userRequests.filter((r) => !r.status || r.status === "pending").length === 0 ? (
+                  <div className="p-8 rounded-2xl bg-[#090717] border border-slate-800 text-center text-slate-400 text-xs sm:text-sm">
+                    ✓ No pending user site requests to review.
                   </div>
-                </div>
-              ))
+                ) : (
+                  userRequests
+                    .filter((r) => !r.status || r.status === "pending")
+                    .map((req) => (
+                      <div
+                        key={req.id}
+                        className="p-5 rounded-2xl bg-[#090717]/95 border border-purple-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg hover:border-purple-500/60 transition-all"
+                      >
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-extrabold text-white text-base">{req.name}</h3>
+                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-500/40">
+                              {req.category}
+                            </span>
+                            <span className="text-[10px] font-mono text-amber-400 bg-amber-950/60 border border-amber-500/40 px-2 py-0.5 rounded-full">
+                              ⏳ Needs Approval
+                            </span>
+                          </div>
+
+                          <a
+                            href={req.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-mono text-purple-400 hover:underline flex items-center gap-1 w-fit"
+                          >
+                            <span>{req.url}</span>
+                            <span className="text-[10px]">↗</span>
+                          </a>
+
+                          {req.tags && (
+                            <p className="text-xs text-slate-400">
+                              <strong className="text-slate-300">Tags/Notes:</strong> {req.tags}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Action Buttons: Accept & Reject */}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            onClick={() => handleRejectRequest(req)}
+                            className="px-3.5 py-2 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-bold transition-all cursor-pointer active:scale-95"
+                          >
+                            Reject ❌
+                          </button>
+                          <button
+                            onClick={() => handleApproveRequest(req)}
+                            className="purple-btn-primary px-4.5 py-2.5 rounded-xl text-white text-xs font-black uppercase tracking-wider shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                          >
+                            <span>Accept & Publish Live</span>
+                            <span>🚀</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                )}
+              </div>
+            )}
+
+            {/* SUB-SECTION 2: ACCEPTED REQUESTS */}
+            {requestSubTab === "approved" && (
+              <div className="flex flex-col gap-3.5">
+                {userRequests.filter((r) => r.status === "approved").length === 0 ? (
+                  <div className="p-8 rounded-2xl bg-[#090717] border border-slate-800 text-center text-slate-400 text-xs sm:text-sm">
+                    No accepted requests in history yet.
+                  </div>
+                ) : (
+                  userRequests
+                    .filter((r) => r.status === "approved")
+                    .map((req) => (
+                      <div
+                        key={req.id}
+                        className="p-5 rounded-2xl bg-[#081712]/95 border border-emerald-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md"
+                      >
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-extrabold text-white text-base">{req.name}</h3>
+                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+                              <span>✓ Published Live</span>
+                            </span>
+                            <span className="text-[10px] font-mono text-slate-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-full">
+                              {req.category}
+                            </span>
+                          </div>
+
+                          <a
+                            href={req.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-mono text-emerald-400 hover:underline flex items-center gap-1 w-fit"
+                          >
+                            <span>{req.url}</span>
+                            <span className="text-[10px]">↗</span>
+                          </a>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <a
+                            href={req.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3.5 py-2 rounded-xl bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-xs font-bold transition-all border border-emerald-500/40"
+                          >
+                            View Site ↗
+                          </a>
+                          <button
+                            onClick={() => handleDeleteRequestRecord(req.id)}
+                            className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-rose-950 text-slate-400 hover:text-rose-300 text-xs font-bold border border-slate-800"
+                            title="Delete record from history"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                )}
+              </div>
+            )}
+
+            {/* SUB-SECTION 3: REJECTED REQUESTS */}
+            {requestSubTab === "rejected" && (
+              <div className="flex flex-col gap-3.5">
+                {userRequests.filter((r) => r.status === "rejected").length === 0 ? (
+                  <div className="p-8 rounded-2xl bg-[#090717] border border-slate-800 text-center text-slate-400 text-xs sm:text-sm">
+                    No rejected requests in history.
+                  </div>
+                ) : (
+                  userRequests
+                    .filter((r) => r.status === "rejected")
+                    .map((req) => (
+                      <div
+                        key={req.id}
+                        className="p-5 rounded-2xl bg-[#17080a]/95 border border-rose-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md opacity-80 hover:opacity-100 transition-all"
+                      >
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-extrabold text-slate-300 text-base line-through">{req.name}</h3>
+                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-500/40">
+                              ❌ Rejected
+                            </span>
+                            <span className="text-[10px] font-mono text-slate-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-full">
+                              {req.category}
+                            </span>
+                          </div>
+
+                          <span className="text-xs font-mono text-slate-500">{req.url}</span>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            onClick={() => handleApproveRequest(req)}
+                            className="px-3.5 py-2 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-purple-200 text-xs font-bold transition-all border border-purple-500/40"
+                          >
+                            Re-Approve & Publish Live 🚀
+                          </button>
+                          <button
+                            onClick={() => handleDeleteRequestRecord(req.id)}
+                            className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-rose-950 text-slate-400 hover:text-rose-300 text-xs font-bold border border-slate-800"
+                            title="Delete record from history"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                )}
+              </div>
             )}
           </div>
         )}
