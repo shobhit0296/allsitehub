@@ -815,9 +815,33 @@ export default function Home() {
     }, 1800);
   };
 
+  // High-Performance Single-Pass Category Site Filtering Memoization
+  const filteredSitesByCategory = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    const map: Record<string, SiteItem[]> = {};
+    for (let i = 0; i < CATEGORIES.length; i++) {
+      map[CATEGORIES[i]] = [];
+    }
+
+    for (let i = 0; i < sitesList.length; i++) {
+      const site = sitesList[i];
+      if (!site || !map[site.category]) continue;
+
+      if (q) {
+        const matchesName = site.name.toLowerCase().includes(q);
+        const matchesDomain = site.domain.toLowerCase().includes(q);
+        const matchesTags = site.tags.some((t) => t.toLowerCase().includes(q));
+        if (!matchesName && !matchesDomain && !matchesTags) continue;
+      }
+
+      map[site.category].push(site);
+    }
+    return map;
+  }, [sitesList, searchQuery]);
+
   // Utility to calculate real-time category counts
   const getCategoryCount = (categoryName: string) => {
-    return sitesList.filter((site) => site.category === categoryName).length;
+    return filteredSitesByCategory[categoryName]?.length || 0;
   };
 
   return (
@@ -927,9 +951,9 @@ export default function Home() {
       {/* 1. LIVE GALAXY BACKGROUND EFFECT CANVAS */}
       <GalaxyBackground themeConfig={activeTheme.galaxyConfig} />
 
-      {/* TOP BACKGROUND AURAS */}
-      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] rounded-full pointer-events-none blur-[140px] opacity-40 z-0 animate-pulse-glow" style={{ background: activeTheme.galaxyConfig.nebula1 }} />
-      <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] rounded-full pointer-events-none blur-[140px] opacity-35 z-0 animate-pulse-glow" style={{ background: activeTheme.galaxyConfig.nebula2 }} />
+      {/* TOP BACKGROUND AURAS (GPU Optimized) */}
+      <div className="fixed top-0 left-1/4 w-[280px] sm:w-[500px] h-[280px] sm:h-[500px] rounded-full pointer-events-none blur-[70px] sm:blur-[120px] opacity-30 sm:opacity-40 z-0 transform-gpu will-change-transform" style={{ background: activeTheme.galaxyConfig.nebula1 }} />
+      <div className="fixed bottom-0 right-1/4 w-[280px] sm:w-[500px] h-[280px] sm:h-[500px] rounded-full pointer-events-none blur-[70px] sm:blur-[120px] opacity-25 sm:opacity-35 z-0 transform-gpu will-change-transform" style={{ background: activeTheme.galaxyConfig.nebula2 }} />
 
       {/* GLASS HEADER / NAVBAR */}
       <header className={`sticky top-0 z-40 w-full ${activeTheme.headerBg} transition-all duration-300`}>
@@ -1569,16 +1593,7 @@ export default function Home() {
 
               {/* Directory Sites Rendering: Grouped by Proper Category Sections */}
               {CATEGORIES.map((catName) => {
-                const catSites = sitesList.filter((site) => {
-                  if (site.category !== catName) return false;
-                  if (!searchQuery.trim()) return true;
-                  const q = searchQuery.toLowerCase();
-                  return (
-                    site.name.toLowerCase().includes(q) ||
-                    site.domain.toLowerCase().includes(q) ||
-                    site.tags.some((t) => t.toLowerCase().includes(q))
-                  );
-                });
+                const catSites = filteredSitesByCategory[catName] || [];
 
                 if (catSites.length === 0 && searchQuery.trim()) return null;
 
