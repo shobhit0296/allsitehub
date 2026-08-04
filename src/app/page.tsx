@@ -962,17 +962,8 @@ export default function Home() {
             ))}
           </nav>
 
-          {/* Right Header Items: Reload, Themes, Region, Live Counter */}
+          {/* Right Header Items: Themes, Region, Live Counter */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Quick Reload Button */}
-            <button
-              onClick={() => window.location.reload()}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold transition-all border cursor-pointer hover:scale-105 active:scale-95 backdrop-blur-md ${activeTheme.inputBg} ${activeTheme.inputBorder} ${activeTheme.textColor} hover:border-purple-400/80 shadow-xs`}
-              title="Reload & Refresh Website"
-            >
-              <span className="text-xs sm:text-sm">🔄</span>
-              <span className="hidden sm:inline">Refresh</span>
-            </button>
 
             {/* Live Theme Button */}
             <button
@@ -2034,15 +2025,6 @@ export default function Home() {
           >
             <span>📁</span>
             <span>Portals</span>
-          </button>
-
-          <button
-            onClick={() => window.location.reload()}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 font-extrabold text-[11px] backdrop-blur-md active:scale-95 cursor-pointer shadow-xs"
-            title="Refresh Page on Phone"
-          >
-            <span className="text-xs">🔄</span>
-            <span>Refresh</span>
           </button>
 
           <button

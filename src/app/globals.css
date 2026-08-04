@@ -16,7 +16,7 @@
 
 html {
   scroll-behavior: smooth;
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: auto;
   -webkit-tap-highlight-color: transparent;
 }
 
