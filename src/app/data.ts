@@ -372,19 +372,172 @@ export const STREAMING_SITES: SiteItem[] = [
   },
   {
     "id": "chatgpt",
-    "name": "ChatGPT AI Hub",
+    "name": "ChatGPT (OpenAI)",
     "domain": "chatgpt.com",
     "url": "https://chatgpt.com",
     "category": "AI TOOLS",
     "tags": [
       "GPT-4o",
-      "AI Tool",
-      "Free"
+      "AI Chat",
+      "Free & Paid"
     ],
     "uptime": "99.9%",
-    "badge": "HOT AI",
+    "badge": "POPULAR",
     "isTrusted": true,
     "isFeatured": true
+  },
+  {
+    "id": "claudeai",
+    "name": "Claude AI (Anthropic)",
+    "domain": "claude.ai",
+    "url": "https://claude.ai",
+    "category": "AI TOOLS",
+    "tags": [
+      "Sonnet 3.5",
+      "Coding",
+      "Free & Paid"
+    ],
+    "uptime": "99.9%",
+    "badge": "BEST CODING",
+    "isTrusted": true,
+    "isFeatured": true
+  },
+  {
+    "id": "gemini-ai",
+    "name": "Google Gemini",
+    "domain": "gemini.google.com",
+    "url": "https://gemini.google.com",
+    "category": "AI TOOLS",
+    "tags": [
+      "Multimodal",
+      "Google AI",
+      "Free & Paid"
+    ],
+    "uptime": "99.9%",
+    "badge": "GOOGLE AI",
+    "isTrusted": true
+  },
+  {
+    "id": "perplexity-ai",
+    "name": "Perplexity AI",
+    "domain": "perplexity.ai",
+    "url": "https://perplexity.ai",
+    "category": "AI TOOLS",
+    "tags": [
+      "AI Search",
+      "Citations",
+      "Free & Paid"
+    ],
+    "uptime": "99.9%",
+    "badge": "SMART SEARCH",
+    "isTrusted": true,
+    "isFeatured": true
+  },
+  {
+    "id": "midjourney-ai",
+    "name": "Midjourney",
+    "domain": "midjourney.com",
+    "url": "https://www.midjourney.com",
+    "category": "AI TOOLS",
+    "tags": [
+      "AI Art",
+      "Photorealism",
+      "Paid"
+    ],
+    "uptime": "99.9%",
+    "badge": "TOP ART",
+    "isTrusted": true
+  },
+  {
+    "id": "elevenlabs-ai",
+    "name": "ElevenLabs",
+    "domain": "elevenlabs.io",
+    "url": "https://elevenlabs.io",
+    "category": "AI TOOLS",
+    "tags": [
+      "Voice Cloning",
+      "Text to Speech",
+      "Free & Paid"
+    ],
+    "uptime": "99.8%",
+    "badge": "TOP VOICE",
+    "isTrusted": true
+  },
+  {
+    "id": "cursor-ai",
+    "name": "Cursor AI Editor",
+    "domain": "cursor.com",
+    "url": "https://www.cursor.com",
+    "category": "AI TOOLS",
+    "tags": [
+      "AI IDE",
+      "Autocompletion",
+      "Free & Paid"
+    ],
+    "uptime": "99.9%",
+    "badge": "DEV CHOICE",
+    "isTrusted": true,
+    "isNew": true
+  },
+  {
+    "id": "runway-ai",
+    "name": "Runway Gen-3",
+    "domain": "runwayml.com",
+    "url": "https://runwayml.com",
+    "category": "AI TOOLS",
+    "tags": [
+      "AI Video",
+      "VFX",
+      "Free & Paid"
+    ],
+    "uptime": "99.7%",
+    "badge": "VIDEO AI",
+    "isTrusted": true
+  },
+  {
+    "id": "notebooklm",
+    "name": "Google NotebookLM",
+    "domain": "notebooklm.google.com",
+    "url": "https://notebooklm.google.com",
+    "category": "AI TOOLS",
+    "tags": [
+      "PDF Summary",
+      "Audio Podcast",
+      "100% Free"
+    ],
+    "uptime": "99.9%",
+    "badge": "FREE HERO",
+    "isTrusted": true,
+    "isNew": true
+  },
+  {
+    "id": "notion-ai",
+    "name": "Notion AI",
+    "domain": "notion.so",
+    "url": "https://www.notion.so/product/ai",
+    "category": "AI TOOLS",
+    "tags": [
+      "Notes",
+      "Workspace",
+      "Paid"
+    ],
+    "uptime": "99.9%",
+    "isTrusted": true
+  },
+  {
+    "id": "suno-ai",
+    "name": "Suno AI Music",
+    "domain": "suno.com",
+    "url": "https://suno.com",
+    "category": "AI TOOLS",
+    "tags": [
+      "AI Music",
+      "Song Maker",
+      "Free & Paid"
+    ],
+    "uptime": "99.8%",
+    "badge": "MUSIC AI",
+    "isTrusted": true
   },
   {
     "id": "fitgirl",
@@ -458,20 +611,6 @@ export const STREAMING_SITES: SiteItem[] = [
     ],
     "uptime": "99.8%",
     "isTrusted": true
-  },
-  {
-    "id": "claudeai",
-    "name": "Claude AI Studio",
-    "domain": "claude.ai",
-    "url": "https://claude.ai",
-    "category": "AI TOOLS",
-    "tags": [
-      "Sonnet 3.5",
-      "AI Assistant"
-    ],
-    "uptime": "99.9%",
-    "badge": "PRO AI",
-    "isFeatured": true
   },
   {
     "id": "adguard",
