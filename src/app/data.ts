@@ -133,23 +133,53 @@ export const saveBannerConfig = (config: BannerConfig): void => {
   }
 };
 
+const DELETED_SITES_KEY = "allsitehub_deleted_sites_v2";
+
+export const getDeletedSiteIds = (): string[] => {
+  if (typeof window === "undefined") return [];
+  try {
+    const saved = localStorage.getItem(DELETED_SITES_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+export const saveDeletedSiteIds = (ids: string[]): void => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(DELETED_SITES_KEY, JSON.stringify(ids));
+  } catch (e) {
+    console.error("Failed to save deleted site ids", e);
+  }
+};
+
 export const getSavedSites = (): SiteItem[] => {
   if (typeof window === "undefined") return STREAMING_SITES;
   try {
+    const deletedList = getDeletedSiteIds();
+    const deletedSet = new Set(deletedList.map((id) => id.toLowerCase()));
+
     const saved = localStorage.getItem(SITES_STORAGE_KEY);
+    let currentSites: SiteItem[] = [];
+
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        const savedDomainMap = new Map(parsed.map((s: SiteItem) => [s.domain ? s.domain.toLowerCase() : '', s]));
-        const merged = [...parsed];
-        for (const defaultSite of STREAMING_SITES) {
-          if (defaultSite.domain && !savedDomainMap.has(defaultSite.domain.toLowerCase())) {
-            merged.push(defaultSite);
-          }
-        }
-        return merged;
+      if (Array.isArray(parsed)) {
+        currentSites = parsed;
+      } else {
+        currentSites = [...STREAMING_SITES];
       }
+    } else {
+      currentSites = [...STREAMING_SITES];
     }
+
+    return currentSites.filter((s: SiteItem) => {
+      const siteId = s.id ? s.id.toLowerCase() : "";
+      const siteDomain = s.domain ? s.domain.toLowerCase() : "";
+      const siteName = s.name ? s.name.toLowerCase() : "";
+      return !deletedSet.has(siteId) && !deletedSet.has(siteDomain) && !deletedSet.has(siteName);
+    });
   } catch (e) {
     console.error("Failed to parse saved sites", e);
   }
@@ -159,6 +189,29 @@ export const getSavedSites = (): SiteItem[] => {
 export const saveSitesToStorage = (sites: SiteItem[]): void => {
   if (typeof window === "undefined") return;
   try {
+    const activeSiteIds = new Set<string>();
+    sites.forEach((s) => {
+      if (s.id) activeSiteIds.add(s.id.toLowerCase());
+      if (s.domain) activeSiteIds.add(s.domain.toLowerCase());
+      if (s.name) activeSiteIds.add(s.name.toLowerCase());
+    });
+
+    const deletedSet = new Set(getDeletedSiteIds().map((id) => id.toLowerCase()));
+
+    STREAMING_SITES.forEach((defaultSite) => {
+      const dId = defaultSite.id ? defaultSite.id.toLowerCase() : "";
+      const dDomain = defaultSite.domain ? defaultSite.domain.toLowerCase() : "";
+      const dName = defaultSite.name ? defaultSite.name.toLowerCase() : "";
+
+      const isActive = activeSiteIds.has(dId) || activeSiteIds.has(dDomain) || activeSiteIds.has(dName);
+      if (!isActive) {
+        if (dId) deletedSet.add(dId);
+        if (dDomain) deletedSet.add(dDomain);
+        if (dName) deletedSet.add(dName);
+      }
+    });
+
+    saveDeletedSiteIds(Array.from(deletedSet));
     localStorage.setItem(SITES_STORAGE_KEY, JSON.stringify(sites));
     window.dispatchEvent(new Event("allsitehub_sites_updated"));
   } catch (e) {

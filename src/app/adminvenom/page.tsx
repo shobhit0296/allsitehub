@@ -14,6 +14,7 @@ import {
   saveBannerConfig,
   getSavedSites,
   saveSitesToStorage,
+  saveDeletedSiteIds,
 } from "../data";
 
 export default function AdminDashboard() {
@@ -219,7 +220,16 @@ export default function AdminDashboard() {
   // Delete Site
   const handleDeleteSite = (id: string) => {
     if (confirm("Are you sure you want to remove this portal?")) {
-      updateSites(sitesList.filter((s) => s.id !== id));
+      const remaining = sitesList.filter((s) => s.id !== id);
+      updateSites(remaining);
+    }
+  };
+
+  // Reset Sites to Defaults
+  const handleResetSites = () => {
+    if (confirm("Are you sure you want to reset all portal listings to default?")) {
+      saveDeletedSiteIds([]);
+      updateSites(STREAMING_SITES);
     }
   };
 
