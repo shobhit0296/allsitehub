@@ -15,6 +15,7 @@ import {
   DEFAULT_BANNER_CONFIG,
   getBannerConfig,
   getSavedSites,
+  syncWithServer,
   getSavedUserRequests,
   saveUserRequests,
   UserRequestItem,
@@ -635,6 +636,7 @@ export default function Home() {
 
   useEffect(() => {
     setSitesList(getSavedSites());
+    syncWithServer().then(() => setSitesList(getSavedSites()));
     const handleSitesUpdate = () => setSitesList(getSavedSites());
     window.addEventListener("allsitehub_sites_updated", handleSitesUpdate);
     window.addEventListener("storage", handleSitesUpdate);

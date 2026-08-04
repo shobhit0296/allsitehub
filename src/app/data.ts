@@ -253,6 +253,41 @@ export const getSavedSites = (): SiteItem[] => {
   return STREAMING_SITES;
 };
 
+export const syncWithServer = async (): Promise<void> => {
+  if (typeof window === "undefined") return;
+  try {
+    const res = await fetch("/api/sites", { cache: "no-store" });
+    if (!res.ok) return;
+    const { deletedIds, customSites } = await res.json();
+
+    let updated = false;
+
+    if (Array.isArray(deletedIds) && deletedIds.length > 0) {
+      const currentDeleted = getDeletedSiteIds();
+      const mergedDeleted = Array.from(new Set([...currentDeleted, ...deletedIds.map((id: string) => id.toLowerCase())]));
+      if (mergedDeleted.length !== currentDeleted.length) {
+        localStorage.setItem(DELETED_SITES_KEY, JSON.stringify(mergedDeleted));
+        updated = true;
+      }
+    }
+
+    if (Array.isArray(customSites) && customSites.length > 0) {
+      const currentSaved = localStorage.getItem(SITES_STORAGE_KEY);
+      const newJson = JSON.stringify(customSites);
+      if (currentSaved !== newJson) {
+        localStorage.setItem(SITES_STORAGE_KEY, newJson);
+        updated = true;
+      }
+    }
+
+    if (updated) {
+      window.dispatchEvent(new Event("allsitehub_sites_updated"));
+    }
+  } catch (e) {
+    console.error("Server sync error", e);
+  }
+};
+
 export const saveSitesToStorage = (sites: SiteItem[]): void => {
   if (typeof window === "undefined") return;
   try {
@@ -278,9 +313,17 @@ export const saveSitesToStorage = (sites: SiteItem[]): void => {
       }
     });
 
-    saveDeletedSiteIds(Array.from(deletedSet));
+    const updatedDeleted = Array.from(deletedSet);
+    saveDeletedSiteIds(updatedDeleted);
     localStorage.setItem(SITES_STORAGE_KEY, JSON.stringify(sites));
     window.dispatchEvent(new Event("allsitehub_sites_updated"));
+
+    // Post update to server API for instant global cross-device synchronization (PC & Phone)
+    fetch("/api/sites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ deletedIds: updatedDeleted, customSites: sites }),
+    }).catch(() => {});
   } catch (e) {
     console.error("Failed to save sites", e);
   }

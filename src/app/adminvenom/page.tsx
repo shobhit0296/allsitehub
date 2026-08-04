@@ -14,6 +14,7 @@ import {
   saveBannerConfig,
   getSavedSites,
   saveSitesToStorage,
+  getDeletedSiteIds,
   saveDeletedSiteIds,
   UserRequestItem,
   getSavedUserRequests,
@@ -214,10 +215,29 @@ export default function AdminDashboard() {
     setEditingSite(null);
   };
 
-  // Delete Site
+  // Delete Site & Guarantee Permanent Cross-Device Removal
   const handleDeleteSite = (id: string) => {
-    if (confirm("Are you sure you want to remove this portal?")) {
+    const targetSite = sitesList.find((s) => s.id === id);
+    if (!targetSite) return;
+
+    if (confirm(`Are you sure you want to permanently remove "${targetSite.name}" from AllSiteHub?`)) {
       const remaining = sitesList.filter((s) => s.id !== id);
+
+      // 1. Record site ID, domain, and name in deleted list so default merger never brings it back
+      const currentDeleted = getDeletedSiteIds();
+      const newDeleted = Array.from(
+        new Set(
+          [
+            ...currentDeleted,
+            targetSite.id.toLowerCase(),
+            targetSite.domain ? targetSite.domain.toLowerCase() : "",
+            targetSite.name ? targetSite.name.toLowerCase() : "",
+          ].filter(Boolean)
+        )
+      );
+      saveDeletedSiteIds(newDeleted);
+
+      // 2. Save remaining active sites to storage & trigger live broadcast
       updateSites(remaining);
     }
   };
