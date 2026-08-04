@@ -216,32 +216,16 @@ export const getSavedSites = (): SiteItem[] => {
     const deletedSet = new Set(deletedList.map((id) => id.toLowerCase()));
 
     const saved = localStorage.getItem(SITES_STORAGE_KEY);
-    let currentSites: SiteItem[] = [...STREAMING_SITES];
+    let activeSites: SiteItem[] = STREAMING_SITES;
 
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        const savedDomainMap = new Map(parsed.map((s: SiteItem) => [s.domain ? s.domain.toLowerCase() : "", s]));
-        const savedIdMap = new Map(parsed.map((s: SiteItem) => [s.id ? s.id.toLowerCase() : "", s]));
-
-        const merged = [...parsed];
-        for (const defaultSite of STREAMING_SITES) {
-          const dId = defaultSite.id ? defaultSite.id.toLowerCase() : "";
-          const dDomain = defaultSite.domain ? defaultSite.domain.toLowerCase() : "";
-          const dName = defaultSite.name ? defaultSite.name.toLowerCase() : "";
-
-          const isSaved = (dId && savedIdMap.has(dId)) || (dDomain && savedDomainMap.has(dDomain));
-          const isDeleted = deletedSet.has(dId) || deletedSet.has(dDomain) || deletedSet.has(dName);
-
-          if (!isSaved && !isDeleted) {
-            merged.push(defaultSite);
-          }
-        }
-        currentSites = merged;
+        activeSites = parsed;
       }
     }
 
-    return currentSites.filter((s: SiteItem) => {
+    return activeSites.filter((s: SiteItem) => {
       const siteId = s.id ? s.id.toLowerCase() : "";
       const siteDomain = s.domain ? s.domain.toLowerCase() : "";
       const siteName = s.name ? s.name.toLowerCase() : "";
@@ -262,22 +246,16 @@ export const syncWithServer = async (): Promise<void> => {
 
     let updated = false;
 
-    if (Array.isArray(deletedIds) && deletedIds.length > 0) {
+    if (Array.isArray(deletedIds)) {
       const currentDeleted = getDeletedSiteIds();
       const mergedDeleted = Array.from(new Set([...currentDeleted, ...deletedIds.map((id: string) => id.toLowerCase())]));
-      if (mergedDeleted.length !== currentDeleted.length) {
-        localStorage.setItem(DELETED_SITES_KEY, JSON.stringify(mergedDeleted));
-        updated = true;
-      }
+      localStorage.setItem(DELETED_SITES_KEY, JSON.stringify(mergedDeleted));
+      updated = true;
     }
 
     if (Array.isArray(customSites) && customSites.length > 0) {
-      const currentSaved = localStorage.getItem(SITES_STORAGE_KEY);
-      const newJson = JSON.stringify(customSites);
-      if (currentSaved !== newJson) {
-        localStorage.setItem(SITES_STORAGE_KEY, newJson);
-        updated = true;
-      }
+      localStorage.setItem(SITES_STORAGE_KEY, JSON.stringify(customSites));
+      updated = true;
     }
 
     if (updated) {
