@@ -1123,35 +1123,40 @@ export default function Home() {
             </p>
 
             {/* Action Buttons & Community Badges */}
-            <div className="flex flex-col xs:flex-row items-stretch xs:items-center justify-center lg:justify-start gap-2.5 sm:gap-3 pt-2 w-full">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-2.5 sm:gap-3 pt-2 w-full">
               <button
                 onClick={() => {
                   const el = document.getElementById("browse-directory");
                   if (el) el.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="w-full xs:w-auto px-6 py-3.5 rounded-full purple-btn-primary text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95 transition-transform min-h-[44px]"
+                className="w-full sm:w-auto px-6 py-3 rounded-full purple-btn-primary text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95 transition-all min-h-[42px]"
               >
                 <span>Browse Directory</span>
                 <span className="text-base font-bold">↓</span>
               </button>
 
-              <a
-                href="https://discord.gg/QnTrWqwcJ"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full xs:w-auto px-5 py-3.5 rounded-full bg-[#5865F2]/25 hover:bg-[#5865F2] border border-[#5865F2]/60 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(88,101,242,0.3)] hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md min-h-[44px]"
-              >
-                <span>💬 Join Discord</span>
-              </a>
+              {/* Compact & Ultra-Attractive Discord & Reddit Row (Single Row Container) */}
+              <div className="flex flex-row items-center gap-2 w-full sm:w-auto">
+                <a
+                  href="https://discord.gg/QnTrWqwcJ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-full bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/50 hover:border-[#5865F2] text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-[0_0_15px_rgba(88,101,242,0.2)] hover:shadow-[0_0_20px_rgba(88,101,242,0.5)] active:scale-95 cursor-pointer backdrop-blur-md min-h-[42px]"
+                >
+                  <span className="text-sm">💬</span>
+                  <span>Discord</span>
+                </a>
 
-              <a
-                href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full xs:w-auto px-5 py-3.5 rounded-full bg-[#FF4500]/25 hover:bg-[#FF4500] border border-[#FF4500]/60 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,69,0,0.3)] hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md min-h-[44px]"
-              >
-                <span>🔴 Reddit Profile</span>
-              </a>
+                <a
+                  href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-full bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/50 hover:border-[#FF4500] text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-[0_0_15px_rgba(255,69,0,0.2)] hover:shadow-[0_0_20px_rgba(255,69,0,0.5)] active:scale-95 cursor-pointer backdrop-blur-md min-h-[42px]"
+                >
+                  <span className="text-sm">🔴</span>
+                  <span>Reddit</span>
+                </a>
+              </div>
             </div>
           </div>
 
@@ -1159,7 +1164,11 @@ export default function Home() {
           {bannerConfig.promoEnabled !== false && (
             <div className="lg:col-span-5 flex justify-center lg:justify-end z-20 w-full mt-2 lg:mt-0">
               <a
-                href={bannerConfig.promoTargetUrl || "#"}
+                href={
+                  bannerConfig.promoTargetUrl && bannerConfig.promoTargetUrl !== "https://allsitehub.online"
+                    ? bannerConfig.promoTargetUrl
+                    : "https://pantyflix.org"
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`w-full ${activeTheme.cardBg} border ${activeTheme.cardBorder} hover:${activeTheme.cardBorderHover} rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden flex flex-col justify-between aspect-auto sm:aspect-[2.5/1] min-h-[200px] sm:min-h-[220px] cursor-pointer`}
