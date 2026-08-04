@@ -161,17 +161,29 @@ export const getSavedSites = (): SiteItem[] => {
     const deletedSet = new Set(deletedList.map((id) => id.toLowerCase()));
 
     const saved = localStorage.getItem(SITES_STORAGE_KEY);
-    let currentSites: SiteItem[] = [];
+    let currentSites: SiteItem[] = [...STREAMING_SITES];
 
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
-        currentSites = parsed;
-      } else {
-        currentSites = [...STREAMING_SITES];
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const savedDomainMap = new Map(parsed.map((s: SiteItem) => [s.domain ? s.domain.toLowerCase() : "", s]));
+        const savedIdMap = new Map(parsed.map((s: SiteItem) => [s.id ? s.id.toLowerCase() : "", s]));
+
+        const merged = [...parsed];
+        for (const defaultSite of STREAMING_SITES) {
+          const dId = defaultSite.id ? defaultSite.id.toLowerCase() : "";
+          const dDomain = defaultSite.domain ? defaultSite.domain.toLowerCase() : "";
+          const dName = defaultSite.name ? defaultSite.name.toLowerCase() : "";
+
+          const isSaved = (dId && savedIdMap.has(dId)) || (dDomain && savedDomainMap.has(dDomain));
+          const isDeleted = deletedSet.has(dId) || deletedSet.has(dDomain) || deletedSet.has(dName);
+
+          if (!isSaved && !isDeleted) {
+            merged.push(defaultSite);
+          }
+        }
+        currentSites = merged;
       }
-    } else {
-      currentSites = [...STREAMING_SITES];
     }
 
     return currentSites.filter((s: SiteItem) => {
