@@ -86,10 +86,20 @@ export const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ themeConfig 
       targetMouseY = e.clientY;
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    const isMobile = width < 640;
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        targetMouseX = e.touches[0].clientX;
+        targetMouseY = e.touches[0].clientY;
+      }
+    };
 
-    // Generate Stars
-    const numStars = Math.min(Math.floor((width * height) / 4500), 320);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+
+    // Generate Stars (Optimized for mobile GPUs)
+    const maxStarsLimit = isMobile ? 130 : 320;
+    const numStars = Math.min(Math.floor((width * height) / (isMobile ? 7000 : 4500)), maxStarsLimit);
     const stars: Star[] = [];
 
     const starColors = ["#ffffff", "#e0e7ff", "#f3e8ff", "#bae6fd", "#fef08a"];
@@ -258,6 +268,7 @@ export const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ themeConfig 
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 

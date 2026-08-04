@@ -1100,17 +1100,17 @@ export default function Home() {
             </div>
 
             {/* Main Headline (Single H1 for Strict SEO Compliance) */}
-            <div className="flex flex-col gap-1 w-full drop-shadow-sm">
-              <h1 className={`text-3xl xs:text-4xl sm:text-6xl xl:text-7xl 2xl:text-8xl font-black tracking-tight ${activeTheme.headingColor} uppercase leading-[1.1]`}>
+            <div className="flex flex-col gap-1.5 w-full drop-shadow-sm">
+              <h1 className={`text-2xl xs:text-3xl sm:text-5xl xl:text-7xl 2xl:text-8xl font-black tracking-tight ${activeTheme.headingColor} uppercase leading-[1.15]`}>
                 <span>
                   {bannerConfig.line1Text}{" "}
-                  <span className={`brush-font ${activeTheme.brandText} font-bold tracking-wider italic text-4xl xs:text-5xl sm:text-7xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-md`}>
+                  <span className={`brush-font ${activeTheme.brandText} font-bold tracking-wider italic text-3xl xs:text-4xl sm:text-6xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-md`}>
                     {bannerConfig.line1Highlight}
                   </span>
                 </span>
                 <span className="block mt-1">
                   {bannerConfig.line2Text}{" "}
-                  <span className={`brush-font ${activeTheme.brandText} font-bold tracking-wider italic text-4xl xs:text-5xl sm:text-7xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-md`}>
+                  <span className={`brush-font ${activeTheme.brandText} font-bold tracking-wider italic text-3xl xs:text-4xl sm:text-6xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-md`}>
                     {bannerConfig.line2Highlight}
                   </span>
                 </span>
@@ -1118,18 +1118,18 @@ export default function Home() {
             </div>
 
             {/* Subtitle */}
-            <p className={`text-sm sm:text-base xl:text-lg ${activeTheme.subtextColor} font-medium max-w-2xl leading-relaxed`}>
+            <p className={`text-xs sm:text-base xl:text-lg ${activeTheme.subtextColor} font-medium max-w-2xl leading-relaxed`}>
               {bannerConfig.description}
             </p>
 
             {/* Action Buttons & Community Badges */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+            <div className="flex flex-col xs:flex-row items-stretch xs:items-center justify-center lg:justify-start gap-2.5 sm:gap-3 pt-2 w-full">
               <button
                 onClick={() => {
                   const el = document.getElementById("browse-directory");
                   if (el) el.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="px-6 py-3.5 rounded-full purple-btn-primary text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 cursor-pointer"
+                className="w-full xs:w-auto px-6 py-3.5 rounded-full purple-btn-primary text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95 transition-transform min-h-[44px]"
               >
                 <span>Browse Directory</span>
                 <span className="text-base font-bold">↓</span>
@@ -1139,7 +1139,7 @@ export default function Home() {
                 href="https://discord.gg/QnTrWqwcJ"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-3.5 rounded-full bg-[#5865F2]/25 hover:bg-[#5865F2] border border-[#5865F2]/60 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(88,101,242,0.3)] hover:scale-105 cursor-pointer backdrop-blur-md"
+                className="w-full xs:w-auto px-5 py-3.5 rounded-full bg-[#5865F2]/25 hover:bg-[#5865F2] border border-[#5865F2]/60 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(88,101,242,0.3)] hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md min-h-[44px]"
               >
                 <span>💬 Join Discord</span>
               </a>
@@ -1148,73 +1148,74 @@ export default function Home() {
                 href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-3.5 rounded-full bg-[#FF4500]/25 hover:bg-[#FF4500] border border-[#FF4500]/60 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(255,69,0,0.3)] hover:scale-105 cursor-pointer backdrop-blur-md"
+                className="w-full xs:w-auto px-5 py-3.5 rounded-full bg-[#FF4500]/25 hover:bg-[#FF4500] border border-[#FF4500]/60 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,69,0,0.3)] hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md min-h-[44px]"
               >
                 <span>🔴 Reddit Profile</span>
               </a>
             </div>
           </div>
 
-          {/* Right Column Featured Rectangle Promo Banner (Clear Graphic & Small Corner Visit Button) */}
+          {/* Right Column Featured Rectangle Promo Banner (Optimized for Mobile Phones & Desktops) */}
           {bannerConfig.promoEnabled !== false && (
-            <div className="lg:col-span-5 flex justify-center lg:justify-end z-20 w-full">
+            <div className="lg:col-span-5 flex justify-center lg:justify-end z-20 w-full mt-2 lg:mt-0">
               <a
                 href={bannerConfig.promoTargetUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`w-full ${activeTheme.cardBg} border ${activeTheme.cardBorder} hover:${activeTheme.cardBorderHover} rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden flex flex-col justify-between aspect-[2.5/1] sm:aspect-[2.6/1] min-h-[190px] sm:min-h-[220px] cursor-pointer`}
+                className={`w-full ${activeTheme.cardBg} border ${activeTheme.cardBorder} hover:${activeTheme.cardBorderHover} rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden flex flex-col justify-between aspect-auto sm:aspect-[2.5/1] min-h-[200px] sm:min-h-[220px] cursor-pointer`}
               >
-                {/* Background Hero Banner Graphic (Clear & Prominent with Exact Aspect Ratio) */}
+                {/* Background Hero Banner Graphic */}
                 <div className="absolute inset-0 z-0 opacity-90 group-hover:opacity-100 transition-opacity pointer-events-none overflow-hidden rounded-3xl">
                   <img
                     src={bannerConfig.heroImageUrl || "/hero_banner.png"}
                     alt={bannerConfig.promoSiteName || "PantyFlix Banner"}
+                    loading="eager"
                     className="w-full h-full object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
                 </div>
 
                 {/* Glowing Aura Accent */}
                 <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-purple-500/20 blur-3xl group-hover:bg-purple-500/35 transition-all pointer-events-none z-0" />
 
                 {/* Top Row: Small Badge Tag & Small Corner Visit Button */}
-                <div className="flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-purple-300 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/60 border border-white/10 backdrop-blur-md shadow-xs">
+                <div className="flex items-center justify-between relative z-10 gap-2">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-purple-300 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/70 border border-white/15 backdrop-blur-md shadow-xs">
                       <span>⭐</span>
                       <span>{bannerConfig.cardBadgeText || "FEATURED"}</span>
                     </span>
-                    <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 backdrop-blur-md">
+                    <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 backdrop-blur-md">
                       ● LIVE
                     </span>
                   </div>
 
                   {/* SMALL CORNER VISIT BUTTON */}
-                  <span className="px-3 py-1 rounded-full bg-purple-600/90 group-hover:bg-purple-500 text-white text-[11px] font-black uppercase tracking-wider flex items-center gap-1 shadow-md transition-all group-hover:scale-105 shrink-0 backdrop-blur-md">
+                  <span className="px-3.5 py-1.5 rounded-full bg-purple-600/90 group-hover:bg-purple-500 text-white text-[11px] font-black uppercase tracking-wider flex items-center gap-1 shadow-md transition-all group-hover:scale-105 shrink-0 backdrop-blur-md">
                     <span>{bannerConfig.promoButtonText || "Visit"}</span>
                     <span className="text-xs font-bold">{bannerConfig.promoButtonIcon || "↗"}</span>
                   </span>
                 </div>
 
                 {/* Bottom Row: Compact Title, Tagline & Small Hashtags */}
-                <div className="flex flex-col gap-1 relative z-10 mt-auto pt-4">
+                <div className="flex flex-col gap-1 relative z-10 mt-auto pt-6">
                   <h3 className="text-base sm:text-lg font-black text-white tracking-tight drop-shadow-md group-hover:text-purple-300 transition-colors">
                     {bannerConfig.promoSiteName || "Featured Portal"}
                   </h3>
                   
                   {bannerConfig.promoTagline && (
-                    <p className="text-xs text-slate-200/90 leading-snug line-clamp-1 drop-shadow-sm font-medium">
+                    <p className="text-xs text-slate-200/90 leading-snug line-clamp-2 sm:line-clamp-1 drop-shadow-sm font-medium">
                       {bannerConfig.promoTagline}
                     </p>
                   )}
 
                   {/* Compact Interactive Hashtags Chips */}
                   {bannerConfig.promoHashtags && bannerConfig.promoHashtags.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
                       {bannerConfig.promoHashtags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className="text-[9px] sm:text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-black/70 text-purple-300 border border-purple-500/30 backdrop-blur-md shadow-xs"
+                          className="text-[9px] sm:text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-black/80 text-purple-300 border border-purple-500/30 backdrop-blur-md shadow-xs"
                         >
                           {tag.startsWith("#") ? tag : `#${tag}`}
                         </span>
