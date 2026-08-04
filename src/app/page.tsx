@@ -1543,49 +1543,49 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Category Sites Grid or List View - SLIGHTLY BIGGER CARDS */}
+                    {/* Category Sites Grid or List View - COMPACT & ULTRA-SMOOTH CARDS */}
                     {catSites.length === 0 ? (
-                      <div className={`p-8 rounded-3xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} text-center text-xs sm:text-sm ${activeTheme.mutedText} backdrop-blur-xl`}>
+                      <div className={`p-6 rounded-2xl ${activeTheme.cardBg} border ${activeTheme.cardBorder} text-center text-xs sm:text-sm ${activeTheme.mutedText} backdrop-blur-xl`}>
                         No portals added yet in {catName}.
                       </div>
                     ) : viewMode === "grid" ? (
-                      /* SLIGHTLY BIGGER CARDS GRID - 2 to 6 columns with spacious gaps & padding */
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-5">
+                      /* COMPACT CARDS GRID - 2 to 7 columns with ultra-smooth transitions */
+                      <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2.5 sm:gap-3">
                         {catSites.map((site) => (
                           <a
                             key={site.id}
                             href={site.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] shadow-md ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-xl min-h-[170px] sm:min-h-[190px]`}
+                            className={`group relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex flex-col items-center justify-between text-center transition-all duration-300 ease-out will-change-transform transform-gpu hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] shadow-sm hover:shadow-xl ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-xl min-h-[130px] sm:min-h-[145px]`}
                           >
                             {/* Top Badge Tag */}
-                            <div className="absolute top-2.5 left-2.5 z-20">
+                            <div className="absolute top-2 left-2 z-20">
                               {site.isTrusted ? (
-                                <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider shadow-sm backdrop-blur-md">
+                                <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.5 rounded bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider shadow-xs backdrop-blur-md">
                                   TRUSTED
                                 </span>
                               ) : site.isFeatured ? (
-                                <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-950/90 text-amber-400 border border-amber-500/40 uppercase tracking-wider shadow-sm backdrop-blur-md">
+                                <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.5 rounded bg-amber-950/90 text-amber-400 border border-amber-500/40 uppercase tracking-wider shadow-xs backdrop-blur-md">
                                   FEATURED
                                 </span>
                               ) : site.isNew ? (
-                                <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-950/90 text-blue-400 border border-blue-500/40 uppercase tracking-wider shadow-sm backdrop-blur-md">
+                                <span className="text-[8px] sm:text-[9px] font-black px-1.5 py-0.5 rounded bg-blue-950/90 text-blue-400 border border-blue-500/40 uppercase tracking-wider shadow-xs backdrop-blur-md">
                                   NEW
                                 </span>
                               ) : site.badge ? (
-                                <span className={`text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md ${activeTheme.accentBadge} uppercase tracking-wider shadow-sm backdrop-blur-md`}>
+                                <span className={`text-[8px] sm:text-[9px] font-black px-1.5 py-0.5 rounded ${activeTheme.accentBadge} uppercase tracking-wider shadow-xs backdrop-blur-md`}>
                                   {site.badge}
                                 </span>
                               ) : null}
                             </div>
 
-                            {/* Slightly Bigger Icon Squircle Box */}
-                            <div className={`sq-icon-btn w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 p-2.5 sm:p-3 rounded-2xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-300 shadow-md my-auto backdrop-blur-md mt-4 sm:mt-5`}>
+                            {/* Compact Icon Box */}
+                            <div className={`sq-icon-btn w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 p-2 rounded-xl ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300 ease-out shadow-xs my-auto backdrop-blur-md mt-3.5 sm:mt-4`}>
                               <img
                                 src={getFaviconUrl(site.domain || site.url)}
                                 alt={site.name}
-                                className="w-full h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
+                                className="w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300"
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
                                   const domain = getCleanDomain(site.domain || site.url);
@@ -1597,13 +1597,13 @@ export default function Home() {
                               />
                             </div>
 
-                            {/* Card Details - Enlarged Typography */}
-                            <div className="w-full flex flex-col items-center gap-1 mt-auto pt-3 z-10">
-                              <h3 className={`font-black ${activeTheme.headingColor} text-xs sm:text-sm tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate w-full`}>
+                            {/* Card Details */}
+                            <div className="w-full flex flex-col items-center gap-0.5 mt-auto pt-2 z-10">
+                              <h3 className={`font-black ${activeTheme.headingColor} text-[11px] sm:text-xs tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate w-full`}>
                                 {site.name}
                               </h3>
-                              <span className={`text-[10px] sm:text-xs font-mono ${activeTheme.mutedText} flex items-center justify-center gap-1 truncate w-full`}>
-                                <span className="text-[9px] opacity-70">🌐</span>
+                              <span className={`text-[9px] sm:text-[10px] font-mono ${activeTheme.mutedText} flex items-center justify-center gap-1 truncate w-full opacity-80`}>
+                                <span className="text-[8px] opacity-60">🌐</span>
                                 <span className="truncate">{site.domain}</span>
                               </span>
                             </div>
@@ -1611,23 +1611,23 @@ export default function Home() {
                         ))}
                       </div>
                     ) : (
-                      /* LIST VIEW - ENLARGED CARDS */
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+                      /* COMPACT LIST VIEW */
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3">
                         {catSites.map((site) => (
                           <a
                             key={site.id}
                             href={site.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`group card-square relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-2xl p-4 sm:p-4.5 flex items-center justify-between gap-3.5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-xl`}
+                            className={`group relative ${activeTheme.siteCardBg} border ${activeTheme.siteCardBorder} ${activeTheme.cardBorderHover} rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex items-center justify-between gap-3 transition-all duration-300 ease-out will-change-transform transform-gpu hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.98] shadow-sm hover:shadow-lg ${activeTheme.cardGlow} cursor-pointer overflow-hidden backdrop-blur-xl`}
                           >
-                            <div className={`absolute top-0 left-0 right-0 h-1.5 ${activeTheme.categoryBar} opacity-70 group-hover:opacity-100 transition-opacity`} />
-                            <div className="flex items-center gap-3.5 min-w-0">
-                              <div className={`sq-icon-btn w-12 h-12 p-2 sm:p-2.5 ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-300 shadow-md backdrop-blur-md`}>
+                            <div className={`absolute top-0 left-0 right-0 h-1 ${activeTheme.categoryBar} opacity-70 group-hover:opacity-100 transition-opacity`} />
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className={`sq-icon-btn w-9 h-9 sm:w-10 sm:h-10 p-2 ${activeTheme.sqIconBg} border ${activeTheme.sqIconBorder} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-xs backdrop-blur-md`}>
                                 <img
                                   src={getFaviconUrl(site.domain || site.url)}
                                   alt={site.name}
-                                  className="w-full h-full object-contain drop-shadow-md"
+                                  className="w-full h-full object-contain drop-shadow-sm"
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
                                     const domain = getCleanDomain(site.domain || site.url);
@@ -1639,15 +1639,15 @@ export default function Home() {
                                 />
                               </div>
                               <div className="flex flex-col min-w-0">
-                                <h3 className={`font-black ${activeTheme.headingColor} text-xs sm:text-sm tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate`}>
+                                <h3 className={`font-black ${activeTheme.headingColor} text-[11px] sm:text-xs tracking-wide uppercase group-hover:${activeTheme.brandText} transition-colors truncate`}>
                                   {site.name}
                                 </h3>
-                                <span className={`text-[10px] sm:text-xs font-mono ${activeTheme.mutedText} truncate`}>
+                                <span className={`text-[9px] sm:text-[10px] font-mono ${activeTheme.mutedText} truncate opacity-80`}>
                                   {site.domain}
                                 </span>
                               </div>
                             </div>
-                            <span className="text-xs font-black opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all shrink-0">
+                            <span className="text-xs font-black opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0">
                               ↗
                             </span>
                           </a>
