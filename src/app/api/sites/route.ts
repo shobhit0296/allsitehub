@@ -16,30 +16,34 @@ declare global {
 
 export async function GET() {
   try {
-    let deletedIds: string[] = globalThis.__allsitehub_deleted_ids || [];
-    let customSites: any[] = globalThis.__allsitehub_custom_sites || [];
+    let fileDeleted: string[] = [];
+    let fileCustom: any[] = [];
 
-    if (deletedIds.length === 0 && fs.existsSync(DELETED_FILE)) {
+    if (fs.existsSync(DELETED_FILE)) {
       try {
         const data = fs.readFileSync(DELETED_FILE, "utf-8");
-        deletedIds = JSON.parse(data);
-        globalThis.__allsitehub_deleted_ids = deletedIds;
+        fileDeleted = JSON.parse(data);
       } catch (e) {}
     }
 
-    if (customSites.length === 0 && fs.existsSync(CUSTOM_SITES_FILE)) {
+    if (fs.existsSync(CUSTOM_SITES_FILE)) {
       try {
         const data = fs.readFileSync(CUSTOM_SITES_FILE, "utf-8");
-        customSites = JSON.parse(data);
-        globalThis.__allsitehub_custom_sites = customSites;
+        fileCustom = JSON.parse(data);
       } catch (e) {}
     }
+
+    const memoryDeleted = globalThis.__allsitehub_deleted_ids || [];
+    const memoryCustom = globalThis.__allsitehub_custom_sites || [];
+
+    const deletedIds = Array.from(new Set([...fileDeleted, ...memoryDeleted].map((id: string) => id.toLowerCase())));
+    const customSites = memoryCustom.length > 0 ? memoryCustom : fileCustom;
 
     return NextResponse.json(
       { deletedIds, customSites },
       {
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
         },
       }
     );

@@ -637,12 +637,30 @@ export default function Home() {
   useEffect(() => {
     setSitesList(getSavedSites());
     syncWithServer().then(() => setSitesList(getSavedSites()));
+
     const handleSitesUpdate = () => setSitesList(getSavedSites());
+    const handleSync = () => {
+      if (typeof document !== "undefined" && document.visibilityState === "visible") {
+        syncWithServer().then(() => setSitesList(getSavedSites()));
+      }
+    };
+
     window.addEventListener("allsitehub_sites_updated", handleSitesUpdate);
     window.addEventListener("storage", handleSitesUpdate);
+    window.addEventListener("focus", handleSync);
+    document.addEventListener("visibilitychange", handleSync);
+
+    // Live instant auto-sync polling every 10 seconds across all devices
+    const syncTimer = setInterval(() => {
+      syncWithServer().then(() => setSitesList(getSavedSites()));
+    }, 10000);
+
     return () => {
       window.removeEventListener("allsitehub_sites_updated", handleSitesUpdate);
       window.removeEventListener("storage", handleSitesUpdate);
+      window.removeEventListener("focus", handleSync);
+      document.removeEventListener("visibilitychange", handleSync);
+      clearInterval(syncTimer);
     };
   }, []);
 
