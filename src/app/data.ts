@@ -320,22 +320,6 @@ export const getFaviconUrl = (domainOrUrl: string): string => {
 
 export const STREAMING_SITES: SiteItem[] = [
   {
-    "id": "flixtor",
-    "name": "Flixtor HD",
-    "domain": "flixtor.to",
-    "url": "https://flixtor.to",
-    "category": "MOVIES & TV SHOWS",
-    "tags": [
-      "4K",
-      "No-Ads",
-      "Fast Player"
-    ],
-    "uptime": "99.9%",
-    "badge": "POPULAR",
-    "isTrusted": true,
-    "isFeatured": true
-  },
-  {
     "id": "cineby4k",
     "name": "Cineby 4K Ultra",
     "domain": "cineby.app",
@@ -413,20 +397,6 @@ export const STREAMING_SITES: SiteItem[] = [
     "badge": "TOP MANGA",
     "isTrusted": true,
     "isFeatured": true
-  },
-  {
-    "id": "hdtoday",
-    "name": "HDToday TV",
-    "domain": "hdtoday.tv",
-    "url": "https://hdtoday.tv",
-    "category": "MOVIES & TV SHOWS",
-    "tags": [
-      "Series",
-      "1080p",
-      "Auto-Next"
-    ],
-    "uptime": "99.7%",
-    "isTrusted": true
   },
   {
     "id": "streameast",
@@ -656,20 +626,6 @@ export const STREAMING_SITES: SiteItem[] = [
     "badge": "ESSENTIAL",
     "isTrusted": true,
     "isFeatured": true
-  },
-  {
-    "id": "fmovies",
-    "name": "FMovies Official",
-    "domain": "fmovies.to",
-    "url": "https://fmovies.to",
-    "category": "MOVIES & TV SHOWS",
-    "tags": [
-      "Movies",
-      "HD",
-      "Multi-Server"
-    ],
-    "uptime": "99.6%",
-    "isNew": true
   },
   {
     "id": "hianime",
