@@ -641,6 +641,43 @@ export default function Home() {
     };
   }, []);
 
+  // Mobile Touch Pull-to-Refresh Handler
+  useEffect(() => {
+    let startY = 0;
+    let isPulling = false;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        isPulling = true;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isPulling || window.scrollY > 0) return;
+      const currentY = e.touches[0].clientY;
+      const diffY = currentY - startY;
+      if (diffY > 150) {
+        isPulling = false;
+        window.location.reload();
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isPulling = false;
+    };
+
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, []);
+
   const isManualClickRef = useRef(false);
   const manualClickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -880,8 +917,15 @@ export default function Home() {
       <header className={`sticky top-0 z-40 w-full ${activeTheme.headerBg} transition-all duration-300`}>
         <div className="max-w-[1700px] w-full mx-auto px-4 sm:px-8 xl:px-12 py-3 flex items-center justify-between gap-4">
           
-          {/* Left Brand Logo */}
-          <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => setActiveNav("Home")}>
+          {/* Left Brand Logo (Click to Reload & Refresh) */}
+          <div
+            className="flex items-center gap-2.5 cursor-pointer group"
+            onClick={() => {
+              setActiveNav("Home");
+              window.location.reload();
+            }}
+            title="Click to Reload & Refresh AllSiteHub"
+          >
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-purple-400 p-[2px] shadow-[0_0_20px_rgba(168,85,247,0.5)] flex items-center justify-center group-hover:scale-105 transition-transform">
               <div className="w-full h-full bg-[#090714] rounded-[10px] flex items-center justify-center font-black italic text-base sm:text-lg text-purple-400">
                 AH
@@ -918,8 +962,18 @@ export default function Home() {
             ))}
           </nav>
 
-          {/* Right Header Items: Themes, Region, Live Counter */}
+          {/* Right Header Items: Reload, Themes, Region, Live Counter */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Quick Reload Button */}
+            <button
+              onClick={() => window.location.reload()}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold transition-all border cursor-pointer hover:scale-105 active:scale-95 backdrop-blur-md ${activeTheme.inputBg} ${activeTheme.inputBorder} ${activeTheme.textColor} hover:border-purple-400/80 shadow-xs`}
+              title="Reload & Refresh Website"
+            >
+              <span className="text-xs sm:text-sm">🔄</span>
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+
             {/* Live Theme Button */}
             <button
               onClick={() => setShowModal("themes")}
@@ -1980,6 +2034,15 @@ export default function Home() {
           >
             <span>📁</span>
             <span>Portals</span>
+          </button>
+
+          <button
+            onClick={() => window.location.reload()}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 font-extrabold text-[11px] backdrop-blur-md active:scale-95 cursor-pointer shadow-xs"
+            title="Refresh Page on Phone"
+          >
+            <span className="text-xs">🔄</span>
+            <span>Refresh</span>
           </button>
 
           <button
