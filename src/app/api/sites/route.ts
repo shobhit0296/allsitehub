@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const DATA_DIR = path.join(process.cwd(), "src", "app");
 const DELETED_FILE = path.join(DATA_DIR, "deleted_sites.json");
 const CUSTOM_SITES_FILE = path.join(DATA_DIR, "custom_sites.json");

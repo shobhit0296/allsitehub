@@ -240,13 +240,13 @@ export const getSavedSites = (): SiteItem[] => {
 export const syncWithServer = async (): Promise<void> => {
   if (typeof window === "undefined") return;
   try {
-    const res = await fetch("/api/sites", { cache: "no-store" });
+    const res = await fetch(`/api/sites?t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } });
     if (!res.ok) return;
     const { deletedIds, customSites } = await res.json();
 
     let updated = false;
 
-    if (Array.isArray(deletedIds)) {
+    if (Array.isArray(deletedIds) && deletedIds.length > 0) {
       const currentDeleted = getDeletedSiteIds();
       const mergedDeleted = Array.from(new Set([...currentDeleted, ...deletedIds.map((id: string) => id.toLowerCase())]));
       localStorage.setItem(DELETED_SITES_KEY, JSON.stringify(mergedDeleted));
