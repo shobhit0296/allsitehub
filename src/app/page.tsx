@@ -1162,21 +1162,17 @@ export default function Home() {
                 href={bannerConfig.promoTargetUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`w-full ${activeTheme.cardBg} border ${activeTheme.cardBorder} hover:${activeTheme.cardBorderHover} rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden flex flex-col justify-between min-h-[200px] sm:min-h-[230px] cursor-pointer`}
+                className={`w-full ${activeTheme.cardBg} border ${activeTheme.cardBorder} hover:${activeTheme.cardBorderHover} rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 relative group overflow-hidden flex flex-col justify-between aspect-[2.5/1] sm:aspect-[2.6/1] min-h-[190px] sm:min-h-[220px] cursor-pointer`}
               >
-                {/* Background Hero Banner Graphic (Clear & Prominent) */}
-                {bannerConfig.heroImageUrl && bannerConfig.heroImageUrl !== "/hero_banner.png" ? (
-                  <div className="absolute inset-0 z-0 opacity-80 group-hover:opacity-95 transition-opacity pointer-events-none overflow-hidden">
-                    <img
-                      src={bannerConfig.heroImageUrl}
-                      alt={bannerConfig.promoSiteName || "Banner"}
-                      className="w-full h-full object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
-                  </div>
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-tr from-purple-950/40 via-indigo-950/30 to-black/60 pointer-events-none" />
-                )}
+                {/* Background Hero Banner Graphic (Clear & Prominent with Exact Aspect Ratio) */}
+                <div className="absolute inset-0 z-0 opacity-90 group-hover:opacity-100 transition-opacity pointer-events-none overflow-hidden rounded-3xl">
+                  <img
+                    src={bannerConfig.heroImageUrl || "/hero_banner.png"}
+                    alt={bannerConfig.promoSiteName || "PantyFlix Banner"}
+                    className="w-full h-full object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+                </div>
 
                 {/* Glowing Aura Accent */}
                 <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-purple-500/20 blur-3xl group-hover:bg-purple-500/35 transition-all pointer-events-none z-0" />
