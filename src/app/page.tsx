@@ -767,6 +767,72 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen flex flex-col relative ${activeTheme.pageBg} ${activeTheme.textColor} ${activeTheme.textureClass} selection:bg-purple-500 selection:text-white transition-colors duration-500`}>
+      {/* JSON-LD STRUCTURED DATA SCHEMA FOR GOOGLE SEARCH & RICH SNIPPETS */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "WebSite",
+                "@id": "https://allsitehub.online/#website",
+                "url": "https://allsitehub.online",
+                "name": "AllSiteHub",
+                "description": "Discover verified streaming portals, anime hubs, 4K movies, live sports, AI tools & developer utilities.",
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": "https://allsitehub.online/?q={search_term_string}",
+                  "query-input": "required name=search_term_string"
+                }
+              },
+              {
+                "@type": "Organization",
+                "@id": "https://allsitehub.online/#organization",
+                "name": "AllSiteHub",
+                "url": "https://allsitehub.online",
+                "logo": "https://allsitehub.online/favicon.ico",
+                "sameAs": [
+                  "https://discord.gg/QnTrWqwcJ",
+                  "https://www.reddit.com/user/Ill_Committee7612/",
+                  "https://t.me/allsitehub"
+                ]
+              },
+              {
+                "@type": "FAQPage",
+                "@id": "https://allsitehub.online/#faq",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "Is Allsitehub completely free to use?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Yes, Allsitehub is a 100% free open web directory. No sign-up or registration is required to access verified portal mirrors."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "What categories of sites are listed on Allsitehub?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Allsitehub catalogs sites across Movies & TV Shows, Only 4K, Anime, Manga, Live TV & Sports, Paid services, Mobile Apps, AI Tools, Downloads, and Ad Blockers."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Does Allsitehub host media files on its servers?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "No, Allsitehub does not host any media files or copyrighted content. It serves purely as an indexed gateway pointing to external web services."
+                    }
+                  }
+                ]
+              }
+            ]
+          })
+        }}
+      />
+
       {/* 1. LIVE GALAXY BACKGROUND EFFECT CANVAS */}
       <GalaxyBackground themeConfig={activeTheme.galaxyConfig} />
 
@@ -997,18 +1063,20 @@ export default function Home() {
               {bannerConfig.badgeText || "THE ULTIMATE STREAMING HUB"}
             </div>
 
-            {/* Main Headline */}
+            {/* Main Headline (Single H1 for Strict SEO Compliance) */}
             <div className="flex flex-col gap-1 w-full drop-shadow-sm">
               <h1 className={`text-3xl xs:text-4xl sm:text-6xl xl:text-7xl 2xl:text-8xl font-black tracking-tight ${activeTheme.headingColor} uppercase leading-[1.1]`}>
-                {bannerConfig.line1Text}{" "}
-                <span className={`brush-font ${activeTheme.brandText} font-bold tracking-wider italic text-4xl xs:text-5xl sm:text-7xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-md`}>
-                  {bannerConfig.line1Highlight}
+                <span>
+                  {bannerConfig.line1Text}{" "}
+                  <span className={`brush-font ${activeTheme.brandText} font-bold tracking-wider italic text-4xl xs:text-5xl sm:text-7xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-md`}>
+                    {bannerConfig.line1Highlight}
+                  </span>
                 </span>
-              </h1>
-              <h1 className={`text-3xl xs:text-4xl sm:text-6xl xl:text-7xl 2xl:text-8xl font-black tracking-tight ${activeTheme.headingColor} uppercase leading-[1.1]`}>
-                {bannerConfig.line2Text}{" "}
-                <span className={`brush-font ${activeTheme.brandText} font-bold tracking-wider italic text-4xl xs:text-5xl sm:text-7xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-md`}>
-                  {bannerConfig.line2Highlight}
+                <span className="block mt-1">
+                  {bannerConfig.line2Text}{" "}
+                  <span className={`brush-font ${activeTheme.brandText} font-bold tracking-wider italic text-4xl xs:text-5xl sm:text-7xl xl:text-8xl 2xl:text-9xl hover:scale-105 transition-transform inline-block ml-1 sm:ml-2 normal-case drop-shadow-md`}>
+                    {bannerConfig.line2Highlight}
+                  </span>
                 </span>
               </h1>
             </div>
