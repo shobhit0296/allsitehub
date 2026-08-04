@@ -868,9 +868,9 @@ export default function Home() {
 
         {/* Mobile Navigation Drawer */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-3 pt-3 border-t border-purple-500/20 flex flex-col gap-2 bg-[#090717]/95 backdrop-blur-2xl p-4 rounded-2xl border border-white/10 shadow-2xl">
-            <div className="relative mb-2">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">
+          <div className="md:hidden mt-3 pt-3 border-t border-purple-500/20 flex flex-col gap-2.5 bg-[#090717]/95 backdrop-blur-2xl p-4 rounded-2xl border border-white/10 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+            <div className="relative mb-1">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 text-xs">
                 🔍
               </div>
               <input
@@ -878,46 +878,105 @@ export default function Home() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search sites, anime, movies..."
-                className="w-full pl-8 pr-3 py-2 bg-[#120e29]/80 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none backdrop-blur-md"
+                className="w-full pl-8 pr-8 py-2.5 bg-[#120e29]/80 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none backdrop-blur-md"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-xs opacity-70 hover:opacity-100 text-white"
+                >
+                  ✕
+                </button>
+              )}
             </div>
 
-            {/* Mobile Theme Selector */}
-            <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#120e29]/80 border border-slate-700/80 my-1 backdrop-blur-md">
-              <span className="text-xs font-bold text-slate-300">Live Dark Theme:</span>
-              <select
-                value={currentTheme}
-                onChange={(e) => handleThemeChange(e.target.value)}
-                className="bg-[#0c0919] border border-slate-700 text-slate-200 text-xs font-bold px-2 py-1 rounded-lg focus:outline-none"
+            {/* Mobile Theme & Region Controls */}
+            <div className="grid grid-cols-2 gap-2 my-1">
+              <button
+                onClick={() => {
+                  setShowModal("themes");
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center justify-between gap-1.5 px-3 py-2 rounded-xl bg-[#120e29]/90 border border-purple-500/30 text-xs font-extrabold text-white backdrop-blur-md active:scale-95 transition-all"
               >
-                {Object.entries(THEME_STYLES).map(([key, t]) => (
-                  <option key={key} value={key}>
-                    {t.icon} {t.name}
-                  </option>
-                ))}
-              </select>
+                <span className="flex items-center gap-1.5 truncate">
+                  <span>🎨</span>
+                  <span className="truncate">Themes</span>
+                </span>
+                <span className="text-[10px] font-mono text-purple-300 font-bold px-1.5 py-0.5 rounded bg-purple-950/80 border border-purple-500/40">
+                  {activeTheme.icon}
+                </span>
+              </button>
+
+              <div className="relative">
+                <select
+                  value={selectedRegion}
+                  onChange={(e) => setSelectedRegion(e.target.value)}
+                  className="w-full appearance-none bg-[#120e29]/90 border border-slate-700 text-white text-xs font-semibold px-3 py-2 pr-6 rounded-xl cursor-pointer focus:outline-none backdrop-blur-md"
+                >
+                  <option value="US">🌐 US</option>
+                  <option value="UK">🌐 UK</option>
+                  <option value="EU">🌐 EU</option>
+                  <option value="IN">🌐 IN</option>
+                  <option value="GLOBAL">🌐 Global</option>
+                </select>
+                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] text-slate-400 pointer-events-none">
+                  ▼
+                </span>
+              </div>
             </div>
 
+            {/* Navigation Links Grid (Includes Request Site) */}
             <div className="grid grid-cols-2 gap-2">
-              {["Home", "About", "DMCA", "Contact"].map((item) => (
+              {["Home", "Request Site", "About", "DMCA", "Contact"].map((item) => (
                 <button
                   key={item}
                   onClick={() => {
                     setActiveNav(item);
                     setIsMobileMenuOpen(false);
-                    if (item === "DMCA") setShowModal("dmca");
+                    if (item === "Request Site") setShowModal("request");
+                    else if (item === "DMCA") setShowModal("dmca");
                     else if (item === "Contact") setShowModal("contact");
                     else if (item === "About") setShowModal("about");
                   }}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold text-left transition-all ${
+                  className={`px-3 py-2.5 rounded-xl text-xs font-bold text-left transition-all flex items-center justify-between ${
                     activeNav === item
-                      ? "bg-purple-600 text-white"
+                      ? "bg-purple-600 text-white shadow-md font-extrabold"
                       : "bg-[#120e29]/70 text-slate-300 hover:text-white"
                   }`}
                 >
-                  {item}
+                  <span>{item}</span>
+                  {activeNav === item && <span className="text-xs">✓</span>}
                 </button>
               ))}
+            </div>
+
+            {/* Quick Community DM Links */}
+            <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2 text-[11px] font-bold">
+              <a
+                href="https://discord.gg/QnTrWqwcJ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-2 text-center rounded-xl bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/40 text-purple-200 hover:text-white transition-all"
+              >
+                💬 Discord
+              </a>
+              <a
+                href="https://www.reddit.com/user/Ill_Committee7612/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-2 text-center rounded-xl bg-[#FF4500]/20 hover:bg-[#FF4500] border border-[#FF4500]/40 text-orange-200 hover:text-white transition-all"
+              >
+                🔴 Reddit
+              </a>
+              <a
+                href="https://t.me/allsitehub"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-2 text-center rounded-xl bg-[#0088cc]/20 hover:bg-[#0088cc] border border-[#0088cc]/40 text-sky-200 hover:text-white transition-all"
+              >
+                ✈️ Telegram
+              </a>
             </div>
           </div>
         )}
@@ -1117,9 +1176,9 @@ export default function Home() {
           {/* MAIN DIRECTORY LAYOUT: LEFT SIDEBAR + RIGHT CARDS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-            {/* LEFT SIDEBAR CATEGORIES - 100% STICKY COLUMN */}
+            {/* LEFT SIDEBAR CATEGORIES - DESKTOP ONLY (hidden lg:flex) */}
             <aside
-              className={`lg:col-span-3 sticky top-24 self-start z-30 flex flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-2xl transition-all`}
+              className={`hidden lg:flex lg:col-span-3 sticky top-24 self-start z-30 flex-col gap-2.5 ${activeTheme.sidebarBg} border ${activeTheme.sidebarBorder} rounded-3xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-2xl transition-all`}
             >
               <div className={`flex items-center justify-between px-1 pb-3 border-b ${activeTheme.headerBorder}`}>
                 <span className={`text-xs sm:text-sm font-black uppercase tracking-wider ${activeTheme.brandText} flex items-center gap-2`}>
@@ -1233,8 +1292,45 @@ export default function Home() {
               </a>
             </aside>
 
-            {/* RIGHT MAIN DIRECTORY CARDS GRID */}
-            <div className="lg:col-span-9 flex flex-col gap-6">
+            {/* RIGHT MAIN DIRECTORY CARDS GRID & MOBILE HORIZONTAL CATEGORY BAR */}
+            <div className="lg:col-span-9 flex flex-col gap-5 w-full">
+
+              {/* MOBILE HORIZONTAL GLASS CATEGORIES BAR (lg:hidden) */}
+              <div className="lg:hidden sticky top-14 sm:top-16 z-30 flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-3 rounded-2xl ${activeTheme.headerBg} border ${activeTheme.headerBorder} shadow-xl backdrop-blur-2xl my-1">
+                {[
+                  { name: "MOVIES & TV SHOWS", label: "MOVIES & TV SHOWS", icon: "🎬" },
+                  { name: "ONLY 4K", label: "ONLY 4K", icon: "💎" },
+                  { name: "ANIME", label: "ANIME", icon: "⚡" },
+                  { name: "MANGA", label: "MANGA", icon: "📖" },
+                  { name: "LIVE TV & SPORTS", label: "LIVE TV & SPORTS", icon: "📺" },
+                  { name: "PAID", label: "PAID", icon: "⭐" },
+                  { name: "APPS", label: "APPS", icon: "📱" },
+                  { name: "AI TOOLS", label: "AI TOOLS", icon: "🤖" },
+                  { name: "DOWNLOADS", label: "DOWNLOADS", icon: "⬇️" },
+                  { name: "AD BLOCKERS", label: "AD BLOCKERS", icon: "🛡️" },
+                ].map((cat) => {
+                  const isSelected = selectedCategory === cat.name;
+                  const catCount = getCategoryCount(cat.name);
+
+                  return (
+                    <button
+                      key={cat.name}
+                      onClick={() => handleCategoryClick(cat.name)}
+                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black whitespace-nowrap transition-all shrink-0 active:scale-95 cursor-pointer ${
+                        isSelected
+                          ? activeTheme.activeNavBg
+                          : `${activeTheme.catBtnBg} ${activeTheme.catBtnText} border ${activeTheme.catBtnBorder}`
+                      }`}
+                    >
+                      <span className="text-sm">{cat.icon}</span>
+                      <span>{cat.label}</span>
+                      <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${isSelected ? "bg-white/25 text-white font-bold" : "bg-black/40 text-slate-300"}`}>
+                        {catCount}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
 
               {/* DIRECTORY SEARCH & VIEW TOGGLE ROW */}
               <div className="flex items-center justify-between gap-4 px-2 pb-4 mb-2 border-b border-white/10">
@@ -1762,18 +1858,44 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* FLOATING STICKY MOBILE JUMP TO CATEGORIES BUTTON */}
-      <div className="fixed bottom-5 right-5 z-40 lg:hidden">
-        <button
-          onClick={() => {
-            const el = document.getElementById("browse-directory");
-            if (el) el.scrollIntoView({ behavior: "smooth" });
-          }}
-          className="px-4.5 py-3 rounded-full bg-purple-600/90 hover:bg-purple-600 text-white font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 border border-purple-400/60 shadow-[0_0_25px_rgba(168,85,247,0.7)] backdrop-blur-md active:scale-95 cursor-pointer"
-        >
-          <span>📁 Categories</span>
-          <span className="text-sm font-bold animate-bounce">↓</span>
-        </button>
+      {/* FLOATING STICKY MOBILE BOTTOM BAR (MOBILE ONLY: lg:hidden) */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 lg:hidden w-[92%] max-w-sm">
+        <div className="flex items-center justify-around gap-1 px-3 py-2 rounded-full glass-header border border-purple-500/40 shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+          <button
+            onClick={() => {
+              const el = document.getElementById("browse-directory");
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-600/90 text-white font-extrabold text-[11px] uppercase tracking-wider shadow-md active:scale-95 cursor-pointer"
+          >
+            <span>📁</span>
+            <span>Portals</span>
+          </button>
+
+          <button
+            onClick={() => setShowModal("themes")}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 font-extrabold text-[11px] backdrop-blur-md active:scale-95 cursor-pointer"
+          >
+            <span>🎨</span>
+            <span>Themes</span>
+          </button>
+
+          <button
+            onClick={() => setShowModal("request")}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 font-extrabold text-[11px] backdrop-blur-md active:scale-95 cursor-pointer"
+          >
+            <span>📝</span>
+            <span>Request</span>
+          </button>
+
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 font-black text-xs flex items-center justify-center backdrop-blur-md active:scale-95 cursor-pointer"
+            title="Back to top"
+          >
+            ↑
+          </button>
+        </div>
       </div>
     </div>
   );
