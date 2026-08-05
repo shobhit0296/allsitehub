@@ -177,7 +177,7 @@ export const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ themeConfig 
 
       const activeThemeConfig = themeRef.current;
 
-      ctx.fillStyle = activeThemeConfig.spaceBg || "#05050c";
+      ctx.fillStyle = activeThemeConfig.spaceBg || "#090a0f";
       ctx.fillRect(0, 0, width, height);
 
       const nebulaPalette = [
@@ -190,16 +190,15 @@ export const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ themeConfig 
         const cloud = nebulaClouds[index];
         cloud.phase += 0.002;
         const color = nebulaPalette[index % nebulaPalette.length];
-        const pulse = Math.sin(cloud.phase) * 0.06 + 1;
+        const pulse = Math.sin(cloud.phase) * 0.04 + 1;
         const radius = Math.min(width, height) * cloud.radiusRatio * pulse;
 
-        const cx = width * cloud.xRatio + mouseOffsetX * (index + 1) * 0.4;
-        const cy = height * cloud.yRatio + mouseOffsetY * (index + 1) * 0.4;
+        const cx = width * cloud.xRatio + mouseOffsetX * (index + 1) * 0.3;
+        const cy = height * cloud.yRatio + mouseOffsetY * (index + 1) * 0.3;
 
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
         grad.addColorStop(0, color);
-        grad.addColorStop(0.6, color.replace(/[\d.]+\)$/, "0.06)"));
-        grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+        grad.addColorStop(0.7, "rgba(0, 0, 0, 0)");
 
         ctx.fillStyle = grad;
         ctx.beginPath();
@@ -210,8 +209,8 @@ export const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ themeConfig 
       for (let i = 0; i < stars.length; i++) {
         const star = stars[i];
         star.twinklePhase += star.twinkleSpeed;
-        const twinkle = Math.sin(star.twinklePhase) * 0.3 + 0.7;
-        const alpha = star.baseAlpha * twinkle;
+        const twinkle = Math.sin(star.twinklePhase) * 0.25 + 0.75;
+        const alpha = star.baseAlpha * twinkle * 0.7;
 
         star.x += star.vx;
         star.y += star.vy;
@@ -229,14 +228,6 @@ export const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ themeConfig 
         ctx.fillStyle = star.color;
         ctx.globalAlpha = alpha;
         ctx.fill();
-
-        if (star.z > 0.8 && !isMobile) {
-          ctx.beginPath();
-          ctx.arc(renderX, renderY, star.radius * 2, 0, Math.PI * 2);
-          ctx.fillStyle = activeThemeConfig.accentGlow || star.color;
-          ctx.globalAlpha = alpha * 0.2;
-          ctx.fill();
-        }
       }
       ctx.globalAlpha = 1.0;
 
@@ -258,8 +249,8 @@ export const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ themeConfig 
           const tailY = shootingStar.y - Math.sin(shootingStar.angle) * shootingStar.length;
 
           const grad = ctx.createLinearGradient(shootingStar.x, shootingStar.y, tailX, tailY);
-          grad.addColorStop(0, `rgba(255, 255, 255, ${shootingStar.alpha})`);
-          grad.addColorStop(0.3, activeThemeConfig.accentGlow || `rgba(168, 85, 247, ${shootingStar.alpha * 0.5})`);
+          grad.addColorStop(0, `rgba(255, 255, 255, ${shootingStar.alpha * 0.6})`);
+          grad.addColorStop(0.4, `rgba(255, 255, 255, ${shootingStar.alpha * 0.2})`);
           grad.addColorStop(1, "rgba(255, 255, 255, 0)");
 
           ctx.beginPath();
